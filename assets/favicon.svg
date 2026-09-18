@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" rx="18" fill="#0B0D0F"/>
+    <mask id="zt-favicon-cutout">
+        <rect width="100" height="100" fill="white"/>
+        <circle cx="30" cy="28" r="6" fill="black"/>
+        <path d="M58 20 L38 54 L50 54 L42 80 L66 45 L53 45 Z" fill="black"/>
+    </mask>
+    <path fill="#D4FF3F" d="M15 20 L62 20 L85 50 L62 80 L15 80 Z" mask="url(#zt-favicon-cutout)"/>
+</svg>
