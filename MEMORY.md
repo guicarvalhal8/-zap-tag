@@ -301,6 +301,16 @@
   - Sem CTA na seção (era um requisito explícito do prompt — é resolução
     de objeção, não ponto de conversão).
 
+- **2026-09-21** — E-mail real de contato definido: `usezaptag@gmail.com`.
+  Substituído o placeholder `contato@zaptag.com.br` no footer
+  (`index.html`), removido o comentário `TODO` que estava acima do link.
+
+- **2026-09-21** — Instagram real confirmado: `@zap_tag_`
+  (`instagram.com/zap_tag_`). Substituído o placeholder
+  `instagram.com/zaptag` no footer (`index.html`), removido o comentário
+  `TODO` que estava acima do link. Com isso, os três contatos do footer
+  (WhatsApp, e-mail, Instagram) estão todos com dados reais.
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
@@ -308,7 +318,8 @@ QR code, Casos de uso, CTA final + footer) e no ar localmente. Falta antes
 de publicar:
 
 1. ~~Número de WhatsApp real~~ — feito (`5562982233133`).
-2. **Instagram e e-mail reais** (footer, marcados com `TODO` no `index.html`).
+2. ~~E-mail real~~ — feito (`usezaptag@gmail.com`, footer).
+   ~~Instagram real~~ — feito (`@zap_tag_`, footer).
 3. Decidir se entra uma seção de "prova social" (o espaço já está reservado
    entre "Casos de uso" e "CTA final").
 4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
