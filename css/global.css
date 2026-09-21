@@ -721,6 +721,173 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     max-width: 26ch;
 }
 
+/* ---- Seção "Diferencial vs. QR code" ---- */
+
+.compare {
+    padding-block: 96px;
+    border-top: 1px solid var(--color-border);
+}
+
+.compare__columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+@media (min-width: 760px) {
+    .compare__columns {
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+        align-items: start;
+    }
+}
+
+.compare__column-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.compare__column-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.compare__column--zaptag .compare__column-icon {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.compare__column--qr .compare__column-icon {
+    color: var(--color-text-muted);
+}
+
+.compare__column-glyph {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.compare__column-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--color-text);
+}
+
+.compare__column--qr .compare__column-title { color: var(--color-text-muted); }
+.compare__column--zaptag .compare__column-title { color: var(--color-primary); }
+
+.compare__steps {
+    counter-reset: compare-step;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.compare__step {
+    counter-increment: compare-step;
+    position: relative;
+    padding: 13px 18px 13px 50px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.92rem;
+    color: var(--color-text);
+}
+
+.compare__step::before {
+    content: counter(compare-step);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.72rem;
+}
+
+.compare__column--qr .compare__step {
+    color: var(--color-text-muted);
+}
+
+.compare__column--qr .compare__step::before {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.compare__column--zaptag .compare__step::before {
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+}
+
+.compare__slogan {
+    margin: 56px 0 0;
+    text-align: center;
+    font-family: var(--font-display-highlight);
+    font-weight: 600;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--color-primary);
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.compare__slogan.is-visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.compare__facts {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+@media (min-width: 760px) {
+    .compare__facts {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 28px;
+    }
+}
+
+.compare__facts li {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    max-width: 32ch;
+}
+
 /* ---- Botão outline (usado no toggle de Casos de uso) ---- */
 
 .btn-outline {
@@ -1043,6 +1210,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     .how__step-icon { transition: none; }
     .usecase-card { transition: none; }
     .usecases__expand-wrap { transition: none; }
+    .compare__slogan { transition: none; }
     .usecases-toggle__chevron { transition: none; }
     .usecase-card__icon {
         animation: none !important;

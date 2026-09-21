@@ -115,6 +115,73 @@ function initHowSteps() {
     observer.observe(section);
 }
 
+// Seção "Diferencial vs. QR code": coluna QR entra com stagger mais lento
+// (180ms) que a coluna Zaptag (90ms) — a diferença de ritmo reforça a
+// diferença de "quantidade de espera" antes mesmo da pessoa ler o texto.
+// Slogan de destaque entra depois, com scale-in próprio (ver CSS), seguido
+// pelos três diferenciais técnicos. Desconstrói ao sair da tela, como as
+// outras seções com scroll reveal (ver initHowSteps/initUseCases).
+function initCompare() {
+    const section = document.querySelector('.compare');
+    if (!section) return;
+
+    const headerItems = section.querySelectorAll('.section-header [data-reveal]');
+    const qrSteps = section.querySelectorAll('.compare__column--qr .compare__step');
+    const zaptagSteps = section.querySelectorAll('.compare__column--zaptag .compare__step');
+    const slogan = section.querySelector('.compare__slogan');
+    const facts = section.querySelector('.compare__facts');
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let timers = [];
+
+    const clearTimers = () => {
+        timers.forEach((id) => clearTimeout(id));
+        timers = [];
+    };
+
+    const stagger = (items, delay) => {
+        items.forEach((item, i) => {
+            const id = setTimeout(() => item.classList.add('is-visible'), reducedMotion ? 0 : i * delay);
+            timers.push(id);
+        });
+    };
+
+    const show = () => {
+        clearTimers();
+        headerItems.forEach((el) => el.classList.add('is-visible'));
+        stagger(qrSteps, 180);
+        stagger(zaptagSteps, 90);
+        timers.push(setTimeout(() => slogan && slogan.classList.add('is-visible'), reducedMotion ? 0 : 550));
+        timers.push(setTimeout(() => facts && facts.classList.add('is-visible'), reducedMotion ? 0 : 720));
+    };
+
+    const hide = () => {
+        clearTimers();
+        headerItems.forEach((el) => el.classList.remove('is-visible'));
+        qrSteps.forEach((el) => el.classList.remove('is-visible'));
+        zaptagSteps.forEach((el) => el.classList.remove('is-visible'));
+        if (slogan) slogan.classList.remove('is-visible');
+        if (facts) facts.classList.remove('is-visible');
+    };
+
+    if (reducedMotion) {
+        show();
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                show();
+            } else {
+                hide();
+            }
+        });
+    }, { threshold: 0.3 });
+
+    observer.observe(section);
+}
+
 // CTA final: bloco único, fade + slide-up ao entrar no viewport, sem
 // stagger (não é uma lista de itens). Some de novo ao sair da tela.
 function initFinalCta() {
@@ -144,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initWhatsappLinks();
     initTouchAnimation(document.getElementById('hero-touch-demo'));
     initHowSteps();
+    initCompare();
     initUseCases();
     initFinalCta();
 });

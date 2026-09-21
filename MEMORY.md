@@ -264,16 +264,53 @@
   (`js/main.js`), removido o comentário `TODO` que estava acima da
   constante.
 
+- **2026-09-21** — Nova seção "Diferencial vs. QR code" construída a partir
+  de um prompt de spec detalhado do usuário, posicionada entre "Como
+  funciona" e "Casos de uso" (fluxo agora: Hero → Como funciona →
+  Diferencial vs. QR code → Casos de uso → CTA final + footer).
+  - Objetivo: neutralizar a objeção "por que não um QR code, que é de
+    graça?" mostrando a diferença de fricção de forma visual (quantidade
+    de passos), não só argumentativa. Tom popular/acessível — sem jargão
+    tipo "NFC"/"IoT" na copy visível.
+  - `.compare__columns`: duas colunas (`<ol class="compare__steps">`,
+    numeração via `counter()` em CSS, não JS) — QR code com 4 passos em
+    tom `--color-text-muted`, Zaptag com 2 passos em `--color-primary`.
+    Nenhum truque de altura: a coluna Zaptag só tem menos itens, então
+    termina antes visualmente por conta própria (`align-items: start` no
+    grid do desktop).
+  - Ícone por coluna (não por passo): câmera/foco pra QR (SVG novo), ícone
+    de toque pra Zaptag — reaproveitado o exato mesmo SVG do passo 1
+    ("Encoste") da seção "Como funciona", reforçando consistência visual
+    entre as duas seções vizinhas.
+  - Slogan de destaque "Encostou, ativou." em `--font-display-highlight`
+    (Unbounded 600, já carregada) — única vez que essa fonte aparece fora
+    dos números fantasma de "Como funciona". Entrada com scale-in próprio
+    (0.95 → 1), não reaproveita o `[data-reveal]` genérico (que é
+    fade+translateY) porque o motion pedido era diferente.
+  - Três diferenciais técnicos discretos (`--color-text-muted`, ver
+    `.compare__facts`) reaproveitando o texto puro (sem contradizer o
+    slogan/comparação, aparecem por último, depois do slogan).
+  - Motion (`initCompare()` em `js/main.js`, mesmo padrão de
+    `initHowSteps`/`initUseCases`: `IntersectionObserver` com
+    `isIntersecting` pra desconstruir/reconstruir ao rolar pra cima):
+    coluna QR com stagger de 180ms entre passos, coluna Zaptag com 90ms —
+    a diferença de ritmo reforça a diferença de "espera" mesmo antes da
+    pessoa ler o texto. Slogan aparece 550ms depois do início da
+    sequência, os três diferenciais 720ms depois — dá tempo das colunas
+    "terminarem" antes.
+  - Sem CTA na seção (era um requisito explícito do prompt — é resolução
+    de objeção, não ponto de conversão).
+
 ## Próximo passo sugerido
 
-**As 5 seções do fluxo estão prontas** (Hero, Como funciona, Casos de uso,
-CTA final + footer) e no ar localmente — aguardando validação visual do
-usuário na última seção. Falta antes de publicar:
+**As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
+QR code, Casos de uso, CTA final + footer) e no ar localmente. Falta antes
+de publicar:
 
 1. ~~Número de WhatsApp real~~ — feito (`5562982233133`).
 2. **Instagram e e-mail reais** (footer, marcados com `TODO` no `index.html`).
 3. Decidir se entra uma seção de "prova social" (o espaço já está reservado
    entre "Casos de uso" e "CTA final").
-4. Slogan/nome fantasia completo, diferencial vs. QR code — ainda em aberto.
-5. Repositório git ainda não inicializado — perguntar se o usuário quer
-   versionar e, se sim, criar um remoto (GitHub) como no s7-erp-landing.
+4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
+   fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
+   específico dessa seção, não necessariamente o slogan geral do site).
