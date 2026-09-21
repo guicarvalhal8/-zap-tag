@@ -1,7 +1,6 @@
 // initTouchAnimation vem de touch-animation.js (carregado antes deste arquivo).
 
-// TODO: trocar pelo número real de WhatsApp da Zap Tag antes de publicar.
-const WHATSAPP_NUMBER = '5500000000000';
+const WHATSAPP_NUMBER = '5562982233133';
 
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');

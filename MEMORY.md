@@ -252,13 +252,25 @@
     mesmo `data-wa-message`/`initWhatsappLinks()` de sempre — nenhum JS
     novo pra isso, só mais elementos com o atributo.
 
+- **2026-09-18** — Repositório git criado e enviado pro GitHub:
+  `https://github.com/guicarvalhal8/-zap-tag` (reparar no `-` antes de
+  "zap-tag" no nome — foi assim que o usuário criou, mesma conta do
+  s7-erp-landing mas repo separado). Branch `main`, primeiro commit com
+  as 5 seções completas.
+
+- **2026-09-21** — Número real de WhatsApp definido: `5562982233133` (DDD 62
+  + 9 dígitos, formato internacional com `55` na frente pro `wa.me`).
+  Substituído o placeholder `5500000000000` em `WHATSAPP_NUMBER`
+  (`js/main.js`), removido o comentário `TODO` que estava acima da
+  constante.
+
 ## Próximo passo sugerido
 
 **As 5 seções do fluxo estão prontas** (Hero, Como funciona, Casos de uso,
 CTA final + footer) e no ar localmente — aguardando validação visual do
 usuário na última seção. Falta antes de publicar:
 
-1. **Número de WhatsApp real** (`js/main.js`, `WHATSAPP_NUMBER`).
+1. ~~Número de WhatsApp real~~ — feito (`5562982233133`).
 2. **Instagram e e-mail reais** (footer, marcados com `TODO` no `index.html`).
 3. Decidir se entra uma seção de "prova social" (o espaço já está reservado
    entre "Casos de uso" e "CTA final").
