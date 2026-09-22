@@ -400,7 +400,37 @@
   - Verificado com `node --check` nos 3 arquivos JS, checagem de colisão de
     nomes no escopo global compartilhado (nenhuma) e detector `impeccable`
     (`[]`). Sem Playwright nesta máquina — não deu pra automatizar hover/scroll,
-    aprovado pelo dono em servidor local. **Bloco 3 completo. Ainda sem push.**
+    aprovado pelo dono em servidor local. **Bloco 3 completo. Push feito**
+    (commit `0409730` incluso).
+
+- **2026-09-22** — Bloco 4 do `IMPECCABLE.md` feito, commit `6203ecb`:
+  acabamento e P3 — os 4 comandos que faltavam.
+  - `/impeccable adapt`: hambúrguer, `.btn-primary--compact` e links do
+    footer em 44px de alvo de toque; `.navbar__inner` de `height` fixo pra
+    `min-height`.
+  - `/impeccable polish`: `filter: blur(56px)` no `.final-cta__glow` (parou
+    de degradar o contraste do subtítulo/botão); ícone de "Fidelidade"
+    reescalado; ícone de "Pix" trocado (não reusa mais o raio da marca —
+    agora é um check num círculo); painéis do Hero sem overlap ao trocar
+    (`switchPanel()` apaga, espera a transition, só então acende o
+    próximo); marca padronizada como **"Zap Tag"** em todo texto visível
+    (era `zaptag`/`Zaptag`/`Zap Tag` misturado — grafia oficial confirmada
+    pelo dono em 22/09); pontuação dos 4 H2 padronizada; âncora morta
+    `#fale-conosco` removida.
+  - `/impeccable typeset`: decisão foi **carregar a Bricolage Grotesque**
+    (não remover o token) — cumpre o plano original do `CLAUDE.md`, nunca
+    implementado. Aplicada nos 5 seletores de H2/H3. `text-wrap: balance`
+    no H1 e nos H2. 2 `font-size` em px viraram rem.
+  - `/impeccable harden`: `role="contentinfo"` no footer (continua aninhado
+    no CTA final, decisão do dono preservada); função `svgIcon()` nova
+    decide `aria-hidden` ou `role="img"+aria-label` nos 5 SVGs de
+    `touch-animation.js`; `role="list"` nas 7 listas com
+    `list-style: none`; `USE_CASES`→`TOUCH_DEMO_CASES` e
+    `sleep`→`touchDemoSleep`; menu mobile fecha sozinho ao cruzar 860px.
+  - Verificado com `node --check`, checagem de colisão de nomes (nenhuma),
+    detector `impeccable` (`[]`) e balanceamento de tags HTML. Aprovado pelo
+    dono em servidor local. **Bloco 4 completo — os 4 blocos do plano estão
+    todos feitos.** Ainda sem push (combinado: push só quando o dono pedir).
 
 ## Próximo passo sugerido
 
@@ -416,10 +446,15 @@ de publicar:
 4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
-5. **Retomar pelo `IMPECCABLE.md`.** Blocos 1, 2 e 3 aplicados e verificados;
-   próximo é o **bloco 4** (`adapt`, `polish`, `typeset`, `harden`). O
-   arquivo traz os comandos na ordem, as decisões que não devem ser
-   reabertas e as armadilhas do repositório.
+5. ~~**Retomar pelo `IMPECCABLE.md`.**~~ — **feito.** Os 4 blocos do plano
+   (defeitos; conversão; motion e performance; acabamento e P3) estão
+   aplicados, verificados e commitados (ainda sem push — combinado: só
+   quando o dono pedir). O que falta é só a seção "Depois dos blocos" do
+   `IMPECCABLE.md`: rodar `/impeccable critique` e `/impeccable audit` de
+   novo pra comparar com o placar de partida (17/32 Design Health, 14/20
+   Audit Health), considerar `/impeccable document` pro `DESIGN.md`, e
+   `/impeccable init` pro `PRODUCT.md` (que depende de decisões de produto
+   ainda abertas: preço, como funciona a venda, slogan de marca geral).
 6. **Skill `impeccable` instalada global** nesta máquina
    (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
    em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,

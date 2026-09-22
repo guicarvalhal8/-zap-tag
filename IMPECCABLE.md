@@ -4,7 +4,8 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. Blocos 1, 2 e 3 concluídos. Bloco 4 pendente.
+Última sessão: **2026-09-22**. **Os 4 blocos do plano estão concluídos.**
+Falta só "Depois dos blocos" (critique/audit de novo, document, init).
 Combinado com o dono: push só depois de um bloco inteiro validado, não item
 a item.
 
@@ -276,33 +277,49 @@ rótulo visível; mensagem nomeia o caso)
 
 ### Bloco 4 — acabamento e P3
 
-6. **`/impeccable adapt`** — hambúrguer 38×38 → 44×44, links do footer (~20px
-   de altura, e são os 3 contatos do negócio) → ~44px, `.btn-primary--compact`
-   → 44px, `min-height` no lugar de `height` na navbar. *Nenhum é falha de
-   WCAG AA* (2.5.8 pede 24×24 e a exceção de espaçamento cobre) — é o
-   guideline prático de 44×44.
-7. **`/impeccable polish`** — `.final-cta__glow` (SVG sólido a `opacity: 0.16`
-   **sem blur e sem gradiente**; degrada o subtítulo de 7,7:1 para 5,2:1 e o
-   botão de 16,9:1 para 11,3:1); ícone de "Fidelidade" com ~45% do tamanho
-   óptico dos irmãos; raio da marca reciclado para significar "Pix"; a
-   sobreposição de 320ms dos painéis do Hero (`showPanel()` liga e desliga no
-   mesmo tick); as 3 grafias da marca (`zaptag` / `Zaptag` / `Zap Tag`);
-   pontuação inconsistente dos H2; âncora morta `#fale-conosco`.
-8. **`/impeccable typeset`** — decidir `--font-display-alt` (Bricolage
-   Grotesque: carregar e aplicar nos H2/H3, ou remover o token morto — hoje o
-   arquivo promete 4 vozes tipográficas e a página entrega 1 de display, que é
-   por que a hierarquia depende só de tamanho e cor); `text-wrap: balance` nos
-   4 títulos (3 dos 4 H2 têm viúva, e no H1 o artigo "A" fica órfão exatamente
-   onde a cor de acento começa); os 2 `font-size` em px absoluto.
-9. **`/impeccable harden`** — landmark `contentinfo` (tirar o `<footer>` de
-   dentro de `<main>`/`<section>`, ou `role="contentinfo"` explícito);
-   `aria-hidden` nos 5 SVGs ainda gerados por `touch-animation.js` — de
-   preferência com uma função `svgIcon()` que injete o atributo, porque o
-   padrão sistêmico é a disciplina evaporar quando o HTML vira string em JS;
-   `role="list"` nas 5 listas com `list-style: none` (nos dois `<ol>` o Safari
-   perde a semântica **e** os números do `counter()`); renomear `USE_CASES` →
-   `TOUCH_DEMO_CASES` e `sleep` → `touchDemoSleep`; fechar o menu ao cruzar o
-   breakpoint de 860px.
+6. ~~**`/impeccable adapt`**~~ — **feito**, commit `6203ecb`. Hambúrguer
+   38×38 → 44×44, `.btn-primary--compact` e links do footer com
+   `min-height: 44px`, `.navbar__inner` de `height` fixo pra `min-height`.
+7. ~~**`/impeccable polish`**~~ — **feito**, commit `6203ecb`.
+   `.final-cta__glow` ganhou `filter: blur(56px)` (não degrada mais o
+   contraste do subtítulo/botão). Ícone de "Fidelidade" reescalado (`scale`
+   0.5/0.55 → 0.6/0.75) pra bater com o peso óptico dos irmãos. Ícone de
+   "Pix" trocado — não reusa mais o raio da marca, agora é um check num
+   círculo (ecoa "confirma o pagamento" da própria copy). Painéis do Hero
+   não cruzam mais em opacidade: `switchPanel()` apaga tudo, espera a
+   transition de 320ms, só então acende o próximo. Marca padronizada como
+   **"Zap Tag"** em todo o texto visível (era `zaptag`/`Zaptag`/`Zap Tag`
+   misturado — dono confirmou essa grafia como oficial em 22/09; identificadores
+   internos de código como `compare__column--zaptag` não foram tocados, só
+   texto que aparece na página). Pontuação dos 4 H2 padronizada com ponto
+   final (seguindo o precedente do H1). Âncora morta `#fale-conosco`
+   removida (id sem nada apontando pra ela).
+8. ~~**`/impeccable typeset`**~~ — **feito**, commit `6203ecb`. Decisão:
+   carregar a Bricolage Grotesque (não remover o token morto) — era o plano
+   original documentado no `CLAUDE.md` ("Bricolage Grotesque, H2/H3, ainda
+   não carregada"), só nunca tinha sido aplicada. Agora `--font-display-alt`
+   está em `.section-title`, `.how__step-title`, `.compare__column-title`,
+   `.usecase-card__title` e `.final-cta__title` — as 4 vozes tipográficas
+   que o CSS já prometia. `text-wrap: balance` no H1 e nos 3 selectors de H2
+   (`.hero__title`, `.section-title`, `.final-cta__title`). Os 2 `font-size`
+   em px (`.final-cta__trust`, `.site-footer__copyright`) viraram rem.
+9. ~~**`/impeccable harden`**~~ — **feito**, commit `6203ecb`.
+   `role="contentinfo"` no `<footer>` (continua aninhado dentro de
+   `.final-cta` — decisão do dono preservada, só a semântica de landmark foi
+   restaurada). Nova função `svgIcon(markup, label)` em `touch-animation.js`
+   injeta `aria-hidden="true"` (decorativo) ou `role="img" aria-label`
+   (com label) nos 5 SVGs do arquivo — `TAG_ICON` ganhou o label "Adesivo
+   Zap Tag", os outros 4 ficaram decorativos. `role="list"` nas 7 listas
+   (5 seletores) com `list-style: none`. `USE_CASES` → `TOUCH_DEMO_CASES` e
+   `sleep` → `touchDemoSleep`, sem colisão com nenhum outro arquivo
+   (checado). Menu mobile fecha sozinho via `matchMedia('(min-width: 860px)')`
+   se a janela crescer além do breakpoint com ele aberto.
+
+**Verificado nos 4 itens:** `node --check` nos 3 JS, checagem de colisão de
+nomes no escopo global (nenhuma), detector `impeccable` (`[]`), tags HTML
+balanceadas (`section`/`div`/`ul`/`ol`/`li`/`footer`/`header`/`nav`/`svg`/`h2`/`h3`
+contados). Sem Playwright nesta máquina — aprovado pelo dono em servidor
+local, sem automação de hover/scroll.
 
 ### Depois dos blocos
 
