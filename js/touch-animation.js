@@ -91,9 +91,33 @@ function initTouchAnimation(root) {
     let running = true;
     root.addEventListener('touch-demo:stop', () => { running = false; }, { once: true });
 
+    // O loop nunca tinha gate de visibilidade: rodava pra sempre, mesmo com a
+    // aba em segundo plano ou o Hero rolado pra fora da tela. `paused` só some
+    // a checagem — não interrompe a sequência no meio, apenas volta a
+    // verificar a cada 200ms até a demo ficar visível de novo.
+    let inView = true;
+    let paused = document.visibilityState === 'hidden';
+    const updatePaused = () => {
+        paused = !inView || document.visibilityState === 'hidden';
+    };
+
+    document.addEventListener('visibilitychange', updatePaused);
+
+    const visibilityObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => { inView = entry.isIntersecting; });
+        updatePaused();
+    }, { threshold: 0.1 });
+    visibilityObserver.observe(root);
+
+    root.addEventListener('touch-demo:stop', () => visibilityObserver.disconnect(), { once: true });
+
     (async () => {
         let i = 0;
         while (running) {
+            if (paused) {
+                await sleep(200);
+                continue;
+            }
             const useCase = USE_CASES[i % USE_CASES.length];
             showPanel('idle');
             demo.classList.remove('is-tapped');

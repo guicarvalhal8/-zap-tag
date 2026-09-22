@@ -51,8 +51,13 @@ function initNavbarMenu() {
 
 function initHeroReveal() {
     const items = document.querySelectorAll('.hero [data-reveal]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     items.forEach((el, i) => {
-        setTimeout(() => el.classList.add('is-visible'), 120 * i);
+        if (reducedMotion) {
+            el.classList.add('is-visible');
+        } else {
+            setTimeout(() => el.classList.add('is-visible'), 120 * i);
+        }
     });
 }
 
@@ -118,6 +123,12 @@ function initHowSteps() {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let timers = [];
+    // Decisão do dono: a sequência desconstrói/reconstrói ao rolar, mas só até
+    // terminar de rodar uma vez inteira — depois disso trava no estado final e
+    // o observer desliga. "Completa" = o timer do último passo disparou; se a
+    // seção sair de vista no meio, hide() cancela os timers pendentes e a
+    // próxima entrada refaz a sequência do zero (comportamento de antes).
+    let observer = null;
 
     const clearTimers = () => {
         timers.forEach((id) => clearTimeout(id));
@@ -131,6 +142,7 @@ function initHowSteps() {
             const id = setTimeout(() => {
                 step.classList.add('is-visible');
                 if (fill) fill.style.setProperty('--how-fill', (i + 1) / steps.length);
+                if (i === steps.length - 1 && observer) observer.disconnect();
             }, reducedMotion ? 0 : i * 180);
             timers.push(id);
         });
@@ -148,7 +160,7 @@ function initHowSteps() {
         return; // sem observer: fica sempre visível, sem reconstrução
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 show();
@@ -179,6 +191,9 @@ function initCompare() {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let timers = [];
+    // Mesma trava do initHowSteps: os facts (720ms) são o último evento
+    // agendado por show(), então marcam o fim de uma passagem completa.
+    let observer = null;
 
     const clearTimers = () => {
         timers.forEach((id) => clearTimeout(id));
@@ -198,7 +213,10 @@ function initCompare() {
         stagger(qrSteps, 180);
         stagger(zaptagSteps, 90);
         timers.push(setTimeout(() => slogan && slogan.classList.add('is-visible'), reducedMotion ? 0 : 550));
-        timers.push(setTimeout(() => facts && facts.classList.add('is-visible'), reducedMotion ? 0 : 720));
+        timers.push(setTimeout(() => {
+            if (facts) facts.classList.add('is-visible');
+            if (observer) observer.disconnect();
+        }, reducedMotion ? 0 : 720));
     };
 
     const hide = () => {
@@ -215,7 +233,7 @@ function initCompare() {
         return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
+    observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
                 show();
@@ -242,9 +260,14 @@ function initFinalCta() {
         return;
     }
 
+    // Sem stagger aqui — a própria entrada em viewport já é "a sequência
+    // completa", então trava e desliga o observer na primeira vez que aparece.
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-            block.classList.toggle('is-visible', entry.isIntersecting);
+            if (entry.isIntersecting) {
+                block.classList.add('is-visible');
+                observer.disconnect();
+            }
         });
     }, { threshold: 0.3 });
     observer.observe(block);

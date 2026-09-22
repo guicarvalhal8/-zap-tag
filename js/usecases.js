@@ -11,10 +11,15 @@
 // dentro de #usecases-expand no HTML. Nada aqui precisa mudar — o link de
 // WhatsApp do card sai do data-wa-message, via initWhatsappLinks() em main.js.
 
-function revealCards(cards, stagger) {
+// onDone (opcional) dispara junto com o ÚLTIMO card da leva — usado só pelo
+// grid principal, pra saber quando uma passagem de reveal terminou de vez.
+function revealCards(cards, stagger, onDone) {
     const timers = [];
     cards.forEach((card, i) => {
-        timers.push(setTimeout(() => card.classList.add('is-visible'), i * stagger));
+        timers.push(setTimeout(() => {
+            card.classList.add('is-visible');
+            if (i === cards.length - 1 && onDone) onDone();
+        }, i * stagger));
     });
     return timers;
 }
@@ -30,15 +35,41 @@ function initCardTilt(cards) {
     const maxTilt = 7;
 
     cards.forEach((card) => {
-        card.addEventListener('mousemove', (event) => {
-            const rect = card.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width;
-            const y = (event.clientY - rect.top) / rect.height;
-            const rotateY = (x - 0.5) * maxTilt * 2;
-            const rotateX = (0.5 - y) * maxTilt * 2;
-            card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        let rect = null;
+        let frame = null;
+        let lastEvent = null;
+
+        card.addEventListener('mouseenter', () => {
+            rect = card.getBoundingClientRect();
+            // `.usecase-card` tem transition de transform em 500ms (pro reveal
+            // de entrada) — sem tirar ela daqui, o tilt sempre chegava meio
+            // segundo atrasado do cursor. Some só enquanto o tilt está ativo;
+            // sai no mouseleave e a transition volta (é o que anima o retorno
+            // suave à posição neutra).
+            card.style.transition = 'border-color 200ms ease, opacity 500ms ease';
         });
+
+        card.addEventListener('mousemove', (event) => {
+            if (!rect) rect = card.getBoundingClientRect();
+            lastEvent = event;
+            if (frame) return;
+            frame = requestAnimationFrame(() => {
+                frame = null;
+                const x = (lastEvent.clientX - rect.left) / rect.width;
+                const y = (lastEvent.clientY - rect.top) / rect.height;
+                const rotateY = (x - 0.5) * maxTilt * 2;
+                const rotateX = (0.5 - y) * maxTilt * 2;
+                card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+            });
+        });
+
         card.addEventListener('mouseleave', () => {
+            if (frame) {
+                cancelAnimationFrame(frame);
+                frame = null;
+            }
+            rect = null;
+            card.style.transition = '';
             card.style.transform = '';
         });
     });
@@ -65,9 +96,15 @@ function initUseCases() {
     }
 
     let primaryTimers = [];
+    // Mesma trava das outras seções: o card final da leva marca o fim de uma
+    // passagem completa e desliga o observer — só o grid principal, não o
+    // expansível (esse continua controlado só pelo clique, de propósito).
+    let primaryObserver = null;
     const revealPrimary = () => {
         headerItems.forEach((el) => el.classList.add('is-visible'));
-        primaryTimers = revealCards(primaryCards, reducedMotion ? 0 : 130);
+        primaryTimers = revealCards(primaryCards, reducedMotion ? 0 : 130, () => {
+            if (primaryObserver) primaryObserver.disconnect();
+        });
     };
     const concealPrimary = () => {
         headerItems.forEach((el) => el.classList.remove('is-visible'));
@@ -77,7 +114,7 @@ function initUseCases() {
     if (reducedMotion) {
         revealPrimary();
     } else {
-        const observer = new IntersectionObserver((entries) => {
+        primaryObserver = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     revealPrimary();
@@ -86,7 +123,7 @@ function initUseCases() {
                 }
             });
         }, { threshold: 0.3 });
-        observer.observe(primaryGrid);
+        primaryObserver.observe(primaryGrid);
     }
 
     let expanded = false;

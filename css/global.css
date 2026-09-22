@@ -36,7 +36,11 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* O gatilho vestibular mais forte da página: só existe fora do modo de
+   movimento reduzido. */
+@media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+}
 
 /* Anel de foco da casa. Antes o foco era comunicado SÓ por mudança de cor,
    e em 4 das 6 regras :focus-visible a mudança era idêntica à de :hover —
@@ -1470,4 +1474,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
         transform: scale(1) rotate(0deg);
     }
     .usecase-card__icon-wrap::after { animation: none !important; }
+    /* Única animação `infinite` do CSS e a única que ficava fora deste
+       bloco — o resto da folha já para por completo, essa sozinha continuava
+       piscando pra sempre. */
+    .hero__scroll-hint-line { animation: none; }
 }
