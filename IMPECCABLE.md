@@ -388,17 +388,21 @@ referência — detalhe completo no `MEMORY.md`):
      mudaram, de propósito. Nome "Zap Tag" sempre visível ao lado do
      hambúrguer (tirado o `display:none` de `.logo__wordmark`). Linha de
      "role pra baixo" só aparece a partir de 960px.
-  2. Reasseguramento no CTA final — pendente. Precisa do horário real de
-     atendimento antes de trocar "Resposta em poucos minutos".
-  3. Acabamento (`/impeccable polish`) — pendente: ícones Wi-Fi/Pix
-     semanticamente errados, glows parados (`.hero__glow`/`.final-cta__glow`)
-     contradizendo a regra Flat-At-Rest do `DESIGN.md` (perguntar ao dono se
-     o documento muda ou o código muda), `theme-color` faltando, alvo de
-     toque de `.link-secondary` em 23px, texto de `.touch-demo__panel-idle`
-     em 11,2px (piso do `DESIGN.md` é 12px), `TAG_ICON`/`CHECK_ICON`/
-     `svgIcon` sem prefixo em `touch-animation.js`.
-  4. Fechar o ciclo: `/impeccable critique` + `/impeccable audit` de novo
-     depois dos itens 2 e 3, meta ≥ 24/32 e ≥ 18/20.
+  2. ~~Reasseguramento no CTA final~~ — **feito**, commit `888a5f1`. Horário
+     real confirmado: todos os dias, das 7h às 23h. Junta com a área de
+     atendimento (antes só na faixa de confiança, longe do botão). Fonte
+     subiu de 13px cinza pra ~15px em `--color-text`.
+  3. ~~Acabamento (`/impeccable polish`)~~ — **feito**, commit `b00c595`.
+     Glow parado: perguntei, dono confirmou intenção consciente — corrigido
+     o `DESIGN.md` (nova Ambient-Glow Rule), não o código. `theme-color`
+     adicionado. `.link-secondary` e demais alvos de toque em 44px.
+     `.touch-demo__panel-idle` em 12px. Ícones de Wi-Fi (era barra de sinal
+     de celular) e Pix (era check genérico) trocados por glifos mais
+     específicos. `TAG_ICON`/`CHECK_ICON`/`svgIcon` →
+     `TOUCH_DEMO_TAG_ICON`/`TOUCH_DEMO_CHECK_ICON`/`touchDemoSvgIcon`.
+     `.btn-primary:hover` atrás de `@media (hover: hover)`.
+  4. Fechar o ciclo: `/impeccable critique` + `/impeccable audit` de novo,
+     meta ≥ 24/32 e ≥ 18/20 — **próximo passo**.
 
 ---
 

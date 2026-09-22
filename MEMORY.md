@@ -589,35 +589,52 @@
     só aparece a partir de 960px, onde o Hero já tem espaço vertical de
     verdade. Sem Playwright nesta máquina — aprovado pelo dono sem
     verificação automatizada em 390×844.
-  - Itens 2 (reasseguramento — precisa do horário real de atendimento), 3
-    (polish — ícones, glows parados, theme-color, alvos de toque, nomes sem
-    prefixo) e 4 (critique+audit de novo) **seguem pendentes**.
+  - **Item 2 (reasseguramento) — feito**, commit `888a5f1`. Horário real
+    confirmado pelo dono: **todos os dias, das 7h às 23h**. `.final-cta__trust`
+    trocou "Resposta em poucos minutos" por "Atendemos Anápolis e região,
+    todos os dias das 7h às 23h" — junta o horário real com a área de
+    atendimento (que antes só existia longe do botão, na faixa de confiança).
+    Fonte de 13px cinza-fraco subiu pra ~15px em `--color-text`.
+  - **Item 3 (polish) — feito**, commit `b00c595`.
+    - Glow parado do `.hero__glow`/`.final-cta__glow`: perguntei ao dono se
+      o `DESIGN.md` ou o código deveria mudar — ele confirmou que os glows
+      sempre foram intenção consciente (já documentado nas supressões
+      `dark-glow`/`radial-halo` do `.impeccable/config.json`). Corrigi o
+      `DESIGN.md`: nova **Ambient-Glow Rule**, separada da Flat-At-Rest Rule
+      (que agora é só sobre componentes). Sidecar `design.json` atualizado
+      junto.
+    - `theme-color` (`#0B0D0F`), `.link-secondary` com 44px de alvo de
+      toque, `.touch-demo__panel-idle` de 11,2px pra 12px.
+    - Ícone de Wi-Fi (era barra de sinal de celular, lia como "cobertura"
+      não "conexão") trocado pelo glifo universal de ondas de Wi-Fi, igual
+      na demo do Hero e nos cards. Ícone de Pix (era o check genérico da
+      correção anterior) trocado por um cifrão — mais claramente
+      "pagamento", sem reciclar o raio da marca nem usar a marca oficial do
+      Pix.
+    - `TAG_ICON`/`CHECK_ICON`/`svgIcon` → `TOUCH_DEMO_TAG_ICON`/
+      `TOUCH_DEMO_CHECK_ICON`/`touchDemoSvgIcon` em `touch-animation.js`.
+    - `.btn-primary:hover` atrás de `@media (hover: hover)` — não gruda mais
+      depois do toque no celular; `:focus-visible` continua sempre ativo.
+  - Item 4 (critique+audit de novo, meta ≥ 24/32 e ≥ 18/20) segue pendente.
 
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do
 `IMPECCABLE.md` (4 blocos + critique/audit + document + init) foi concluído
-em 22/09, mas **trabalho novo entrou depois** (ver acima) e ainda tem 3
-itens em aberto — não é mais "sem plano em andamento":
+em 22/09; o trabalho novo que entrou depois (nome fantasia, slogan, Hero
+interativo, seção fundida) e os 3 primeiros P2 da rodada de casa (Hero
+mobile, reasseguramento, polish) também já estão feitos. Falta:
 
-1. **Reasseguramento no CTA final** (`/impeccable clarify`) — perguntar o
-   horário real de atendimento antes de mexer (hoje é "Resposta em poucos
-   minutos", genérico).
-2. **Acabamento** (`/impeccable polish`) — ícones Wi-Fi/Pix errados, glows
-   parados vs. regra Flat-At-Rest do `DESIGN.md` (perguntar ao dono se muda
-   o documento ou o código), `theme-color` faltando, `.link-secondary` com
-   23px de alvo de toque, `.touch-demo__panel-idle` com 11,2px, nomes sem
-   prefixo em `touch-animation.js`.
-3. **Fechar o ciclo**: `critique` + `audit` de novo depois dos itens acima,
-   meta ≥ 24/32 e ≥ 18/20.
-4. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
-5. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
+1. **Fechar o ciclo**: `/impeccable critique` + `/impeccable audit` de novo,
+   meta ≥ 24/32 e ≥ 18/20 — é o único item de design pendente.
+2. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
+3. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
    comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
    de investir em material impresso.
-6. **Domínio próprio**: ainda não comprado, site publicado em
+4. **Domínio próprio**: ainda não comprado, site publicado em
    `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
    `index.html` pra trocar em 3 lugares quando comprar).
-7. **Skill `impeccable` instalada global** nesta máquina
+5. **Skill `impeccable` instalada global** nesta máquina
    (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
    em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
    confirmar se a skill está instalada antes de usar `/impeccable`.
