@@ -4,8 +4,9 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. Bloco 1 concluído. Bloco 2: itens 1 e 2 feitos,
-item 3 pendente. Blocos 3 e 4 pendentes.
+Última sessão: **2026-09-22**. Blocos 1 e 2 concluídos (itens 1, 2 e 3 do
+bloco 2 feitos e commitados; aguardando push — combinado com o dono dar push
+só quando um bloco inteiro estiver validado). Blocos 3 e 4 pendentes.
 
 ---
 
@@ -239,12 +240,18 @@ rótulo visível; mensagem nomeia o caso)
    (área correta confirmada em 22/09). Sem foto: o dono não tem foto real do
    adesivo aplicado ainda, só protótipos — não inventada nenhuma imagem nem
    depoimento. Detector `[]` depois da mudança.
-3. **`/impeccable harden`** — Open Graph completo, Twitter card, `canonical`,
-   JSON-LD `LocalBusiness`, e `og:image` 1200×630 absoluta. Hoje são **zero**
-   tags sociais numa landing cujo único canal é WhatsApp, ou seja feita para
-   ser colada em chat. Aproveitar o `assets/logo-zaptag.jpg` (317 KB,
-   versionado e **não referenciado em lugar nenhum**) como base, e tirá-lo do
-   diretório servido.
+3. ~~**`/impeccable harden`**~~ — **feito**, commit `86833c9`. Open Graph
+   completo, Twitter card `summary_large_image`, `canonical` e JSON-LD
+   `LocalBusiness` (telefone, e-mail, Instagram, área de atendimento
+   Anápolis/GO), todos apontando para o domínio provisório
+   `https://zap-tag.onrender.com/` (o dono ainda não comprou domínio próprio
+   — trocar nos 3 lugares — meta tags, canonical, JSON-LD — quando comprar).
+   `assets/og-image.png` (1200×630) gerado do zero, reaproveitando a forma
+   exata do ícone da marca (mesmo path SVG do site) — não havia ferramenta de
+   conversão de imagem nesta máquina, então a imagem foi desenhada
+   programaticamente (System.Drawing/.NET) em vez de derivada do JPG.
+   `assets/logo-zaptag.jpg` (317 KB, não referenciado em lugar nenhum) saiu
+   de `assets/` para `design-reference/`. Detector `[]`.
 
 ### Bloco 3 — motion e performance
 

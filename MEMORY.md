@@ -367,6 +367,19 @@
   protótipos — não foi inventada imagem nem depoimento. Detector `[]`.
   **Aprovado pelo dono após revisão em servidor local antes do commit.**
 
+- **2026-09-22** — Bloco 2, item 3 do `IMPECCABLE.md` feito, commit
+  `86833c9`: metadados de compartilhamento. Open Graph, Twitter card,
+  `canonical` e JSON-LD `LocalBusiness` completos, com domínio provisório
+  `zap-tag.onrender.com` (o dono ainda não comprou domínio próprio). Imagem
+  `assets/og-image.png` (1200×630) criada do zero via .NET/System.Drawing
+  (não havia cwebp/sips/magick/ffmpeg nesta máquina), reaproveitando a forma
+  exata do ícone da marca. `assets/logo-zaptag.jpg` (não usado em lugar
+  nenhum) movido para `design-reference/`. **Bloco 2 (conversão) está
+  completo** — itens 1, 2 e 3 commitados. **Ainda sem push**: combinado com
+  o dono que o push só acontece depois de todos os itens de um bloco
+  validados juntos (não item a item). Aprovado após revisão em servidor
+  local.
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
