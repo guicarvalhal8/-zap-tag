@@ -306,11 +306,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     letter-spacing: -0.01em;
     color: var(--color-text);
     white-space: nowrap;
-    display: none;
-}
-
-@media (min-width: 768px) {
-    .logo__wordmark { display: inline; }
 }
 
 /* ---- Hero ---- */
@@ -509,15 +504,24 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero__scroll-hint {
-    position: absolute;
-    left: 50%;
-    bottom: 28px;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-text-muted);
+    /* Corta a instrução da demo em telas menores, onde ela já disputa espaço
+       com o resto do Hero. Só existe a partir do breakpoint em que o Hero
+       vira 2 colunas e sobra espaço vertical de verdade (ver .hero__grid). */
+    display: none;
+}
+
+@media (min-width: 960px) {
+    .hero__scroll-hint {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        color: var(--color-text-muted);
+    }
 }
 
 .hero__scroll-hint-line {
@@ -750,6 +754,70 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     width: 12px;
     height: 12px;
     stroke: var(--color-primary-text);
+}
+
+/* A demo inteira (240×380 + o texto de instrução embaixo) não cabia acima da
+   dobra em celular — o aparelho começava em y≈553 num viewport de 844px de
+   altura, e a instrução ficava fora da tela. Encolhe pra ~0,76x só aqui;
+   TOUCH_DEMO_REST/CONTACT em touch-animation.js continuam os mesmos valores
+   absolutos nos dois tamanhos — o percurso do arraste fica proporcionalmente
+   maior no celular, não incorreto, e evita duplicar a constante por
+   breakpoint. */
+@media (max-width: 639px) {
+    .touch-demo {
+        width: 182px;
+        height: 290px;
+        gap: 20px;
+    }
+
+    .touch-demo__phone {
+        width: 128px;
+        height: 228px;
+        border-width: 6px;
+        border-radius: 24px;
+    }
+
+    .touch-demo__phone::before {
+        top: 8px;
+        width: 28px;
+        height: 3px;
+    }
+
+    .touch-demo__screen {
+        inset: 17px 8px 8px;
+        border-radius: 15px;
+    }
+
+    .touch-demo__panel-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    .touch-demo__panel-label {
+        font-size: 0.7rem;
+    }
+
+    .touch-demo__tag {
+        width: 44px;
+        height: 44px;
+    }
+
+    .touch-demo__ripple {
+        width: 44px;
+        height: 44px;
+    }
+
+    .touch-demo__success {
+        top: -5px;
+        right: -5px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .touch-demo__success svg {
+        width: 10px;
+        height: 10px;
+    }
 }
 
 /* ---- Cabeçalho de seção (compartilhado) ---- */
