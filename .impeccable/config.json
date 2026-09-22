@@ -40,6 +40,33 @@
         ],
         "createdAt": "2026-09-22T03:06:06.567Z",
         "reason": "Usuario confirmou nesta sessao, com estas palavras: \"a logo e a paleta de cores e a identidade visual o resto pode alterar\". O MEMORY.md define a identidade como \"neon sobre preto, alto contraste\" (decisao de 2026-09-18), entao o glow/halo lime E a marca. Escopado a index.html porque e o unico arquivo que o detector varre. Nota factual: o dark-glow vive so em .btn-primary:hover/:focus-visible e tem offset-y 10px com spread -8px, ou seja elevacao direcional, nao o halo de offset zero que o craft-floor trata como decoracao."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(0, 0, 0)",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-22T18:26:42.667Z",
+        "reason": "Falso positivo verificado: .btn-primary (css/global.css) nunca declara border-top, e o detector le o preto padrao do navegador pra uma borda nao declarada (width 0, invisivel). Nao e cor autorada."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(87, 102, 51)",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-22T18:26:42.907Z",
+        "reason": "Falso positivo verificado: .compare__column--zaptag .compare__step usa border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border)) -- uma mistura computada de dois tokens ja documentados no DESIGN.md, nao um hex novo. O detector sinaliza o RGB resolvido, nao a fonte."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "6px",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-22T18:26:43.143Z",
+        "reason": "Intencional, ja documentado no DESIGN.md (secao 'A silhueta da tag'): cantos de 4px e 6px existem so no lado reto das tags pequenas (.usecase-card__icon-wrap, 46px de altura), proporcionais ao tamanho delas -- nao e a mesma escala dos componentes grandes (botoes/cards)."
       }
     ]
   }

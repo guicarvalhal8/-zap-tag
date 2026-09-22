@@ -109,9 +109,16 @@ function initTouchAnimation(root) {
         });
     };
 
-    const switchPanel = async (key) => {
+    // `isStale` é só da demo automática: se a pessoa assumir o controle
+    // enquanto um `switchPanel` dela ainda está no meio do fade (320ms), o
+    // painel que ela acabou de abrir com o próprio toque piscava de volta
+    // pra "Aproxime o celular" por um frame, porque as duas chamadas escrevem
+    // no mesmo `panels` ao mesmo tempo. Aqui a chamada que acorda depois de
+    // `isStale()` virar true simplesmente não escreve mais nada.
+    const switchPanel = async (key, isStale) => {
         panels.forEach((panel) => panel.classList.remove('is-active'));
         await touchDemoSleep(PANEL_FADE_MS);
+        if (isStale && isStale()) return;
         showPanel(key);
     };
 
@@ -294,6 +301,13 @@ function initTouchAnimation(root) {
     const MAX_CYCLES = 1;
 
     (async () => {
+        // Espera o stagger de entrada do Hero terminar (5 itens × 120ms +
+        // a transition de 600ms de cada um, ~1080ms) antes de começar a se
+        // mover sozinha — sem isto, o convite automático competia com o H1/
+        // subtítulo/CTA pela atenção nos primeiros segundos da página.
+        await touchDemoSleep(1100);
+        if (!alive()) return;
+
         // Cada `await` pode terminar com a pessoa já no controle: o loop
         // confere antes de mexer em qualquer estado, pra não brigar com ela.
         let cycles = 0;
@@ -303,7 +317,7 @@ function initTouchAnimation(root) {
                 continue;
             }
             const useCase = TOUCH_DEMO_CASES[caseIndex % TOUCH_DEMO_CASES.length];
-            await switchPanel('idle');
+            await switchPanel('idle', () => !alive());
             if (!alive()) break;
             demo.classList.remove('is-tapped');
             await touchDemoSleep(500);
@@ -312,8 +326,11 @@ function initTouchAnimation(root) {
             fireRipple();
             await touchDemoSleep(220);
             if (!alive()) break;
-            await switchPanel(useCase.key);
+            await switchPanel(useCase.key, () => !alive());
             if (!alive()) break;
+            // Paridade com tap(): sem isto, quem usa leitor de tela não
+            // recebia nenhum anúncio durante o único ciclo automático.
+            live.textContent = `Prévia: ${useCase.label}`;
             caseIndex += 1;
             await touchDemoSleep(2200);
             cycles += 1;

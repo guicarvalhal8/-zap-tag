@@ -48,6 +48,15 @@ function initNavbarMenu() {
         toggle.focus();
     });
 
+    // Tocar fora do menu (ou do hambúrguer) fecha — antes só Esc ou um link
+    // interno fechavam, e o gesto mais natural em celular (tocar em outro
+    // lugar da tela) não fazia nada.
+    document.addEventListener('click', (event) => {
+        if (!menu.classList.contains('is-open')) return;
+        if (menu.contains(event.target) || toggle.contains(event.target)) return;
+        closeMenu();
+    });
+
     // O hambúrguer some acima de 860px (CSS), mas o estado `is-open` sozinho
     // não — se o menu ficasse aberto num celular deitado e a janela crescesse
     // (ou o DevTools redimensionasse) pra além do breakpoint, ele reaparecia

@@ -411,6 +411,23 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin-top: 8px;
 }
 
+/* Reasseguramento curto perto de um ponto de conversão. A versão completa
+   ("sem compromisso, você decide depois de saber o valor...") mora só no
+   CTA final, que é o momento de maior decisão; aqui e nos casos de uso é só
+   uma nota de apoio, discreta de propósito, pra não competir com o CTA. */
+.trust-note {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.trust-note--center {
+    text-align: center;
+    margin-top: 28px;
+}
+
 /* O botão de conversão tem a forma da tag: corpo com cantos de 10px à
    esquerda e a ponta da logo à direita, apontando pra ação. O lime é
    pintado num ::before recortado por clip-path — e não no próprio botão —
@@ -811,7 +828,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     }
 
     .touch-demo__panel-label {
-        font-size: 0.7rem;
+        /* Piso de 12px do DESIGN.md -- mesmo bug do .touch-demo__panel-idle
+           (já corrigido), reintroduzido no seletor irmão. */
+        font-size: 0.75rem;
     }
 
     .touch-demo__tag {
