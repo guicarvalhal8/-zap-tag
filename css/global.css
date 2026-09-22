@@ -458,7 +458,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     flex-shrink: 0;
 }
 
-.btn-primary:hover,
+/* :hover fica atrás de (hover: hover): sem isso, o toque no celular "gruda"
+   o scale+glow depois do dedo sair, porque touch dispara :hover sem nunca
+   disparar :hover-out até o próximo toque em outro lugar. :focus-visible
+   continua fora do media query — foco por teclado é legítimo em qualquer
+   dispositivo, inclusive touch com teclado externo. */
+@media (hover: hover) {
+    .btn-primary:hover {
+        transform: scale(1.03);
+        filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--color-primary) 38%, transparent));
+    }
+}
+
 .btn-primary:focus-visible {
     transform: scale(1.03);
     /* Era box-shadow, que desenha um retângulo e ignoraria a ponta da tag.
@@ -477,6 +488,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn-primary:active { transform: scale(0.98); }
 
 .link-secondary {
+    display: inline-flex;
+    align-items: center;
+    /* Alvo de toque de 44px, igual ao resto do site — tinha 23px de altura
+       real, só a linha do texto. */
+    min-height: 44px;
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 0.95rem;
@@ -699,7 +715,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .touch-demo__panel-idle {
     color: var(--color-text-muted);
     font-family: var(--font-body);
-    font-size: 0.7rem;
+    /* Piso de 12px do DESIGN.md pra Label — estava em 11,2px. */
+    font-size: 0.75rem;
 }
 
 .touch-demo__tag {

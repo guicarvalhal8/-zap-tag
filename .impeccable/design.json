@@ -21,7 +21,9 @@
       "body": { "displayName": "Body", "purpose": "Texto corrido, botões, navegação, legendas." }
     },
     "shadows": [
-      { "name": "action-response", "value": "0 10px 30px -8px color-mix(in srgb, var(--color-primary) 45%, transparent)", "purpose": "Glow direcional só em .btn-primary:hover/:focus-visible — nunca em repouso." }
+      { "name": "action-response", "value": "drop-shadow(0 8px 14px color-mix(in srgb, var(--color-primary) 38%, transparent))", "purpose": "Glow direcional seguindo a silhueta da tag, só em .btn-primary:hover/:focus-visible — nunca em repouso." },
+      { "name": "hero-ambient", "value": "radial-gradient(circle, color-mix(in srgb, var(--color-primary) 14%, transparent) 0%, transparent 70%)", "purpose": "Atmosfera sempre acesa do Hero (.hero__glow), canto superior direito." },
+      { "name": "final-cta-ambient", "value": "opacity: 0.16; filter: blur(56px)", "purpose": "Atmosfera sempre acesa do CTA final (.final-cta__glow), com blur pra não degradar o contraste do texto por cima." }
     ],
     "motion": [
       { "name": "ease-standard", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Ease-out-quint padrão do site — objeto real desacelerando, não overshoot elástico." }
@@ -82,7 +84,8 @@
       { "name": "The One Action Rule", "body": "Lime é a única cor de ação primária na página inteira. Nunca dividir \"clique aqui\" entre duas cores diferentes.", "section": "colors" },
       { "name": "The Border Role Rule", "body": "A borda decorativa (1,35:1) nunca carrega significado sozinha; a borda portadora de significado (4,0:1) é obrigatória sempre que a borda é o único sinal de interatividade.", "section": "colors" },
       { "name": "The One Headline Voice Rule", "body": "Todo H2 e H3 da página usa Bricolage Grotesque — nunca Space Grotesk fora do H1.", "section": "typography" },
-      { "name": "The Flat-At-Rest Rule", "body": "Nenhuma superfície tem sombra parada. Se uma sombra aparece, é reação a hover/foco — nunca decoração.", "section": "elevation" }
+      { "name": "The Flat-At-Rest Rule", "body": "Nenhum componente interativo tem sombra parada. Se um glow de botão/card aparece, é reação a hover/foco — nunca decoração.", "section": "elevation" },
+      { "name": "The Ambient-Glow Rule", "body": "No máximo um glow ambiente por seção, só nas seções de maior intenção (Hero, CTA final), sempre baixa opacidade, nunca competindo com texto por cima sem blur. É a atmosfera \"neon sobre preto\" que define a marca — por isso limitada a duas ocorrências, não espalhada pela página.", "section": "elevation" }
     ],
     "dos": [
       "Do usar Volt Lime só em elementos de ação — nunca em texto decorativo.",

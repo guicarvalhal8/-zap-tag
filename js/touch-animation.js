@@ -7,7 +7,7 @@
 // O padrão sistêmico deste projeto é a disciplina de acessibilidade evaporar
 // quando o HTML vira string em JS — isto existe pra não depender de lembrar
 // de repetir o atributo em cada ícone novo.
-function svgIcon(markup, label) {
+function touchDemoSvgIcon(markup, label) {
     const a11y = label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"';
     return markup.replace('<svg ', `<svg ${a11y} `);
 }
@@ -16,21 +16,21 @@ const TOUCH_DEMO_CASES = [
     {
         key: 'review',
         label: 'Avaliação no Google',
-        icon: svgIcon('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg>')
+        icon: touchDemoSvgIcon('<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg>')
     },
     {
         key: 'cardapio',
         label: 'Cardápio digital',
-        icon: svgIcon('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>')
+        icon: touchDemoSvgIcon('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>')
     },
     {
         key: 'wifi',
         label: 'Wi-Fi liberado',
-        icon: svgIcon('<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg>')
+        icon: touchDemoSvgIcon('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.5" fill="currentColor" stroke="none"/></svg>')
     }
 ];
 
-const TAG_ICON = svgIcon(`
+const TOUCH_DEMO_TAG_ICON = touchDemoSvgIcon(`
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <mask id="zt-cutout-demo">
             <rect width="100" height="100" fill="white"/>
@@ -40,7 +40,7 @@ const TAG_ICON = svgIcon(`
         <path fill="var(--color-primary)" d="M15 20 L62 20 L85 50 L62 80 L15 80 Z" mask="url(#zt-cutout-demo)"/>
     </svg>`, 'Adesivo Zap Tag');
 
-const CHECK_ICON = svgIcon('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>');
+const TOUCH_DEMO_CHECK_ICON = touchDemoSvgIcon('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>');
 
 function touchDemoSleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -76,9 +76,9 @@ function initTouchAnimation(root) {
                 </span>
             </button>
             <div class="touch-demo__tag">
-                ${TAG_ICON}
+                ${TOUCH_DEMO_TAG_ICON}
                 <div class="touch-demo__ripple" aria-hidden="true"></div>
-                <div class="touch-demo__success" aria-hidden="true">${CHECK_ICON}</div>
+                <div class="touch-demo__success" aria-hidden="true">${TOUCH_DEMO_CHECK_ICON}</div>
             </div>
         </div>
         <p class="touch-demo__hint" aria-hidden="true">

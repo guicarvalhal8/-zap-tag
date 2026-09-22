@@ -77,7 +77,7 @@ Zap Tag sells NFC stickers — encostar o celular fecha um circuito e uma ação
 **Key Characteristics:**
 - Neon-lime sobre quase-preto, alto contraste, sem meio-tom
 - Uma cor de ação (lime), uma cor de resposta do sistema (ciano) — papéis nunca se misturam
-- Elevação só como reação ao hover/foco, nunca em repouso
+- Componentes ganham profundidade só como reação ao hover/foco; o único glow parado é a atmosfera de seção (Hero e CTA final), nunca de componente
 - Quatro vozes tipográficas com papel fixo cada: display, headline, accent, body
 
 ## Colors
@@ -129,14 +129,22 @@ Container centralizado, seções empilhadas verticalmente (Hero → Como funcion
 
 ## Elevation & Depth
 
-Sistema flat por padrão — nenhuma superfície tem sombra em repouso. Profundidade aparece só como resposta a uma interação: o botão primário ganha um glow direcional lime no hover/foco (nunca em repouso), e é isso, não um halo de offset zero.
+Dois vocabulários diferentes, não um só — e a diferença é o que cada um significa, não só quando aparece.
+
+**Glow de reação:** existe só em resposta a uma interação (hover/foco). Sistema flat por padrão nesse vocabulário — profundidade aparece só quando o usuário faz alguma coisa, nunca em repouso. É o vocabulário dos componentes interativos (botões).
+
+**Glow ambiente:** presença de fundo sempre acesa, baixa opacidade, nunca reage a nada — é atmosfera "neon sobre preto", não feedback de interação. Existe só nas duas seções mais carregadas de intenção (Hero, CTA final), nunca em componentes menores, e nunca compete com o texto por cima dele (por isso o do CTA final tem blur — ver Shadow Vocabulary). Confirmado como identidade da marca desde o início do projeto (`.impeccable/config.json` documenta as supressões `dark-glow`/`radial-halo` com esse motivo).
 
 ### Shadow Vocabulary
 - **Ação em resposta** (`filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--color-primary) 38%, transparent))`): só em `.btn-primary:hover`/`:focus-visible`. Offset de 8px pra baixo, seguindo a silhueta da tag — elevação direcional, não halo simétrico.
+- **Atmosfera do Hero** (`radial-gradient` com `color-mix(in srgb, var(--color-primary) 14%, transparent)`): `.hero__glow`, canto superior direito, sempre aceso, baixa opacidade.
+- **Atmosfera do CTA final** (`opacity: 0.16` + `filter: blur(56px)` sobre a silhueta da tag): `.final-cta__glow`, centralizado atrás do texto. O blur existe especificamente pra não degradar o contraste do texto por cima (era um SVG sólido sem blur antes, e derrubava o subtítulo de 7,7:1 pra 5,2:1).
 - **Colapso de menu mobile** (`box-shadow: inset 0 1px 0 var(--color-border)`): substitui uma borda física que não colapsaria com a animação de altura — não é elevação, é um truque de layout disfarçado de sombra.
 
 ### Named Rules
-**The Flat-At-Rest Rule.** Nenhuma superfície tem sombra parada. Se uma sombra aparece, é reação a hover/foco — nunca decoração.
+**The Flat-At-Rest Rule (componentes).** Nenhum componente interativo tem sombra parada. Se um glow de botão/card aparece, é reação a hover/foco — nunca decoração.
+
+**The Ambient-Glow Rule (seções).** No máximo um glow ambiente por seção, só nas seções de maior intenção (Hero, CTA final), sempre baixa opacidade, nunca competindo com texto por cima sem blur. Não é decoração solta — é a atmosfera "neon sobre preto" que define a marca, e por isso está limitada a duas ocorrências, não espalhada pela página.
 
 ## Shapes
 
@@ -179,11 +187,11 @@ Mockup de celular com um "adesivo" ao lado — ao "tocar", um ripple ciano se ex
 - **Do** usar Volt Lime só em elementos de ação — nunca em texto decorativo ou como cor de destaque genérica.
 - **Do** usar Circuit Cyan só pra interação do sistema (foco, ripple) — nunca como segunda cor de ação.
 - **Do** manter os 4 papéis tipográficos fixos: Space Grotesk só no H1, Bricolage Grotesque em todo H2/H3, Unbounded só em momentos únicos, Manrope no corpo.
-- **Do** manter sombras/glow como reação a hover/foco, nunca em repouso.
+- **Do** manter sombra/glow de componente como reação a hover/foco, nunca em repouso — o glow ambiente de seção é a única exceção, e já está limitado a Hero e CTA final.
 - **Do** garantir `min-height: 44px` em qualquer novo alvo de toque pequeno (ícone + texto, link solto).
 
 ### Don't:
 - **Don't** introduzir uma terceira cor de destaque — o sistema é deliberadamente de duas cores acesas (lime + ciano), cada uma com um papel, não intercambiáveis.
 - **Don't** usar Decorative Border (`--color-border`) como único sinal de que um elemento é interativo — é falha de contraste WCAG 1.4.11. Use Meaningful Border (`--color-border-strong`).
-- **Don't** adicionar sombra ou glow decorativo parado (sem interação) — quebra a regra "flat at rest" do sistema.
+- **Don't** adicionar sombra ou glow parado num componente (card, ícone, badge) — isso quebra a regra flat-at-rest. Um novo glow ambiente de seção segue a Ambient-Glow Rule, não essa.
 - **Don't** misturar Space Grotesk num H2/H3, nem Bricolage Grotesque no H1 — cada família tem um papel fixo, não é estético trocar.
