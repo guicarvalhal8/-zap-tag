@@ -428,15 +428,26 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 
 ## Placar
 
-| Eixo | Antes do bloco 1 | Meta |
-|---|---|---|
-| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | **17/32** | ≥ 24/32 |
-| Audit Health (5 dimensões) | **14/20** | ≥ 18/20 |
-| Detector | 8 achados | **0** ✅ |
+| Eixo | Antes do bloco 1 | Depois dos 4 blocos (critique + audit de 2026-09-22) | Meta |
+|---|---|---|---|
+| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | **27/32** (Bom, 84%) ✅ | ≥ 24/32 |
+| Audit Health (5 dimensões) | 14/20 | **18/20** (Excelente) ✅ | ≥ 18/20 |
+| Detector | 8 achados | **0 achados reais** ✅ | 0 |
 
-As duas notas ainda **não** foram recalculadas — o bloco 1 corrigiu defeitos
-que pesam em Error Recovery (1), Error Prevention (2), Visibility of System
-Status (2) e Acessibilidade (2), mas o `critique` e o `audit` precisam rodar
-de novo para o número mudar. Vale fazer isso depois do bloco 2, não agora:
-os dois comandos são caros e o bloco 2 mexe em conversão, que é justamente o
-que puxa as notas para baixo.
+As duas notas foram recalculadas depois dos 4 blocos, com o `critique` e o
+`audit` rodados de novo em 2026-09-22 (snapshot em
+`.impeccable/critique/2026-09-22T12-52-36Z__index-html.md`, fora do git de
+propósito). Os achados do audit dessa rodada foram corrigidos depois, no
+commit `155bb1c`, então o 18/20 é o piso, não o estado atual.
+
+**As notas não incluem o commit `f61f861`** (Hero interativo, forma da tag na
+interface, ícone do WhatsApp e fusão de "Como funciona" com "Diferencial").
+Ele mexeu na estrutura da página, e o placar só volta a valer depois de rodar
+`/impeccable critique` e `/impeccable audit` de novo.
+
+**Sobre o detector:** a versão atual passou a emitir avisos `advisory` de
+aderência ao `DESIGN.md`. Em `f61f861` ele deu 38 avisos desse tipo e nenhum
+achado de verdade. São quase todos tamanhos de fonte (0,72–1,15rem) e raios
+(2, 4, 6, 20 e 32px) fora da escala documentada, a maioria de antes desse
+commit. Resolver isso é trabalho de sistema, não de defeito: ou a escala do
+`DESIGN.md` ganha esses degraus, ou o CSS converge pra escala atual.
