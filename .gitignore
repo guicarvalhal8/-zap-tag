@@ -8,3 +8,4 @@ Thumbs.db
 # cache do hook, config do live mode e overrides locais.
 .impeccable/*
 !.impeccable/config.json
+!.impeccable/design.json

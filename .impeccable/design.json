@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-22T00:00:00Z",
+  "title": "Design System: Zap Tag",
+  "extensions": {
+    "colorMeta": {
+      "volt-lime": { "role": "primary", "displayName": "Volt Lime", "canonical": "#D4FF3F", "tonalRamp": ["#1F2600", "#3A4400", "#556300", "#708200", "#96AF10", "#B8DA25", "#D4FF3F", "#E6FF8A"] },
+      "circuit-cyan": { "role": "secondary", "displayName": "Circuit Cyan", "canonical": "#00E5FF", "tonalRamp": ["#002830", "#004450", "#006070", "#008AA3", "#00B3CC", "#00CCE8", "#00E5FF", "#7FF2FF"] },
+      "deep-ink": { "role": "neutral", "displayName": "Deep Ink", "canonical": "#14170B" },
+      "void-black": { "role": "neutral", "displayName": "Void Black", "canonical": "#0B0D0F" },
+      "panel-surface": { "role": "neutral", "displayName": "Panel Surface", "canonical": "#16191D" },
+      "border-decorative": { "role": "neutral", "displayName": "Decorative Border", "canonical": "#262A2E" },
+      "border-meaningful": { "role": "neutral", "displayName": "Meaningful Border", "canonical": "#6B7280" },
+      "signal-white": { "role": "neutral", "displayName": "Signal White", "canonical": "#F2F4F5" },
+      "muted-gray": { "role": "neutral", "displayName": "Muted Gray", "canonical": "#9CA3AF" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "H1 do Hero apenas — a primeira coisa que a pessoa lê." },
+      "headline": { "displayName": "Headline", "purpose": "Todo H2 e H3 da página (títulos de seção, de passo, de coluna, de card)." },
+      "accent": { "displayName": "Accent", "purpose": "Números fantasma dos passos e o slogan de destaque — momentos únicos, não hierarquia recorrente." },
+      "body": { "displayName": "Body", "purpose": "Texto corrido, botões, navegação, legendas." }
+    },
+    "shadows": [
+      { "name": "action-response", "value": "0 10px 30px -8px color-mix(in srgb, var(--color-primary) 45%, transparent)", "purpose": "Glow direcional só em .btn-primary:hover/:focus-visible — nunca em repouso." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Ease-out-quint padrão do site — objeto real desacelerando, não overshoot elástico." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "compare", "value": "760px" },
+      { "name": "usecases", "value": "768px" },
+      { "name": "nav", "value": "860px" },
+      { "name": "how", "value": "900px" },
+      { "name": "lg", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A única ação de conversão do site — abre WhatsApp com mensagem pré-preenchida.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Falar no WhatsApp</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; background: #D4FF3F; color: #14170B; font-weight: 500; font-size: 0.95rem; border-radius: 10px; transition: transform 180ms ease, box-shadow 180ms ease; } .ds-btn-primary:hover, .ds-btn-primary:focus-visible { transform: scale(1.03); box-shadow: 0 10px 30px -8px rgba(212,255,63,0.45); outline: 2px solid #00E5FF; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Ação secundária — a borda é a única pista de que é clicável, por isso usa o token de contraste forte.",
+      "html": "<button class=\"ds-btn-outline\">Ver todas as opções</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: transparent; color: #F2F4F5; font-weight: 500; font-size: 0.9rem; border: 1.5px solid #6B7280; border-radius: 10px; transition: border-color 180ms ease, color 180ms ease; } .ds-btn-outline:hover, .ds-btn-outline:focus-visible { border-color: #D4FF3F; color: #D4FF3F; }"
+    },
+    {
+      "name": "Use-Case Card",
+      "kind": "card",
+      "refersTo": "card-usecase",
+      "description": "Card inteiro clicável — abre WhatsApp com mensagem específica do caso de uso.",
+      "html": "<a class=\"ds-card\" href=\"#\"><span class=\"ds-card-title\">Avaliação Google</span><p class=\"ds-card-desc\">O cliente encosta o celular e a tela de avaliação já abre pronta.</p></a>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 12px; background: #16191D; border: 1px solid #262A2E; border-radius: 16px; padding: 28px 24px; text-decoration: none; color: inherit; transition: border-color 200ms ease, transform 200ms ease; } .ds-card:hover, .ds-card:focus-visible { border-color: #D4FF3F; transform: translateY(-3px); } .ds-card-title { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; font-size: 1.05rem; color: #F2F4F5; } .ds-card-desc { font-size: 0.92rem; color: #9CA3AF; line-height: 1.5; margin: 0; }"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "navbar",
+      "description": "Fixa no topo, fundo transparente até 24px de scroll, então ganha fundo + borda inferior.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">Como funciona</a><a class=\"ds-nav-link\" href=\"#\">Casos de uso</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; background: rgba(11,13,15,0.92); border-bottom: 1px solid #262A2E; padding: 16px 24px; } .ds-nav-link { color: #F2F4F5; font-weight: 500; font-size: 0.92rem; text-decoration: none; transition: color 180ms ease; } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: #D4FF3F; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Live Circuit",
+    "overview": "Zap Tag sells NFC stickers — encostar o celular fecha um circuito e uma ação dispara sozinha. O sistema visual leva essa mecânica ao pé da letra: fundo quase preto como uma placa desenergizada, lime-neon como a faísca de ação, ciano como a resposta elétrica do sistema (foco, ripple, feedback). Tom confiante e imediato, tech-forward — alto contraste, direto ao ponto, sem suavização corporativa. Superfícies ficam planas em repouso; o brilho só aparece como resposta a uma interação, nunca como decoração parada — reforçando que este é um sistema que reage ao toque, não um pôster estático.",
+    "keyCharacteristics": [
+      "Neon-lime sobre quase-preto, alto contraste, sem meio-tom",
+      "Uma cor de ação (lime), uma cor de resposta do sistema (ciano) — papéis nunca se misturam",
+      "Elevação só como reação ao hover/foco, nunca em repouso",
+      "Quatro vozes tipográficas com papel fixo cada: display, headline, accent, body"
+    ],
+    "rules": [
+      { "name": "The One Action Rule", "body": "Lime é a única cor de ação primária na página inteira. Nunca dividir \"clique aqui\" entre duas cores diferentes.", "section": "colors" },
+      { "name": "The Border Role Rule", "body": "A borda decorativa (1,35:1) nunca carrega significado sozinha; a borda portadora de significado (4,0:1) é obrigatória sempre que a borda é o único sinal de interatividade.", "section": "colors" },
+      { "name": "The One Headline Voice Rule", "body": "Todo H2 e H3 da página usa Bricolage Grotesque — nunca Space Grotesk fora do H1.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "Nenhuma superfície tem sombra parada. Se uma sombra aparece, é reação a hover/foco — nunca decoração.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar Volt Lime só em elementos de ação — nunca em texto decorativo.",
+      "Do usar Circuit Cyan só pra interação do sistema — nunca como segunda cor de ação.",
+      "Do manter os 4 papéis tipográficos fixos.",
+      "Do manter sombras/glow como reação a hover/foco, nunca em repouso.",
+      "Do garantir min-height: 44px em qualquer novo alvo de toque pequeno."
+    ],
+    "donts": [
+      "Don't introduzir uma terceira cor de destaque.",
+      "Don't usar a borda decorativa como único sinal de interatividade.",
+      "Don't adicionar sombra ou glow decorativo parado.",
+      "Don't misturar as famílias tipográficas fora do papel fixo de cada uma."
+    ]
+  }
+}
