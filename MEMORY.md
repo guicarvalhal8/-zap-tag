@@ -432,6 +432,30 @@
     dono em servidor local. **Bloco 4 completo — os 4 blocos do plano estão
     todos feitos.** Ainda sem push (combinado: push só quando o dono pedir).
 
+- **2026-09-22** — `/impeccable critique` + `/impeccable audit` rodados de
+  novo (3 subagentes isolados), depois de fechar os 4 blocos do plano.
+  - **Design Health: 27/32** (Bom, 84%) — subiu do placar de partida de
+    17/32. Achado principal: a página nunca reassegura quem tem medo de
+    mandar mensagem sem saber o preço (maior risco de abandono).
+  - **Audit Health: 18/20** (Excelente) — subiu de 14/20. Zero cor hardcoded
+    fora do sistema de tokens, `prefers-reduced-motion` tratado em tudo,
+    resiliência real a falha parcial de JS. Achado principal: a demo do
+    Hero girava pra sempre sem controle de pausa (WCAG 2.2.2).
+  - **Corrigido na hora** (commit `155bb1c`): demo do Hero para sozinha
+    depois de 2 voltas completas; skip-link "Pular para o conteúdo";
+    `.trust-strip__instagram` com alvo de toque de 44px; `role="img"`
+    redundante removido de 8 SVGs decorativos; `#hero-touch-demo` com
+    `aria-hidden`; `rel="noopener noreferrer"` padronizado nos links de
+    WhatsApp.
+  - **Decisões do dono sobre os achados do critique** (commit `314f683`
+    pros aceitos): aceitou reasseguramento sem preço no CTA final e o link
+    de nav pro `#diferencial` (que estava sendo pulado); **recusou** reabrir
+    tipografia (mantém as 4 famílias do bloco 4), reestruturar os 6 casos de
+    uso (Pix escondido atrás do toggle) e adicionar alternativa ao WhatsApp
+    como canal único — os três continuam como estão, por decisão consciente,
+    **não propor de novo sem pedido explícito**.
+  - Snapshot do critique em `.impeccable/critique/2026-09-22T12-52-36Z__index-html.md`.
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
@@ -447,14 +471,12 @@ de publicar:
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
 5. ~~**Retomar pelo `IMPECCABLE.md`.**~~ — **feito.** Os 4 blocos do plano
-   (defeitos; conversão; motion e performance; acabamento e P3) estão
-   aplicados, verificados e commitados (ainda sem push — combinado: só
-   quando o dono pedir). O que falta é só a seção "Depois dos blocos" do
-   `IMPECCABLE.md`: rodar `/impeccable critique` e `/impeccable audit` de
-   novo pra comparar com o placar de partida (17/32 Design Health, 14/20
-   Audit Health), considerar `/impeccable document` pro `DESIGN.md`, e
-   `/impeccable init` pro `PRODUCT.md` (que depende de decisões de produto
-   ainda abertas: preço, como funciona a venda, slogan de marca geral).
+   (defeitos; conversão; motion e performance; acabamento e P3) e o novo
+   critique+audit de 22/09 estão aplicados, verificados e commitados. O que
+   falta da seção "Depois dos blocos": considerar `/impeccable document`
+   pro `DESIGN.md`, e `/impeccable init` pro `PRODUCT.md` (que depende de
+   decisões de produto ainda abertas: preço, como funciona a venda, slogan
+   de marca geral).
 6. **Skill `impeccable` instalada global** nesta máquina
    (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
    em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,

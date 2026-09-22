@@ -323,9 +323,32 @@ local, sem automação de hover/scroll.
 
 ### Depois dos blocos
 
-- **`/impeccable critique`** e **`/impeccable audit`** de novo, para comparar
-  o placar. O snapshot anterior está em `.impeccable/critique/` e o comando lê
-  a tendência sozinho.
+- ~~**`/impeccable critique`** e **`/impeccable audit`** de novo~~ — **feito em
+  2026-09-22**, com 3 subagentes isolados (2 do critique — design review +
+  detector/evidência — e 1 do audit técnico). Resultado: **Design Health
+  27/32** (Bom, 84%), **Audit Health 18/20** (Excelente). Snapshot em
+  `.impeccable/critique/2026-09-22T12-52-36Z__index-html.md` (primeira
+  execução nesta máquina, sem trend anterior — o snapshot de 22/09 da máquina
+  pessoal não foi versionado, `.impeccable/critique/` está no `.gitignore` de
+  propósito).
+  - Achados do audit (P1 demo do Hero sem controle de pausa, P2 skip-link
+    faltando, P2 alvo de toque do Instagram, P3 `role="img"`+`aria-hidden`
+    redundante, P3 `#hero-touch-demo` sem `aria-hidden`, P3 `rel` inconsistente)
+    — **todos corrigidos**, commit `155bb1c`.
+  - Achados do critique — decisões do dono (2026-09-22):
+    - **[P1] Reasseguramento sem preço**: aceito. Frase "Sem compromisso —
+      você decide depois de saber o valor" no CTA final, commit `314f683`.
+    - **[P2] Tipografia (consolidar 4→2 famílias)**: recusado — mantém as 4
+      famílias do bloco 4, decisão consciente, não reabrir.
+    - **[P2] Reestruturar os 6 casos de uso (Pix escondido)**: recusado por
+      agora — decisão do bloco 2 fica, não reabrir sem julgamento de produto
+      com calma.
+    - **[P3] Ícones Pix/Fidelidade**: não decidido explicitamente, ficou de
+      fora deste round.
+    - **[P3] Nav pulava `#diferencial`**: aceito (baixo risco, só aditivo) —
+      link adicionado, commit `314f683`.
+    - **[P3] Canal único de WhatsApp sem fallback**: recusado — proposital,
+      documentado no `CLAUDE.md`, não reabrir.
 - Considerar **`/impeccable document`** para gerar o `DESIGN.md`, que não
   existe. O projeto tem sistema de tokens real e merece o registro.
 - **`/impeccable init`** nunca foi rodado aqui — não há `PRODUCT.md`. Não
