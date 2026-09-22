@@ -47,6 +47,15 @@ function initNavbarMenu() {
         // e a próxima tecla Tab recomeçava do topo do documento.
         toggle.focus();
     });
+
+    // O hambúrguer some acima de 860px (CSS), mas o estado `is-open` sozinho
+    // não — se o menu ficasse aberto num celular deitado e a janela crescesse
+    // (ou o DevTools redimensionasse) pra além do breakpoint, ele reaparecia
+    // já aberto ao encolher de novo.
+    const desktopQuery = window.matchMedia('(min-width: 860px)');
+    desktopQuery.addEventListener('change', (event) => {
+        if (event.matches) closeMenu();
+    });
 }
 
 function initHeroReveal() {

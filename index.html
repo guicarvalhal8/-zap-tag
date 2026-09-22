@@ -55,7 +55,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&family=Manrope:wght@400;500&family=Unbounded:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&family=Bricolage+Grotesque:wght@500&family=Manrope:wght@400;500&family=Unbounded:wght@600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/global.css">
 
@@ -93,7 +93,7 @@
                     </mask>
                     <path class="logo__icon-shape" d="M15 20 L62 20 L85 50 L62 80 L15 80 Z" mask="url(#zt-cutout-nav)"/>
                 </svg>
-                <span class="logo__wordmark">zaptag</span>
+                <span class="logo__wordmark">Zap Tag</span>
             </a>
 
             <nav class="navbar__nav" aria-label="Navegação principal">
@@ -198,7 +198,7 @@
                     <div class="how__track" aria-hidden="true"></div>
                     <div class="how__track-fill" aria-hidden="true"></div>
 
-                    <ol class="how__steps">
+                    <ol class="how__steps" role="list">
                     <li class="how__step" data-reveal>
                         <div class="how__step-visual">
                             <span class="how__step-number" aria-hidden="true">01</span>
@@ -256,7 +256,7 @@
                         <span class="section-eyebrow-dot"></span>
                         Por que não só um QR code?
                     </span>
-                    <h2 class="section-title" data-reveal>Menos passo, mais gente avaliando</h2>
+                    <h2 class="section-title" data-reveal>Menos passo, mais gente avaliando.</h2>
                 </div>
 
                 <div class="compare__columns">
@@ -270,7 +270,7 @@
                             </span>
                             <h3 class="compare__column-title">QR code</h3>
                         </div>
-                        <ol class="compare__steps">
+                        <ol class="compare__steps" role="list">
                             <li class="compare__step" data-reveal>Abrir a câmera</li>
                             <li class="compare__step" data-reveal>Focar no código</li>
                             <li class="compare__step" data-reveal>Esperar carregar o link</li>
@@ -287,9 +287,9 @@
                                     <path d="M14 19 L6 27 L10 27 L8 33 L16 24 L11 24 Z" fill="currentColor"/>
                                 </svg>
                             </span>
-                            <h3 class="compare__column-title">Zaptag</h3>
+                            <h3 class="compare__column-title">Zap Tag</h3>
                         </div>
-                        <ol class="compare__steps">
+                        <ol class="compare__steps" role="list">
                             <li class="compare__step" data-reveal>Encostar o celular</li>
                             <li class="compare__step" data-reveal>Ação já dispara</li>
                         </ol>
@@ -298,7 +298,7 @@
 
                 <p class="compare__slogan">Encostou, ativou.</p>
 
-                <ul class="compare__facts" data-reveal>
+                <ul class="compare__facts" role="list" data-reveal>
                     <li>Funciona com a tela bloqueada, em muitos aparelhos</li>
                     <li>Não depende de boa iluminação ou foco de câmera</li>
                     <li>Não depende de link encurtado com anúncio no meio</li>
@@ -313,7 +313,7 @@
                         <span class="section-eyebrow-dot"></span>
                         Um adesivo, vários usos
                     </span>
-                    <h2 class="section-title" data-reveal>Escolha o que seu negócio precisa</h2>
+                    <h2 class="section-title" data-reveal>Escolha o que seu negócio precisa.</h2>
                 </div>
 
                 <!-- Os 6 casos de uso vivem NO MARKUP, não num array de JS.
@@ -329,7 +329,7 @@
                      compra, e antes ela não levava a lugar nenhum.
                      O JS agora só liga comportamento (reveal, tilt, expand,
                      ?text= do link) no que já está aqui. -->
-                <ul class="usecases__grid" id="usecases-primary">
+                <ul class="usecases__grid" id="usecases-primary" role="list">
                     <li class="usecases__item">
                         <a
                             class="usecase-card"
@@ -406,7 +406,7 @@
 
                 <div class="usecases__expand-wrap" id="usecases-expand-wrap">
                     <div class="usecases__expand-inner">
-                        <ul class="usecases__grid" id="usecases-expand">
+                        <ul class="usecases__grid" id="usecases-expand" role="list">
                             <li class="usecases__item">
                                 <a
                                     class="usecase-card"
@@ -418,7 +418,7 @@
                                 >
                                     <span class="usecase-card__icon-wrap">
                                         <span class="usecase-card__icon">
-                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 2 L6 14 L11 14 L9 22 L19 9 L13 9 Z"/></svg>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="8 12.5 10.7 15.2 16 9.3"/></svg>
                                         </span>
                                     </span>
                                     <h3 class="usecase-card__title" id="uc-title-4">Pix</h3>
@@ -437,7 +437,7 @@
                                 >
                                     <span class="usecase-card__icon-wrap">
                                         <span class="usecase-card__icon">
-                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-2 -1) scale(0.5)" opacity="0.5"/><use href="#uc-star" transform="translate(4 4) scale(0.55)"/></svg>
+                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg>
                                         </span>
                                     </span>
                                     <h3 class="usecase-card__title" id="uc-title-5">Fidelidade</h3>
@@ -490,7 +490,7 @@
             </div>
         </section>
 
-        <section class="final-cta" id="fale-conosco">
+        <section class="final-cta">
             <div class="final-cta__glow" aria-hidden="true">
                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                     <mask id="zt-cutout-final">
@@ -517,7 +517,7 @@
                 </a>
             </div>
 
-            <footer class="site-footer">
+            <footer class="site-footer" role="contentinfo">
                 <div class="container site-footer__inner">
                     <a href="#top" class="logo" aria-label="Zap Tag — início">
                         <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
@@ -528,10 +528,10 @@
                             </mask>
                             <path class="logo__icon-shape" d="M15 20 L62 20 L85 50 L62 80 L15 80 Z" mask="url(#zt-cutout-footer)"/>
                         </svg>
-                        <span class="logo__wordmark">zaptag</span>
+                        <span class="logo__wordmark">Zap Tag</span>
                     </a>
 
-                    <ul class="site-footer__links">
+                    <ul class="site-footer__links" role="list">
                         <li>
                             <a class="site-footer__link" href="https://instagram.com/zap_tag_" target="_blank" rel="noopener noreferrer">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

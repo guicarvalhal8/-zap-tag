@@ -98,7 +98,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .navbar__inner {
-    height: var(--nav-height);
+    min-height: var(--nav-height);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -139,6 +139,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn-primary--compact {
     padding: 10px 20px;
     font-size: 0.85rem;
+    min-height: 44px;
 }
 
 .navbar__toggle {
@@ -147,8 +148,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     justify-content: center;
     align-items: center;
     gap: 5px;
-    width: 38px;
-    height: 38px;
+    /* Alvo de toque prático de 44x44 (não é falha de WCAG AA — 2.5.8 pede só
+       24x24 — mas é o guideline recomendado, e este é o único controle sem
+       texto ao lado sobrando espaço pra crescer). */
+    width: 44px;
+    height: 44px;
     border-radius: 8px;
     transition: background-color 180ms ease;
 }
@@ -253,6 +257,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-size: 1.15rem;
     letter-spacing: -0.01em;
     color: var(--color-text);
+    white-space: nowrap;
     display: none;
 }
 
@@ -340,6 +345,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     line-height: 1.08;
     letter-spacing: -0.02em;
     color: var(--color-text);
+    text-wrap: balance;
     margin: 0;
 }
 
@@ -640,8 +646,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .section-title {
-    font-family: var(--font-display);
+    font-family: var(--font-display-alt);
     font-weight: 500;
+    text-wrap: balance;
     font-size: clamp(1.75rem, 3.4vw, 2.5rem);
     letter-spacing: -0.01em;
     color: var(--color-text);
@@ -809,7 +816,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .how__step-title {
-    font-family: var(--font-display);
+    font-family: var(--font-display-alt);
     font-weight: 500;
     font-size: 1.1rem;
     color: var(--color-text);
@@ -883,7 +890,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .compare__column-title {
-    font-family: var(--font-display);
+    font-family: var(--font-display-alt);
     font-weight: 500;
     font-size: 1.05rem;
     margin: 0;
@@ -1158,7 +1165,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .usecase-card__title {
-    font-family: var(--font-display);
+    font-family: var(--font-display-alt);
     font-weight: 500;
     font-size: 1.05rem;
     color: var(--color-text);
@@ -1338,6 +1345,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     aspect-ratio: 1;
     color: var(--color-primary);
     opacity: 0.16;
+    /* Era um SVG sólido sem blur, direto atrás do texto: degradava o
+       subtítulo de 7,7:1 pra 5,2:1 e o botão de 16,9:1 pra 11,3:1. O blur
+       espalha a mesma presença ambiente sem competir com o texto como
+       silhueta nítida — é atmosfera, não um ícone escondido atrás da cópia. */
+    filter: blur(56px);
     pointer-events: none;
     z-index: 0;
 }
@@ -1361,8 +1373,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .final-cta__title {
-    font-family: var(--font-display);
+    font-family: var(--font-display-alt);
     font-weight: 500;
+    text-wrap: balance;
     font-size: clamp(2rem, 4.2vw, 3rem);
     letter-spacing: -0.02em;
     color: var(--color-text);
@@ -1381,7 +1394,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .final-cta__trust {
     font-family: var(--font-body);
     font-weight: 400;
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: var(--color-text-muted);
 }
 
@@ -1428,6 +1441,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-size: 0.85rem;
     color: var(--color-text-muted);
     transition: color 180ms ease;
+    /* Os 3 contatos do negócio: alvo de toque prático de 44px de altura, não
+       só a altura visual do texto+ícone (~20px). */
+    min-height: 44px;
 }
 
 .site-footer__link:hover,
@@ -1453,7 +1469,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .site-footer__copyright {
     font-family: var(--font-body);
     font-weight: 400;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     margin: 0;
 }
