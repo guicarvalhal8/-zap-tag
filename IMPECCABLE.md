@@ -4,8 +4,8 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. Bloco 1 concluído. Bloco 2: item 1 feito,
-itens 2 e 3 pendentes. Blocos 3 e 4 pendentes.
+Última sessão: **2026-09-22**. Bloco 1 concluído. Bloco 2: itens 1 e 2 feitos,
+item 3 pendente. Blocos 3 e 4 pendentes.
 
 ---
 
@@ -229,12 +229,16 @@ rótulo visível; mensagem nomeia o caso)
    o lead quer) é gerada e descartada ali.
    *Quando isso entrar, o hover do card pode graduar de `--color-border-strong`
    para `--color-primary` — aí ele vira ação de verdade.*
-2. **`/impeccable clarify`** — reasseguramento **sem preço**: reescrever o
-   subtítulo do `.final-cta` (o "sem mensalidade **obrigatória**" introduz a
-   suspeita que quer dissolver), nomear o próximo passo, subir o "Resposta em
-   poucos minutos" para cima do botão, e preencher o slot de prova social —
-   que já está reservado no HTML, entre "Casos de uso" e o CTA final — com o
-   que existe hoje (`@zap_tag_`, "atendemos Goiânia e região", foto real).
+2. ~~**`/impeccable clarify`**~~ — **feito**, commit `3a6cc9e`. Subtítulo do
+   `.final-cta` reescrito (sem "sem mensalidade obrigatória"), nomeando o
+   passo real: conversa no WhatsApp → entender o negócio → contrato simples →
+   produção do adesivo. "Resposta em poucos minutos" subiu para antes do
+   botão. Nova seção `.trust-strip` no lugar do comentário "PRÓXIMAS SEÇÕES",
+   entre "Casos de uso" e o CTA final, só com fatos confirmados pelo dono:
+   Instagram `@zap_tag_` e "Atendemos Anápolis e região" — **não** Goiânia
+   (área correta confirmada em 22/09). Sem foto: o dono não tem foto real do
+   adesivo aplicado ainda, só protótipos — não inventada nenhuma imagem nem
+   depoimento. Detector `[]` depois da mudança.
 3. **`/impeccable harden`** — Open Graph completo, Twitter card, `canonical`,
    JSON-LD `LocalBusiness`, e `og:image` 1200×630 absoluta. Hoje são **zero**
    tags sociais numa landing cujo único canal é WhatsApp, ou seja feita para

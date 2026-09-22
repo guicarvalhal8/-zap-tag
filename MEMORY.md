@@ -355,6 +355,18 @@
   navbar em toda tela mobile (menu fechado não colapsava o padding). Detalhes
   e medições no `IMPECCABLE.md`. **Não commitado.**
 
+- **2026-09-22** — Bloco 2, item 2 do `IMPECCABLE.md` feito, commit `3a6cc9e`:
+  reasseguramento do CTA final + prova social real. Subtítulo do `.final-cta`
+  perdeu o "sem mensalidade obrigatória" e passou a nomear o passo real
+  (conversa no WhatsApp → entender o negócio → contrato simples → produção do
+  adesivo, confirmado pelo dono). "Resposta em poucos minutos" subiu para
+  antes do botão. O comentário "PRÓXIMAS SEÇÕES" virou a seção `.trust-strip`,
+  com Instagram `@zap_tag_` e **"Atendemos Anápolis e região"** — a área
+  correta é Anápolis, não Goiânia (o `IMPECCABLE.md` antigo tinha o dado
+  errado). Sem foto: o dono ainda não tem foto real do adesivo aplicado, só
+  protótipos — não foi inventada imagem nem depoimento. Detector `[]`.
+  **Aprovado pelo dono após revisão em servidor local antes do commit.**
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
@@ -364,19 +376,17 @@ de publicar:
 1. ~~Número de WhatsApp real~~ — feito (`5562982233133`).
 2. ~~E-mail real~~ — feito (`usezaptag@gmail.com`, footer).
    ~~Instagram real~~ — feito (`@zap_tag_`, footer).
-3. Decidir se entra uma seção de "prova social" (o espaço já está reservado
-   entre "Casos de uso" e "CTA final"). **A crítica de 22/09 apontou isto como
-   a maior fonte de abandono da página** — no instante em que a pessoa vai
-   mandar mensagem para um desconhecido sem saber o preço, não há nada que
-   reassegure. Entra no bloco 2 do `IMPECCABLE.md`.
+3. ~~Decidir se entra uma seção de "prova social"~~ — feito (`.trust-strip`,
+   commit `3a6cc9e`): Instagram `@zap_tag_` + "Atendemos Anápolis e região".
 4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
-5. **Retomar pelo `IMPECCABLE.md`.** O bloco 1 (defeitos) e o item 1 do
-   bloco 2 (cards como links) estão aplicados e verificados; próximo é o
-   bloco 2, item 2 (`clarify` do CTA final + prova social), depois o 3
-   (motion e performance) e o 4 (acabamento). O arquivo traz os comandos na ordem, as decisões que não
-   devem ser reabertas e as armadilhas do repositório.
+5. **Retomar pelo `IMPECCABLE.md`.** O bloco 1 (defeitos) e os itens 1 e 2 do
+   bloco 2 (cards como links; clarify do CTA final + prova social) estão
+   aplicados e verificados; próximo é o bloco 2, item 3 (`harden`: Open
+   Graph, Twitter card, canonical, JSON-LD), depois o 3 (motion e
+   performance) e o 4 (acabamento). O arquivo traz os comandos na ordem, as
+   decisões que não devem ser reabertas e as armadilhas do repositório.
 6. **Atenção ao abrir o Claude Code:** o skill `impeccable` está instalado em
    `C:\Users\guica\.local\bin\.claude`, com escopo de projeto. Abrindo direto
    nesta pasta, o `/impeccable` não existe. Ou abrir em `.local\bin`, ou
