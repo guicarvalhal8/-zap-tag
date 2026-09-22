@@ -378,7 +378,29 @@
   completo** — itens 1, 2 e 3 commitados. **Ainda sem push**: combinado com
   o dono que o push só acontece depois de todos os itens de um bloco
   validados juntos (não item a item). Aprovado após revisão em servidor
-  local.
+  local. **Push feito** logo em seguida (commit `edaa9fe` incluso).
+
+- **2026-09-22** — Bloco 3 do `IMPECCABLE.md` feito, commit `1ad5462`: motion
+  e performance.
+  - `/impeccable animate`: `initHowSteps`, `initCompare`, o grid principal de
+    `initUseCases` e `initFinalCta` agora travam no estado final depois da
+    primeira passagem completa de reveal (antes desconstruíam toda vez que
+    saíam de vista, pra sempre). `.hero__scroll-hint-line` (única animação
+    `infinite` do CSS) e `scroll-behavior: smooth` passaram a respeitar
+    `prefers-reduced-motion`. `initHeroReveal()` ganhou o branch de
+    reduced-motion que faltava.
+  - `/impeccable optimize`: tilt 3D de "Casos de uso" (`initCardTilt` em
+    `js/usecases.js`) agora cacheia o `getBoundingClientRect()` no
+    `mouseenter` e escreve o `transform` via `requestAnimationFrame`, tirando
+    `transform` da `transition` inline enquanto o tilt está ativo (antes
+    chegava ~500ms atrasado do cursor, por causa da transition do reveal). A
+    demo de toque do Hero (`touch-animation.js`) ganhou
+    `IntersectionObserver` + `visibilitychange` e agora pausa quando sai de
+    vista ou a aba vai pra segundo plano, em vez de rodar pra sempre.
+  - Verificado com `node --check` nos 3 arquivos JS, checagem de colisão de
+    nomes no escopo global compartilhado (nenhuma) e detector `impeccable`
+    (`[]`). Sem Playwright nesta máquina — não deu pra automatizar hover/scroll,
+    aprovado pelo dono em servidor local. **Bloco 3 completo. Ainda sem push.**
 
 ## Próximo passo sugerido
 
@@ -394,13 +416,11 @@ de publicar:
 4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
-5. **Retomar pelo `IMPECCABLE.md`.** O bloco 1 (defeitos) e os itens 1 e 2 do
-   bloco 2 (cards como links; clarify do CTA final + prova social) estão
-   aplicados e verificados; próximo é o bloco 2, item 3 (`harden`: Open
-   Graph, Twitter card, canonical, JSON-LD), depois o 3 (motion e
-   performance) e o 4 (acabamento). O arquivo traz os comandos na ordem, as
-   decisões que não devem ser reabertas e as armadilhas do repositório.
-6. **Atenção ao abrir o Claude Code:** o skill `impeccable` está instalado em
-   `C:\Users\guica\.local\bin\.claude`, com escopo de projeto. Abrindo direto
-   nesta pasta, o `/impeccable` não existe. Ou abrir em `.local\bin`, ou
-   instalar global (`npx impeccable install` → location `global (~)`).
+5. **Retomar pelo `IMPECCABLE.md`.** Blocos 1, 2 e 3 aplicados e verificados;
+   próximo é o **bloco 4** (`adapt`, `polish`, `typeset`, `harden`). O
+   arquivo traz os comandos na ordem, as decisões que não devem ser
+   reabertas e as armadilhas do repositório.
+6. **Skill `impeccable` instalada global** nesta máquina
+   (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
+   em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
+   confirmar se a skill está instalada antes de usar `/impeccable`.

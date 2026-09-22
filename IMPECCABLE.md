@@ -4,9 +4,9 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. Blocos 1 e 2 concluídos (itens 1, 2 e 3 do
-bloco 2 feitos e commitados; aguardando push — combinado com o dono dar push
-só quando um bloco inteiro estiver validado). Blocos 3 e 4 pendentes.
+Última sessão: **2026-09-22**. Blocos 1, 2 e 3 concluídos. Bloco 4 pendente.
+Combinado com o dono: push só depois de um bloco inteiro validado, não item
+a item.
 
 ---
 
@@ -255,20 +255,24 @@ rótulo visível; mensagem nomeia o caso)
 
 ### Bloco 3 — motion e performance
 
-4. **`/impeccable animate`** — travar o reveal depois da primeira passagem
-   completa (decisão do dono); cobrir `.hero__scroll-hint-line` (única
-   animação `infinite` do CSS e a única fora do bloco de reduced-motion) e
-   `scroll-behavior: smooth` (gatilho vestibular mais forte da página); dar
-   branch de reduced-motion ao `initHeroReveal()`, o único dos 6 inits que não
-   consulta a preferência.
-5. **`/impeccable optimize`** — `initCardTilt()` (`js/usecases.js:67-83`) lê
-   `getBoundingClientRect()` e escreve `style.transform` no mesmo handler de
-   `mousemove`, sem `rAF`; e `.usecase-card` tem `transition: transform 500ms`,
-   então o tilt que deveria seguir o cursor chega meio segundo atrasado.
-   Cachear o rect em `mouseenter`, escrever em `rAF`, tirar `transform` da
-   transition. Também: ligar o listener `touch-demo:stop`
-   (`js/touch-animation.js:92`) que **nunca é disparado por nenhum arquivo** —
-   o loop do Hero roda para sempre, sem gate de visibilidade.
+4. ~~**`/impeccable animate`**~~ — **feito**, commit `1ad5462`. `initHowSteps`,
+   `initCompare`, o grid principal de `initUseCases` e `initFinalCta` travam
+   no estado final depois da primeira passagem completa (o timer do último
+   item desliga o próprio observer) — se a seção sair de vista no meio da
+   sequência, ainda refaz do zero na próxima entrada, como antes.
+   `.hero__scroll-hint-line` e `scroll-behavior: smooth` agora só existem sob
+   `prefers-reduced-motion: no-preference`. `initHeroReveal()` ganhou o
+   branch de reduced-motion que faltava.
+5. ~~**`/impeccable optimize`**~~ — **feito**, commit `1ad5462`.
+   `initCardTilt()` cacheia o rect no `mouseenter`, escreve o `transform` via
+   `requestAnimationFrame` e tira `transform` da `transition` inline enquanto
+   o tilt está ativo (a transition de 500ms volta no `mouseleave`, pro
+   retorno suave). O loop do Hero (`touch-animation.js`) ganhou um
+   `IntersectionObserver` + `visibilitychange`: pausa (sem interromper a
+   sequência no meio) quando a demo sai de vista ou a aba vai pra segundo
+   plano. O listener `touch-demo:stop` continua sem nada que o dispare — não
+   era esse o problema, e não achei nenhum lugar do código que devesse
+   dispará-lo.
 
 ### Bloco 4 — acabamento e P3
 
