@@ -466,29 +466,35 @@
   rodadas de pergunta (North Star, tom, elevação, nomes de cor, personalidade
   de componente — todas as recomendadas foram aceitas).
 
+- **2026-09-22** — `/impeccable init` feito, commit `8b15bf6`. `PRODUCT.md`
+  na raiz. Confirmado com o dono nesta sessão: **preço** ainda sem modelo
+  fechado — expectativa interna de ~R$60–80 por unidade, com recorrência
+  mensal possível em contratos de várias unidades (múltiplas variáveis, não
+  publicar na página); **tecnologia é solução própria** da Zap Tag, não
+  revenda de plataforma terceirizada; **usuário primário é o dono do
+  negócio** (compra e a Zap Tag configura), o cliente final que encosta o
+  celular é ator do fluxo, não quem decide a compra. 5 princípios de produto
+  registrados, os dois mais citáveis pra trabalho futuro: **nunca fabricar
+  prova social** (segue sem depoimento/foto real) e **WhatsApp é o único
+  canal de conversão** (não introduzir alternativa sem pedido explícito).
+  **Com isso, o `IMPECCABLE.md` está 100% completo** — plano inteiro,
+  critique+audit, document e init.
+
 ## Próximo passo sugerido
 
-**As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
-QR code, Casos de uso, CTA final + footer) e no ar localmente. Falta antes
-de publicar:
+**O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,
+`DESIGN.md`, `PRODUCT.md`) e as 6 seções do fluxo estão prontas e no ar
+localmente. Não há mais um plano em andamento — o próximo trabalho de design
+vem de um pedido novo do dono, não deste arquivo. Pendências reais que
+sobraram, registradas como decisão em aberto (não bloqueiam nada):
 
-1. ~~Número de WhatsApp real~~ — feito (`5562982233133`).
-2. ~~E-mail real~~ — feito (`usezaptag@gmail.com`, footer).
-   ~~Instagram real~~ — feito (`@zap_tag_`, footer).
-3. ~~Decidir se entra uma seção de "prova social"~~ — feito (`.trust-strip`,
-   commit `3a6cc9e`): Instagram `@zap_tag_` + "Atendemos Anápolis e região".
-4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
-   fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
-   específico dessa seção, não necessariamente o slogan geral do site).
-5. ~~**Retomar pelo `IMPECCABLE.md`.**~~ — **feito.** Os 4 blocos do plano
-   (defeitos; conversão; motion e performance; acabamento e P3), o
-   critique+audit de 22/09 e o `/impeccable document` (`DESIGN.md`) estão
-   aplicados, verificados e commitados. O que falta da seção "Depois dos
-   blocos": só `/impeccable init` pro `PRODUCT.md`, que depende de decisões
-   de produto ainda abertas (preço, como funciona a venda, slogan de marca
-   geral) — não bloqueia nada, é o único item realmente pendente do plano
-   inteiro.
-6. **Skill `impeccable` instalada global** nesta máquina
-   (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
-   em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
-   confirmar se a skill está instalada antes de usar `/impeccable`.
+- **Nome fantasia completo / slogan geral da marca**: ainda não definido.
+  "Encostou, ativou." é específico da seção "Diferencial vs. QR code", não
+  necessariamente o slogan geral do site.
+- **Domínio próprio**: ainda não comprado, site publicado em
+  `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
+  `index.html` pra trocar em 3 lugares quando comprar).
+- **Skill `impeccable` instalada global** nesta máquina
+  (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
+  em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
+  confirmar se a skill está instalada antes de usar `/impeccable`.

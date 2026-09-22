@@ -4,10 +4,12 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. **Os 4 blocos do plano estão concluídos.**
-Falta só "Depois dos blocos" (critique/audit de novo, document, init).
-Combinado com o dono: push só depois de um bloco inteiro validado, não item
-a item.
+Última sessão: **2026-09-22**. **O plano inteiro está concluído**: os 4
+blocos, o critique+audit de novo, `/impeccable document` (`DESIGN.md`) e
+`/impeccable init` (`PRODUCT.md`). Não há mais nada pendente deste arquivo —
+próximo trabalho de design vem de um pedido novo, não deste plano.
+Combinado com o dono: push só depois de um bloco/etapa inteira validada, não
+item a item.
 
 ---
 
@@ -355,10 +357,13 @@ local, sem automação de hover/scroll.
   "The Live Circuit". Documenta as regras que já existiam implícitas no CSS
   (lime = ação, ciano = interação, flat-at-rest, 1 papel fixo por família
   tipográfica) como regras nomeadas.
-- **`/impeccable init`** nunca foi rodado aqui — não há `PRODUCT.md`. Não
-  bloqueia comandos escopados, mas seria útil antes de qualquer superfície
-  nova. Faltam decisões de produto de verdade: preço, como funciona a venda,
-  slogan de marca.
+- ~~**`/impeccable init`**~~ — **feito em 2026-09-22**, commit `8b15bf6`.
+  `PRODUCT.md` na raiz: usuário primário (dono do negócio, não o cliente
+  final), posicionamento frente ao QR code, preço (~R$60–80/unidade,
+  recorrência possível em contrato — ainda sem modelo fechado, nunca vai pra
+  página), tecnologia própria (não terceirizada), e 5 princípios de produto
+  derivados — o mais citável: "nunca fabricar prova social" e "WhatsApp é o
+  único canal de conversão".
 
 ---
 
