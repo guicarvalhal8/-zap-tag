@@ -456,6 +456,16 @@
     **não propor de novo sem pedido explícito**.
   - Snapshot do critique em `.impeccable/critique/2026-09-22T12-52-36Z__index-html.md`.
 
+- **2026-09-22** — `/impeccable document` feito, commit `c886e76`. `DESIGN.md`
+  na raiz + `.impeccable/design.json` (sidecar do painel ao vivo, agora
+  versionado — `.gitignore` ganhou `!.impeccable/design.json`, decisão do
+  dono). North Star **"The Live Circuit"**: lime (`Volt Lime`) = ação, ciano
+  (`Circuit Cyan`) = interação do sistema — nunca intercambiáveis. 4 nomes de
+  regra documentados (One Action, Border Role, One Headline Voice,
+  Flat-At-Rest). Nomes de cor e tom gerais confirmados com o dono em 2
+  rodadas de pergunta (North Star, tom, elevação, nomes de cor, personalidade
+  de componente — todas as recomendadas foram aceitas).
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
@@ -471,12 +481,13 @@ de publicar:
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
 5. ~~**Retomar pelo `IMPECCABLE.md`.**~~ — **feito.** Os 4 blocos do plano
-   (defeitos; conversão; motion e performance; acabamento e P3) e o novo
-   critique+audit de 22/09 estão aplicados, verificados e commitados. O que
-   falta da seção "Depois dos blocos": considerar `/impeccable document`
-   pro `DESIGN.md`, e `/impeccable init` pro `PRODUCT.md` (que depende de
-   decisões de produto ainda abertas: preço, como funciona a venda, slogan
-   de marca geral).
+   (defeitos; conversão; motion e performance; acabamento e P3), o
+   critique+audit de 22/09 e o `/impeccable document` (`DESIGN.md`) estão
+   aplicados, verificados e commitados. O que falta da seção "Depois dos
+   blocos": só `/impeccable init` pro `PRODUCT.md`, que depende de decisões
+   de produto ainda abertas (preço, como funciona a venda, slogan de marca
+   geral) — não bloqueia nada, é o único item realmente pendente do plano
+   inteiro.
 6. **Skill `impeccable` instalada global** nesta máquina
    (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
    em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,

@@ -349,8 +349,12 @@ local, sem automação de hover/scroll.
       link adicionado, commit `314f683`.
     - **[P3] Canal único de WhatsApp sem fallback**: recusado — proposital,
       documentado no `CLAUDE.md`, não reabrir.
-- Considerar **`/impeccable document`** para gerar o `DESIGN.md`, que não
-  existe. O projeto tem sistema de tokens real e merece o registro.
+- ~~Considerar **`/impeccable document`**~~ — **feito em 2026-09-22**, commit
+  `c886e76`. `DESIGN.md` na raiz + `.impeccable/design.json` (agora
+  versionado — `.gitignore` ganhou `!.impeccable/design.json`). North Star
+  "The Live Circuit". Documenta as regras que já existiam implícitas no CSS
+  (lime = ação, ciano = interação, flat-at-rest, 1 papel fixo por família
+  tipográfica) como regras nomeadas.
 - **`/impeccable init`** nunca foi rodado aqui — não há `PRODUCT.md`. Não
   bloqueia comandos escopados, mas seria útil antes de qualquer superfície
   nova. Faltam decisões de produto de verdade: preço, como funciona a venda,
