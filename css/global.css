@@ -1446,6 +1446,27 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     }
 }
 
+/* Logo + slogan da marca empilhados: centralizados no mobile (herda o
+   text-align do .site-footer__inner), alinhados à esquerda no desktop. */
+.site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+@media (min-width: 640px) {
+    .site-footer__brand { align-items: flex-start; }
+}
+
+.site-footer__tagline {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
 .site-footer__links {
     display: flex;
     align-items: center;

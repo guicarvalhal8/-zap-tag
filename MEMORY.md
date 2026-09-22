@@ -39,7 +39,7 @@
 ### Ainda não definido (perguntar quando for relevante)
 
 - Tipografia.
-- Nome fantasia completo / slogan.
+- Nome fantasia completo. (Slogan definido em 2026-09-22: "Encostou, ativou.")
 - Preço, planos, como funciona a venda (loja online? sob encomenda?).
 - Diferencial frente a concorrentes (QR code é a alternativa óbvia — por que
   NFC é melhor?).
@@ -480,6 +480,19 @@
   **Com isso, o `IMPECCABLE.md` está 100% completo** — plano inteiro,
   critique+audit, document e init.
 
+- **2026-09-22** — Slogan geral da marca definido: **"Encostou, ativou."**
+  Escolhido entre três linhas de ideia (o gesto, brincadeira com "zap", o
+  resultado para o negócio). Motivo: já estava testado na página, as duas
+  palavras espelham os dois passos contra os quatro do QR code, e cabe no
+  adesivo. "Num zap, tá feito." ficou como segunda opção — descartada porque
+  "zap" também é gíria de WhatsApp e pode confundir quem não conhece a marca.
+  - Aplicado no rodapé, embaixo da logo (`.site-footer__tagline`, Manrope 500
+    em `--color-text-muted`, dentro do novo wrapper `.site-footer__brand`).
+  - A seção "Diferencial vs. QR code" **continua** com o mesmo texto em
+    destaque (Unbounded) — a repetição no rodapé é eco proposital.
+  - `<title>` e metadados de compartilhamento **não** foram mexidos.
+  - Registrado também em `PRODUCT.md` (Brand Commitments).
+
 ## Próximo passo sugerido
 
 **O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,
@@ -488,9 +501,8 @@ localmente. Não há mais um plano em andamento — o próximo trabalho de desig
 vem de um pedido novo do dono, não deste arquivo. Pendências reais que
 sobraram, registradas como decisão em aberto (não bloqueiam nada):
 
-- **Nome fantasia completo / slogan geral da marca**: ainda não definido.
-  "Encostou, ativou." é específico da seção "Diferencial vs. QR code", não
-  necessariamente o slogan geral do site.
+- **Nome fantasia completo**: ainda não definido. (O slogan já foi — ver
+  entrada de 2026-09-22 acima.)
 - **Domínio próprio**: ainda não comprado, site publicado em
   `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
   `index.html` pra trocar em 3 lugares quando comprar).
