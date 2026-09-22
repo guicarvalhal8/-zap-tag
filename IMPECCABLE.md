@@ -473,13 +473,168 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 
 ---
 
+## Fila pendente — round 4 (22/09, 21h38)
+
+**Status: nada foi implementado.** O dono pediu para deixar tudo anotado e
+retomar quando sair da faculdade. Esta seção é a lista de trabalho; não
+precisa rodar `critique` de novo antes de começar, é só pegar daqui.
+
+A rodada foi um `/impeccable critique` com os 2 subagentes isolados de sempre.
+Snapshot completo em `.impeccable/critique/2026-09-22T21-38-22Z__index-html.md`
+— **que não vem no git** (`.impeccable/` está no `.gitignore`), por isso o
+conteúdo relevante está resumido aqui.
+
+Medições feitas em iframe same-origin de largura exata, porque a janela do
+Chrome ignorou `resize_window` nas duas avaliações (`innerWidth` travado em
+1920, `outerWidth` retornando 0). Se for refazer numa janela real, desmaximizar
+o Chrome antes.
+
+### 1. [P1] Clímax da demo abaixo da dobra no celular — `/impeccable layout` + `adapt`
+
+Em 390×844: `.hero__demo` começa em y=652,6 e termina em 979,8 — **transborda
+135,8px**. A tag (o adesivo), o ripple, o check e a instrução ficam todos fora
+da tela. Em aparelho real, com a barra do navegador (~740px úteis), metade do
+próprio celular da demo também some. Em 320px piora: demo em y=710,7.
+
+O `20adcac` (Hero mobile) encolheu a demo e trouxe o **celular** para cima da
+dobra, mas parou antes do que importa: o objeto que está sendo vendido não
+aparece na primeira tela de quem decide a compra.
+
+Agrava: o `visibilityObserver` usa `threshold: 0.1`, então o convite
+automático (`touchDemoSleep(1100)`) dispara quando só o topo do celular
+apareceu — a animação roda contra um alvo invisível.
+
+Correção proposta pela avaliação:
+- Abaixo de 640px, trocar o empilhamento vertical celular→tag por arranjo
+  **horizontal** compacto (celular à esquerda, tag à direita, ~180px de altura
+  total).
+- Ancorar o gatilho na visibilidade da **tag**, não do root:
+  `visibilityObserver.observe(demo.querySelector('.touch-demo__tag'))` com
+  threshold 0.9.
+- `.hero` com `min-height: min(100svh, 760px)` — hoje compra altura que não usa.
+- **Lembrete da armadilha:** `TOUCH_DEMO_REST` / `TOUCH_DEMO_CONTACT` existem
+  no JS **e** no `global.css`. Mudou um, muda o outro.
+
+### 2. [P1] Deserto de CTA: 1.784px de rolagem sem um botão — `/impeccable layout`
+
+No celular, o último elemento de conversão do Hero está em y≈500
+(`.link-secondary`) e o próximo em y≈2.284 (primeiro `.usecase-card`). A seção
+`.compare` inteira (y 1.010→2.014) — **a seção que ganha o argumento** — não
+tem nenhum CTA. São mais de duas telas cheias, e no celular a navbar esconde o
+botão atrás do `.navbar__toggle`.
+
+O momento de maior convicção da página ("Dois passos. O QR code pede quatro." +
+"Encostou, ativou.") é exatamente onde não existe nada para clicar.
+
+Duas opções, não excludentes:
+- (a) `.btn-primary` logo abaixo do `.compare__slogan`, com `data-wa-message`
+  próprio ("vi a comparação com o QR code e quero entender").
+- (b) CTA na zona do polegar abaixo de 860px, aparecendo só depois que o Hero
+  sai de vista. Mesmo componente, mesmo canal — não introduz canal novo.
+
+### 3. [P2] O lime de ação está sendo gasto onde não se clica — `/impeccable colorize`
+
+Viola *The One Action Rule* do próprio `DESIGN.md`. Na primeira dobra do
+desktop o lime aparece em 6 lugares, e a **maior massa não é clicável**: as
+palavras "A ação acontece sozinha." (`.hero__title-accent`) a 56px, contra um
+`.btn-primary` de 219×52px. Fora do Hero, também são lime sem serem alvo:
+`.compare__column--zaptag .compare__column-title` e `.usecase-card__cta`.
+
+**Nenhum hex muda** — a paleta está travada e continua travada (ver a decisão
+do verde no `MEMORY.md`). Muda só onde se aplica. Corte de maior efeito:
+`.hero__title-accent` volta para `--color-text`, deixando o botão como a única
+massa lime acima da dobra. Se o acento no H1 for inegociável, cortar em troca
+o `.compare__column--zaptag .compare__column-title` e o `.hero__eyebrow-dot`
+— e, nesse caso, **registrar a exceção no `DESIGN.md`** em vez de deixar
+código e documento em desacordo.
+
+### 4. [P2] A página não responde nenhuma pergunta de quem vai instalar — `/impeccable clarify`
+
+Onde cola, aguenta pano molhado e gordura, quanto dura, o que acontece se o
+celular do cliente não tiver aproximação, quanto tempo até chegar, se precisa
+de internet na mesa. A página nomeia o benefício seis vezes e o mecanismo
+duas, e **nunca o objeto**. O que mais chega perto é `.compare__facts`, a
+13,6px cinza no rabo de uma seção.
+
+Cada objeção não respondida vira uma mensagem no WhatsApp respondida à mão,
+uma por lead.
+
+Correção: bloco "Perguntas de quem vai instalar" com 4–5 pares entre
+`.usecases` e `.trust-strip`, usando o mesmo padrão de disclosure do
+`#usecases-toggle` (não inventar um acordeão novo). **Não exige prova social:
+são fatos do produto, não depoimentos.** Precisa das respostas reais do dono
+antes de escrever — não inventar prazo, durabilidade nem resistência.
+
+### 5. [P2] O handoff para o WhatsApp não tem rede de segurança — `/impeccable harden`
+
+Os 11 caminhos de conversão vão para `wa.me` em `target="_blank"`, e o número
+**nunca aparece como texto** em lugar nenhum da página. No desktop o `wa.me`
+manda o visitante para a tela de QR do WhatsApp Web; sem sessão aberta ali, o
+funil acaba sem deixar rastro. Com canal único, cada falha de handoff é uma
+venda perdida sem sintoma.
+
+Correção: número escrito abaixo do `.final-cta__trust` ("ou salve o número:
+(62) 98223-3133") e sinal discreto de link externo no botão (glifo de seta
+diagonal + `aria-label` mencionando "abre o WhatsApp"). **Não é um segundo
+canal** — é o mesmo WhatsApp num formato que sobrevive quando o link falha.
+
+### 6. [P3] Seis alvos abaixo do piso de 44px — `/impeccable polish`
+
+Achado só do detector; a revisão de design não pegou. Medido em 1440, 390 e 320:
+
+| seletor | dimensão | onde |
+|---|---|---|
+| `a.logo` | 109,3 × **32px** | navbar (todas as larguras) |
+| `a.logo` | 109,3 × **32px** | rodapé (todas as larguras) |
+| `a.nav-link` "Como funciona" | 102,4 × **21,6px** | só desktop |
+| `a.nav-link` "Casos de uso" | 90,2 × **21,6px** | só desktop |
+
+O `DESIGN.md` manda garantir 44px em qualquer alvo pequeno. O hambúrguer e os
+`.btn-primary` (52px) estão corretos.
+
+### 7. Higiene do `.impeccable/config.json` (não é design)
+
+- A supressão de `cramped-padding` está com `"value": "*"` e hoje engole
+  `.navbar__mobile` e `.trust-strip` — **duas seções que não estavam na
+  investigação original** (que tratou de `.how`, `.compare` e `.usecases`). A
+  supressão deixou de ser auditável; vale trocar o wildcard por valores
+  nomeados.
+- A justificativa de `dark-glow` descreve um `box-shadow` em `global.css:318`
+  que **não existe mais** — o glow virou `filter: drop-shadow` (linhas 486/496)
+  no `b00c595`. A supressão continua válida na prática; o texto aponta para
+  código morto.
+- `ai-color-palette` no ciano dos `.section-eyebrow` aparece como achado do
+  detector de navegador e **nunca foi suprimido**, embora o `#00E5FF` seja
+  token documentado com papel definido no `DESIGN.md` e já tenha sido decidido
+  como intencional numa crítica anterior. Ou suprime com justificativa, ou
+  aceita que ele volte toda rodada.
+
+### Perguntas que a avaliação deixou em aberto
+
+1. E se, abaixo de 640px, o Hero abrisse com a demo — pequena e completa —
+   e o H1 viesse depois?
+2. O H1 descreve o que o cliente **dele** faz ("Encoste o celular"). Qual
+   seria se descrevesse o que o dono ganha? ("Seu cliente encosta. A avaliação
+   chega sozinha.") O `<title>` da aba já acerta o interlocutor melhor que o H1.
+3. A página nunca mostra o objeto que vende. Um render de estúdio do adesivo
+   sozinho não é prova social fabricada — a restrição do `PRODUCT.md` continua
+   valendo para depoimento, contagem de clientes e foto de instalação.
+4. Se você tivesse direito a exatamente um elemento lime por viewport, qual
+   ficaria?
+
 ## Placar
 
-| Eixo | Antes do bloco 1 | Depois dos 4 blocos | Depois do `f61f861` | Round 3 (22/09, trabalho) | Meta |
-|---|---|---|---|---|---|
-| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | 27/32 | 22/32 (Aceitável) | **27/32** (Bom) ✅ | ≥ 24/32 |
-| Audit Health (5 dimensões) | 14/20 | 18/20 | 16/20 (Bom) | **17/20** (Bom) | ≥ 18/20 |
-| Detector (`detect --json index.html`) | 8 achados | 0 reais | 0 reais (3 advisory) | **0** (0 advisory) ✅ | 0 |
+| Eixo | Antes do bloco 1 | Depois dos 4 blocos | Depois do `f61f861` | Round 3 (22/09, trabalho) | Round 4 (22/09, 21h38) | Meta |
+|---|---|---|---|---|---|---|
+| Design Health (Nielsen) | 17/32 | 27/32 | 22/32 (Aceitável) | **27/32** (Bom) ✅ | **27/36** (Bom, 75%) | ≥ 24/32 |
+| Audit Health (5 dimensões) | 14/20 | 18/20 | 16/20 (Bom) | **17/20** (Bom) | não rodado | ≥ 18/20 |
+| Detector (`detect --json index.html`) | 8 achados | 0 reais | 0 reais (3 advisory) | **0** (0 advisory) ✅ | **0** (exit 0) ✅ | 0 |
+
+**Atenção ao denominador do round 4:** as rodadas anteriores marcaram as
+heurísticas 7 e 10 como `n/a` e pontuaram sobre /32. O round 4 marcou só a 7
+como `n/a` (/36), porque numa página que de propósito não mostra preço a
+ausência de respostas às objeções é achado real, não critério inaplicável —
+é o item 4 da fila acima. **Os números não são comparáveis linha a linha.**
 
 - **"Depois dos 4 blocos":** critique + audit rodados no PC do trabalho em
   2026-09-22. O snapshot não foi versionado.

@@ -642,16 +642,62 @@
       `[]` puro.
     - Snapshot em `.impeccable/critique/2026-09-22T18-05-45Z__index-html.md`.
 
+- **2026-09-22 (noite, máquina `C:\Users\guica\.local\bin\zap-tag`)** — Sessão
+  de atualização de contexto, sem mudança de código no site.
+  - **`git pull` trouxe 8 commits** (`0ca5de6`..`e60bbc3`) que a outra máquina
+    já tinha feito: os 4 itens que o `HANDOFF-CLAUDE.md` deixava pendentes
+    (Hero mobile, reasseguramento com horário real, polish, fechar o ciclo) e
+    a remoção do próprio handoff. **Lição de fluxo:** `git status` sem `git
+    fetch` diz que está em dia mesmo estando 8 commits atrás — sempre fazer
+    `git fetch` + `git log HEAD..origin/main` ao abrir a pasta.
+  - **O verde foi medido e CONFIRMADO como está — não reabrir.** O dono
+    achou que a identidade visual tinha clareado. Investigado: o
+    `--color-primary: #D4FF3F` entrou no primeiro commit do site (`1a82caa`)
+    e **nunca mudou** (`git log -S` no `css/global.css`). A impressão tem
+    causa real, porém: amostrando 145 mil pixels do núcleo da tag em
+    `design-reference/logo-zaptag.jpg`, a cor dominante da logo é **`#CFFB2C`**
+    (luminosidade 57,8%) contra **`#D4FF3F`** do site (62,4%) — o site é ~4,6
+    pontos mais claro e tem mais branco na mistura (azul `0x3F` contra `0x2C`).
+    A paleta foi tirada "por aproximação" em 2026-09-18 e o ajuste fino nunca
+    foi feito. O que mudou a percepção agora foi o `f61f861` espalhar esse
+    mesmo verde por mais formas (silhueta da tag no botão, selo dos ícones,
+    marcador de passo) e o logo do cabeçalho ser um SVG preenchido com o
+    token, não a imagem original. **Decisão do dono: manter `#D4FF3F`.**
+    Se algum dia quiser alinhar, o hex vive em `css/global.css:22`,
+    `assets/favicon.svg`, `assets/og-image.png` (PNG, precisa regerar),
+    `DESIGN.md` e `.impeccable/design.json` — e o contraste aguenta os dois
+    (15,11:1 no botão com o verde da logo, contra 15,71:1 hoje).
+  - **`/impeccable critique` round 4 rodado** (2 subagentes isolados):
+    **Design Health 27/36 (75%, Bom)**, detector **0 achados / exit 0**, 0px
+    de overflow em 1440/390/320, nenhum texto abaixo de 12px, console limpo.
+    A página está mecanicamente limpa — o que sobra é estratégia, não defeito.
+  - **Nada foi implementado, por decisão do dono:** "deixe tudo anotado nas
+    alterações que temos que fazer, ao sair da faculdade faremos". A fila
+    completa (6 problemas + higiene do config, cada um com medição, correção
+    proposta e comando) está em `IMPECCABLE.md` → **"Fila pendente — round 4"**.
+    Os dois P1 são do celular: o clímax da demo cai 135,8px abaixo da dobra em
+    390×844, e há 1.784px de rolagem sem nenhum CTA bem depois do argumento
+    que convence.
+  - **Não decidido ainda** (perguntei, o dono adiou): por onde começar, o que
+    fazer com o lime do `.hero__title-accent` (viola a One Action Rule do
+    próprio `DESIGN.md`) e qual o escopo da próxima leva.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do
 `IMPECCABLE.md` (4 blocos + critique/audit + document + init), o trabalho
 novo da máquina pessoal (nome fantasia, slogan, Hero interativo, seção
 fundida) e os 4 P2 da rodada de casa (Hero mobile, reasseguramento, polish,
-fechar o ciclo) **estão todos feitos**. Design Health em 27/32, Audit Health
-em 17/20 (com os 2 P2 que geraram esse número já corrigidos no mesmo
-commit). **Sem plano de design pendente no momento.** Falta só o que não é
-trabalho de código:
+fechar o ciclo) **estão todos feitos**.
+
+**O plano vigente é a "Fila pendente — round 4" do `IMPECCABLE.md`**, escrita
+em 2026-09-22 à noite e ainda não iniciada por decisão do dono (retomar
+quando ele sair da faculdade). São 6 problemas + higiene do config, com
+medição e correção propostas para cada um; os dois P1 são de celular. Design
+Health está em 27/36 no round 4 (denominador diferente das rodadas
+anteriores — ver a nota no placar), detector zerado.
+
+Fora isso, o que falta não é trabalho de código:
 
 1. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
 2. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
@@ -660,7 +706,14 @@ trabalho de código:
 3. **Domínio próprio**: ainda não comprado, site publicado em
    `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
    `index.html` pra trocar em 3 lugares quando comprar).
-4. **Skill `impeccable` instalada global** nesta máquina
-   (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
-   em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
-   confirmar se a skill está instalada antes de usar `/impeccable`.
+4. **Skill `impeccable`** está instalada nas duas máquinas: na pessoal em
+   `C:\Users\Guilherme\.claude\skills\impeccable` e na outra em
+   `C:\Users\guica\.local\bin\.claude\skills\impeccable` (confirmado em
+   2026-09-22, rodando o round 4 por lá). Se abrir o Claude Code numa máquina
+   nova, confirmar antes de usar `/impeccable`.
+   - **Duas armadilhas de execução medidas em 2026-09-22:** o launcher
+     retorna vazio quando chamado pelo PowerShell (`$LASTEXITCODE` em branco)
+     e funciona normalmente pelo Bash — usar Bash. E o `resize_window` do
+     Chrome não tem efeito com a janela maximizada (`innerWidth` fica travado
+     em 1920, `outerWidth` retorna 0); o contorno que funcionou foi medir num
+     iframe same-origin de largura exata, descontando 15px de scrollbar.
