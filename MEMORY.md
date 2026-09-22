@@ -501,6 +501,36 @@
   no nome — a descrição vai na categoria/bio. Ainda não há CNPJ; quando
   abrir, usar esse nome fantasia. Nada mudou no site (já usa "Zap Tag").
 
+- **2026-09-22** — Quatro das "perguntas para considerar" da critique viraram
+  mudança (pedido do dono). Detalhes das regras novas em `DESIGN.md`.
+  - **Ícone do WhatsApp** nos 4 botões de conversão e no link do rodapé. É o
+    glifo oficial (Simple Icons, CC0), definido uma vez só como
+    `<symbol id="icon-whatsapp">` no topo do `<body>` e referenciado por
+    `<use>`. Botão novo: `<svg class="btn-primary__icon" aria-hidden="true"
+    focusable="false"><use href="#icon-whatsapp"/></svg>` antes do texto.
+  - **"Como funciona" + "Diferencial vs. QR code" fundidas** numa seção só
+    (`section.compare#como-funciona`). H2 novo: "Dois passos. O QR code pede
+    quatro." A coluna Zap Tag vem primeiro e os 2 passos ganharam descrição.
+    O "Resultado automático" da seção antiga entrou na descrição do passo 2.
+    Saíram a `.how` inteira (HTML, CSS, `initHowSteps`/`syncHowTrack`) e o link
+    "Diferencial" da navbar. A âncora `#diferencial` não existe mais.
+  - **Silhueta da tag como forma de interface** (`--tag-tip-ratio: 0.383`):
+    botão primário com a ponta da tag (lime num `::before` com clip-path,
+    pra não cortar o anel de foco), selo dos ícones de casos de uso e
+    marcador dos passos da Zap Tag. De brinde, corrigido um bug antigo: o
+    `.btn-primary--compact` nunca ficava compacto, porque a regra base vinha
+    depois na folha com a mesma especificidade.
+  - **Hero interativo:** o celular virou `<button>`. Mouse arrasta até a tag,
+    touch toca e teclado usa Enter. A demo automática continua como convite
+    e para no primeiro gesto. Contato em `translateY(22px)` e repouso em
+    `-40px`: os dois valores existem em `touch-animation.js` e em
+    `global.css`, e precisam ficar iguais. No touch **não** tem arraste de
+    propósito, porque prenderia a rolagem da página numa área de 168×300px.
+  - Verificado com Playwright em 1440 e 390: arraste, toque e teclado
+    disparam e anunciam, console limpo, sem overflow lateral. O detector dá
+    38 avisos `advisory` (tamanhos de fonte e raios fora da escala do
+    `DESIGN.md`, a maioria de antes desta mudança) e nenhum achado de verdade.
+
 ## Próximo passo sugerido
 
 **O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,

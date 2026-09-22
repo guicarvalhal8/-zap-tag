@@ -32,6 +32,26 @@
     --font-body: 'Manrope', sans-serif;
 
     --nav-height: 72px;
+
+    /* A silhueta da tag da logo (path M15 20 L62 20 L85 50 L62 80 L15 80,
+       normalizado pro retângulo que ela ocupa): corpo reto, ponta em flecha
+       à direita. É a única forma própria da marca — aqui ela vira forma de
+       interface (botão, selo de ícone, marcador de passo), não só logo.
+       A ponta mede 0,383 × a altura, a mesma proporção do desenho original. */
+    --tag-tip-ratio: 0.383;
+}
+
+/* Some da tela, fica pro leitor de tela (região aria-live da demo). */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -158,10 +178,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text);
 }
 
-.btn-primary--compact {
-    padding: 10px 20px;
+/* Especificidade dupla de propósito: a regra base .btn-primary vem DEPOIS
+   nesta folha, e com a mesma especificidade o padding e a fonte dela
+   venciam — o "compacto" nunca tinha ficado compacto. */
+.btn-primary.btn-primary--compact {
+    --tag-h: 44px;
+    padding: 0 calc(var(--tag-tip) + 10px) 0 18px;
     font-size: 0.85rem;
-    min-height: 44px;
 }
 
 .navbar__toggle {
@@ -390,27 +413,67 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin-top: 8px;
 }
 
+/* O botão de conversão tem a forma da tag: corpo com cantos de 10px à
+   esquerda e a ponta da logo à direita, apontando pra ação. O lime é
+   pintado num ::before recortado por clip-path — e não no próprio botão —
+   porque clip-path no elemento cortaria também o anel de foco. Assim o anel
+   ciano global continua inteiro, contornando a tag toda. */
 .btn-primary {
+    --tag-h: 52px;
+    --tag-tip: calc(var(--tag-h) * var(--tag-tip-ratio));
+
+    position: relative;
+    isolation: isolate;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding: 15px 28px;
-    background: var(--color-primary);
+    min-height: var(--tag-h);
+    padding: 0 calc(var(--tag-tip) + 14px) 0 24px;
     color: var(--color-primary-text);
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 0.95rem;
     border-radius: 10px;
-    transition: transform 180ms ease, box-shadow 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 180ms ease, filter 180ms ease;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-primary);
+    border-radius: 10px 0 0 10px;
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--tag-tip)) 0,
+        100% 50%,
+        calc(100% - var(--tag-tip)) 100%,
+        0 100%
+    );
+}
+
+.btn-primary__icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .btn-primary:hover,
 .btn-primary:focus-visible {
     transform: scale(1.03);
-    /* Segundo e último literal de cor, agora derivado do token. Mantém o
-       offset de 10px e o spread negativo: é elevação direcional, não o halo
-       cromático de offset zero que o craft-floor trata como decoração. */
-    box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--color-primary) 45%, transparent);
+    /* Era box-shadow, que desenha um retângulo e ignoraria a ponta da tag.
+       drop-shadow segue a silhueta recortada. Continua com offset pra baixo:
+       elevação direcional, não o halo de offset zero que o craft-floor trata
+       como decoração. */
+    filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--color-primary) 38%, transparent));
+}
+
+/* Alto contraste do Windows descarta o fundo pintado no ::before; a borda
+   devolve o contorno do controle. */
+@media (forced-colors: active) {
+    .btn-primary { border: 1px solid ButtonText; }
 }
 
 .btn-primary:active { transform: scale(0.98); }
@@ -501,9 +564,60 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     outline: 1px solid var(--color-border);
     border-radius: 32px;
     background: var(--color-bg);
-    transform: translateY(-26px);
+    padding: 0;
+    color: inherit;
+    /* Repouso: mesmo valor de TOUCH_DEMO_REST em touch-animation.js. */
+    transform: translateY(-40px);
     transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
     z-index: 2;
+    cursor: grab;
+    /* Touch: rolagem vertical continua com o navegador; o gesto no celular
+       é um toque, não um arraste (ver touch-animation.js). */
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.touch-demo__phone:focus-visible {
+    outline-offset: 6px;
+}
+
+/* Durante o arraste o celular segue o cursor sem atraso: a transition de
+   380ms faria ele "correr atrás" do mouse. Ela volta ao soltar, e é ela que
+   faz o celular voltar sozinho pro repouso. */
+.touch-demo.is-dragging .touch-demo__phone {
+    transition: none;
+    cursor: grabbing;
+}
+
+/* O celular chegou perto: a tag reage antes do contato, como um campo de
+   aproximação. Ciano = resposta do sistema, não ação. */
+.touch-demo__tag {
+    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease;
+}
+
+.touch-demo.is-near .touch-demo__tag {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--color-secondary) 55%, transparent));
+}
+
+.touch-demo__hint {
+    margin: 18px 0 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* Mouse arrasta; dedo toca. Cada um lê a instrução do próprio gesto. */
+.touch-demo__hint-tap { display: none; }
+
+@media (hover: none), (pointer: coarse) {
+    .touch-demo__hint-drag { display: none; }
+    .touch-demo__hint-tap { display: inline; }
+    .touch-demo__phone { cursor: pointer; }
 }
 
 .touch-demo__phone::before {
@@ -518,11 +632,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     background: var(--color-border);
 }
 
+/* Contato: mesmo valor de TOUCH_DEMO_CONTACT. Sobram ~6px dos 28px de gap
+   até a tag — antes o celular parava a 28px e nunca parecia encostar. */
 .touch-demo.is-tapped .touch-demo__phone {
-    transform: translateY(0);
+    transform: translateY(22px);
 }
 
 .touch-demo__screen {
+    display: block;
     position: absolute;
     inset: 22px 10px 10px;
     border-radius: 20px;
@@ -627,12 +744,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     stroke: var(--color-primary-text);
 }
 
-/* ---- Seção "Como funciona" ---- */
-
-.how {
-    padding-block: 96px;
-    border-top: 1px solid var(--color-border);
-}
+/* ---- Cabeçalho de seção (compartilhado) ---- */
 
 .section-header {
     display: flex;
@@ -677,184 +789,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
-/* As três variáveis moram AQUI, e não na `.how__steps`, porque quem as
-   consome são `.how__track` e `.how__track-fill` — que no HTML são IRMÃOS da
-   `<ol>`, não filhos. Custom property herda para baixo, nunca para o lado:
-   declaradas na `.how__steps`, as duas trilhas recebiam `var()` inválida no
-   computed-value time e caíam para `auto`. Medido antes da correção: `top`
-   computado = 0px onde a intenção era 32px, ou seja a trilha passava 32px
-   acima do centro dos ícones e lia como um sublinhado perdido embaixo do H2.
-   O `.how__steps-wrap` é o ancestral comum dos três. */
-.how__steps-wrap {
-    --how-icon: 64px;
-    --how-card-h: 148px;
-    --how-gap-mobile: 40px;
-
-    position: relative;
-}
-
-.how__steps {
-    position: relative;
-    z-index: 1;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--how-gap-mobile);
-}
-
-@media (min-width: 900px) {
-    .how__steps {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-    }
-}
-
-.how__track,
-.how__track-fill {
-    position: absolute;
-    left: 50%;
-    top: calc(var(--how-icon) / 2);
-    width: 2px;
-    /* `--how-track-h` é MEDIDO em JS (centro do 1º ícone ao centro do 3º) em
-       vez de estimado, porque a altura real do passo depende de a descrição
-       quebrar em 2 ou 3 linhas — e ela está presa a ~26 caracteres por linha
-       pelo `max-width: 26ch`, independente do viewport. Medido: o passo tem
-       158px de altura real contra os 148px que o `--how-card-h` assumia, o
-       que fazia a trilha parar ~20px antes do terceiro ícone em toda largura
-       mobile. O `calc()` antigo continua como fallback pra quando o JS não
-       roda: aproximado, mas melhor que altura zero. */
-    height: var(--how-track-h, calc(2 * (var(--how-card-h) + var(--how-gap-mobile))));
-    background: var(--color-border);
-    transform: translateX(-50%);
-    z-index: 0;
-}
-
-.how__track-fill {
-    background: var(--color-primary);
-    transform: translateX(-50%) scaleY(var(--how-fill, 0));
-    transform-origin: top;
-    transition: transform 900ms ease;
-}
-
-@media (min-width: 900px) {
-    .how__track,
-    .how__track-fill {
-        left: calc(100% / 6);
-        right: calc(100% / 6);
-        top: calc(var(--how-icon) / 2);
-        width: auto;
-        height: 2px;
-        transform: none;
-    }
-
-    .how__track-fill {
-        transform: scaleX(var(--how-fill, 0));
-        transform-origin: left;
-    }
-}
-
-.how__step {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-    min-height: var(--how-card-h);
-}
-
-@media (min-width: 900px) {
-    .how__step { min-height: 0; }
-}
-
-.how__step-visual {
-    position: relative;
-    width: var(--how-icon);
-    height: var(--how-icon);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 4px;
-}
-
-/* O número sai de trás do círculo. Ele estava centralizado no mesmo ponto do
-   `.how__step-icon`, que tem `background: var(--color-surface)` opaco de 64px
-   — o círculo bissectava cada dígito e sobravam fragmentos nas laterais. A
-   `opacity: 0.14` dava ~1,2:1, então ele era invisível como informação e
-   visível como ruído: o pior dos dois mundos, justamente no andaime que
-   comunica "passo 1 de 3".
-   O deslocamento acompanha o eixo da trilha, que troca entre os breakpoints:
-   no mobile a trilha é VERTICAL pelo centro, então o número vai pro lado; no
-   desktop ela é HORIZONTAL na altura do centro do ícone, então o número vai
-   pra cima. Nos dois casos ele fica livre da linha.
-   `opacity: 0.6` sobre o fundo dá ~3,15:1, que passa o mínimo de 3:1 para
-   texto grande — ele deixa de ser textura e volta a ser informação. */
-.how__step-number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-118%, -50%);
-    font-family: var(--font-display-highlight);
-    font-weight: 600;
-    font-size: clamp(2.75rem, 5vw, 3.75rem);
-    line-height: 1;
-    color: var(--color-text-muted);
-    opacity: 0.6;
-    z-index: 0;
-    user-select: none;
-    white-space: nowrap;
-}
-
-@media (min-width: 900px) {
-    .how__step-number { transform: translate(-50%, -104%); }
-}
-
-.how__step-icon {
-    position: relative;
-    z-index: 1;
-    width: var(--how-icon);
-    height: var(--how-icon);
-    border-radius: 50%;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 200ms ease, border-color 200ms ease;
-}
-
-.how__step:hover .how__step-icon {
-    transform: scale(1.06);
-    border-color: var(--color-primary);
-}
-
-.how__step-glyph {
-    width: 26px;
-    height: 26px;
-    color: var(--color-primary);
-    flex-shrink: 0;
-}
-
-.how__step-title {
-    font-family: var(--font-display-alt);
-    font-weight: 500;
-    font-size: 1.1rem;
-    color: var(--color-text);
-    margin: 0;
-}
-
-.how__step-desc {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    margin: 0;
-    max-width: 26ch;
-}
-
-/* ---- Seção "Diferencial vs. QR code" ---- */
+/* ---- Seção "Como funciona" (a comparação com o QR code É a explicação) ---- */
 
 .compare {
     padding-block: 96px;
@@ -971,9 +906,43 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text-muted);
 }
 
+/* Os passos da Zap Tag agora carregam a explicação que antes morava na
+   seção "Como funciona": título + uma linha de descrição. O marcador do
+   número vira a silhueta da tag (o QR continua com o círculo neutro) — a
+   forma da marca só aparece do lado da marca. */
+.compare__column--zaptag .compare__step {
+    padding-block: 16px;
+    padding-left: 60px;
+    border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+}
+
 .compare__column--zaptag .compare__step::before {
+    top: 16px;
+    left: 16px;
+    transform: none;
+    width: 30px;
+    height: 22px;
+    justify-content: flex-start;
+    padding-left: 8px;
+    border-radius: 4px 0 0 4px;
+    clip-path: polygon(0 0, calc(100% - 22px * var(--tag-tip-ratio)) 0, 100% 50%, calc(100% - 22px * var(--tag-tip-ratio)) 100%, 0 100%);
     background: var(--color-primary);
     color: var(--color-primary-text);
+}
+
+.compare__step-title {
+    display: block;
+    font-weight: 500;
+    font-size: 0.98rem;
+    color: var(--color-text);
+}
+
+.compare__step-desc {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
 }
 
 .compare__slogan {
@@ -1131,10 +1100,38 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     outline-offset: 4px;
 }
 
+/* O ícone de cada automação mora dentro de uma tag — cada caso de uso é,
+   literalmente, um adesivo. Tinta lime a 12% (derivada do token, não um hex
+   novo), com o furo da logo no canto superior esquerdo. O clip-path também
+   recorta o glow do ::after, então a entrada vira "a tag acende". */
 .usecase-card__icon-wrap {
+    --tag-h: 46px;
     position: relative;
-    width: 30px;
-    height: 30px;
+    display: flex;
+    align-items: center;
+    width: calc(var(--tag-h) * 1.1667);
+    height: var(--tag-h);
+    padding-left: 12px;
+    border-radius: 6px 0 0 6px;
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--tag-h) * var(--tag-tip-ratio)) 0,
+        100% 50%,
+        calc(100% - var(--tag-h) * var(--tag-tip-ratio)) 100%,
+        0 100%
+    );
+}
+
+.usecase-card__icon-wrap::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-surface);
 }
 
 .usecase-card__icon-wrap::after {
@@ -1150,8 +1147,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .usecase-card__icon {
     position: relative;
     display: block;
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     color: var(--color-primary);
     transform: scale(0.4) rotate(-8deg);
     opacity: 0;
@@ -1523,8 +1520,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { transition: none; }
     .touch-demo__phone { transition: none; }
-    .how__track-fill { transition: none; }
-    .how__step-icon { transition: none; }
+    .touch-demo__tag { transition: none; }
     .usecase-card { transition: none; }
     .usecase-card__cta svg { transition: none; }
     .usecases__expand-wrap { transition: none; }

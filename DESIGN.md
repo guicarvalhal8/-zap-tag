@@ -50,7 +50,7 @@ components:
     backgroundColor: "{colors.volt-lime}"
     textColor: "{colors.deep-ink}"
     rounded: "{rounded.md}"
-    padding: "15px 28px"
+    padding: "0 34px 0 24px (altura 52px, ponta da tag à direita)"
   button-primary-hover:
     backgroundColor: "{colors.volt-lime}"
     textColor: "{colors.deep-ink}"
@@ -116,7 +116,7 @@ Paleta de duas cores acesas sobre uma base quase-preta de duas camadas — trava
 ### Hierarchy
 - **Display** (peso 500, `clamp(2.25rem, 5vw, 3.5rem)`, altura de linha 1.08): só o H1 do Hero.
 - **Headline** (peso 500, `clamp(1.75rem, 3.4vw, 2.5rem)`): todo H2 (`.section-title`, `.final-cta__title`) e H3 (`.how__step-title`, `.compare__column-title`, `.usecase-card__title`).
-- **Accent** (peso 600, `clamp(1.75rem, 4vw, 2.5rem)`): números fantasma dos passos ("Como funciona") e o slogan de destaque da comparação com QR code. Reservado pra momentos únicos, não pra hierarquia recorrente.
+- **Accent** (peso 600, `clamp(1.75rem, 4vw, 2.5rem)`): o slogan de destaque "Encostou, ativou." na seção "Como funciona". Reservado pra momentos únicos, não pra hierarquia recorrente.
 - **Body** (peso 400/500, 1rem, altura de linha 1.5): texto corrido, medida de linha confortável.
 - **Label** (peso 400–500, 0,75–0,95rem): legendas, trust lines, copyright — nunca abaixo de 12px.
 
@@ -125,14 +125,14 @@ Paleta de duas cores acesas sobre uma base quase-preta de duas camadas — trava
 
 ## Layout
 
-Container centralizado, seções empilhadas verticalmente (Hero → Como funciona → Diferencial vs. QR code → Casos de uso → CTA final + rodapé). Mobile-first: grid de 1 coluna até ~760/860px, 2–3 colunas acima disso conforme a seção. Navbar fixa no topo (`--nav-height: 72px`), com painel mobile que desliza abaixo dela via `grid-template-rows: 0fr → 1fr` (nunca `display: none` abrupto). Ritmo vertical generoso entre seções (padding-block na casa de 80–120px), mais apertado dentro de cards.
+Container centralizado, seções empilhadas verticalmente (Hero → Como funciona, que é a comparação com o QR code → Casos de uso → faixa de confiança → CTA final + rodapé). Mobile-first: grid de 1 coluna até ~760/860px, 2–3 colunas acima disso conforme a seção. Navbar fixa no topo (`--nav-height: 72px`), com painel mobile que desliza abaixo dela via `grid-template-rows: 0fr → 1fr` (nunca `display: none` abrupto). Ritmo vertical generoso entre seções (padding-block na casa de 80–120px), mais apertado dentro de cards.
 
 ## Elevation & Depth
 
 Sistema flat por padrão — nenhuma superfície tem sombra em repouso. Profundidade aparece só como resposta a uma interação: o botão primário ganha um glow direcional lime no hover/foco (nunca em repouso), e é isso, não um halo de offset zero.
 
 ### Shadow Vocabulary
-- **Ação em resposta** (`box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--color-primary) 45%, transparent)`): só em `.btn-primary:hover`/`:focus-visible`. Offset de 10px pra baixo, spread negativo — elevação direcional, não halo simétrico.
+- **Ação em resposta** (`filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--color-primary) 38%, transparent))`): só em `.btn-primary:hover`/`:focus-visible`. Offset de 8px pra baixo, seguindo a silhueta da tag — elevação direcional, não halo simétrico.
 - **Colapso de menu mobile** (`box-shadow: inset 0 1px 0 var(--color-border)`): substitui uma borda física que não colapsaria com a animação de altura — não é elevação, é um truque de layout disfarçado de sombra.
 
 ### Named Rules
@@ -142,12 +142,20 @@ Sistema flat por padrão — nenhuma superfície tem sombra em repouso. Profundi
 
 Cantos moderados, nunca agudos nem excessivamente arredondados. Botões e inputs em 10px; cards em 16px; badges/pills em 999px (totalmente arredondados); ícones circulares (avatar, número fantasma) em 50%. Bordas finas (1–1,5px) — nunca grossas o suficiente pra virar elemento decorativo por conta própria.
 
+### A silhueta da tag
+A forma da logo (corpo reto, ponta em flecha à direita, furo no canto superior esquerdo) é a única forma própria da marca, e é usada como forma de interface, não só como logo. A ponta mede 0,383 × a altura (`--tag-tip-ratio`), a mesma proporção do desenho original. Aparece em três lugares, sempre com papel de marca ou de ação:
+- **Botão primário:** a ponta aponta pra ação. O lime é pintado num `::before` recortado por `clip-path`, nunca no botão, pra que o anel de foco não seja cortado.
+- **Selo do ícone dos casos de uso:** cada automação mora dentro de uma tag, com tinta lime a 12% e o furo da logo.
+- **Marcador de passo da coluna Zap Tag** na comparação com o QR code. O QR code fica com o círculo neutro: a forma da marca só aparece do lado da marca.
+
+Cantos de 4px e 6px existem só no lado reto dessas tags pequenas, proporcionais ao tamanho delas.
+
 ## Components
 
 ### Buttons
 - **Shape:** cantos de 10px (`{rounded.md}`).
-- **Primary:** fundo Volt Lime, texto Deep Ink, `padding: 15px 28px`. É a única ação de conversão do site — sempre o mesmo componente, nunca uma variação de cor.
-- **Hover / Focus:** `transform: scale(1.03)` + glow direcional lime (ver Elevation). Anel de foco ciano por cima, sempre visível.
+- **Primary:** em forma de tag (ver Shapes), fundo Volt Lime, texto Deep Ink, glifo do WhatsApp à esquerda do rótulo, altura 52px. É a única ação de conversão do site — sempre o mesmo componente, nunca uma variação de cor.
+- **Hover / Focus:** `transform: scale(1.03)` + `filter: drop-shadow` lime com offset pra baixo, que segue a silhueta da tag (box-shadow desenharia um retângulo). Anel de foco ciano por cima, sempre visível.
 - **Outline:** fundo transparente, borda 1,5px em Meaningful Border (nunca Decorative Border — token errado aqui é falha de contraste WCAG 1.4.11), texto Signal White. Vira lime no hover/foco.
 - **Compact:** mesma família do primary, padding reduzido (`10px 20px`), usado só na navbar. `min-height: 44px` garantido mesmo compacto.
 
@@ -163,7 +171,7 @@ Cantos moderados, nunca agudos nem excessivamente arredondados. Botões e inputs
 - **Mobile:** hambúrguer 44×44px que vira X; painel desliza abaixo da barra via altura animada, nunca `display: none` abrupto — preserva foco e árvore de acessibilidade durante a transição.
 
 ### Touch Demo (componente de assinatura)
-Mockup de celular com um "adesivo" ao lado — ao "tocar", um ripple ciano se expande e o mockup troca de painel mostrando o caso de uso ativado. É a peça mais distintiva do sistema: transforma o conceito abstrato "NFC" numa animação concreta e legível em 2 segundos. Painéis trocam com fade sequencial (nunca crossfade sobreposto — ver `switchPanel()` em `touch-animation.js`), e a demo assenta sozinha depois de 2 ciclos completos em vez de rodar pra sempre.
+Mockup de celular com um "adesivo" ao lado — ao "tocar", um ripple ciano se expande e o mockup troca de painel mostrando o caso de uso ativado. É a peça mais distintiva do sistema: transforma o conceito abstrato "NFC" numa animação concreta e legível em 2 segundos. Painéis trocam com fade sequencial (nunca crossfade sobreposto — ver `switchPanel()` em `touch-animation.js`), e a demo assenta sozinha depois de 2 ciclos completos em vez de rodar pra sempre. **É interativa:** o celular é um `<button>`. Com mouse, a pessoa arrasta o celular até a tag, a tag reage perto do contato (ciano, resposta do sistema) e o toque dispara ao encostar. No touch, um toque faz o gesto, porque arrastar ali prenderia a rolagem da página. No teclado, Enter/Espaço. A demo automática para no primeiro gesto da pessoa, e o resultado é anunciado por `aria-live`.
 
 ## Do's and Don'ts
 

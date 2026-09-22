@@ -77,117 +77,13 @@ function initWhatsappLinks() {
     });
 }
 
-// Seção "Como funciona": passos entram em sequência ao rolar até lá, e a
-// trilha conectora acende junto com cada passo. Ao sair da tela (pra cima
-// ou pra baixo), desfaz tudo — se o usuário voltar, a sequência roda de novo
-// do zero, em vez de ficar só marcada como "já vista".
-// A trilha vertical do mobile precisa ir do centro do 1º ícone ao centro do
-// 3º, e essa distância depende da altura REAL do passo — a descrição quebra
-// em 2 ou 3 linhas conforme a largura, porque está presa a ~26 caracteres por
-// linha pelo `max-width: 26ch`. O CSS assumia 148px fixos (`--how-card-h`) e
-// o passo mede 158px já com 2 linhas, então a trilha parava ~20px antes do
-// terceiro ícone em toda largura mobile. Aqui a altura é medida em vez de
-// estimada.
-//
-// Isto é leitura de layout, mas não é o padrão de thrash: são duas leituras
-// (init e resize), não uma por evento contínuo. O `transform` do reveal não
-// contamina a medida porque os dois ícones estão deslocados igualmente e o
-// que interessa é a diferença entre eles.
-function syncHowTrack(section) {
-    const wrap = section.querySelector('.how__steps-wrap');
-    const icons = section.querySelectorAll('.how__step-icon');
-    if (!wrap || icons.length < 2) return;
-
-    const first = icons[0].getBoundingClientRect();
-    const last = icons[icons.length - 1].getBoundingClientRect();
-    const height = (last.top + last.height / 2) - (first.top + first.height / 2);
-
-    // No desktop os ícones ficam lado a lado e a distância vertical é 0 — não
-    // tem problema, a media query de 900px sobrescreve a altura com 2px.
-    wrap.style.setProperty('--how-track-h', `${Math.max(0, Math.round(height))}px`);
-}
-
-function initHowSteps() {
-    const section = document.querySelector('.how');
-    if (!section) return;
-
-    syncHowTrack(section);
-
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => syncHowTrack(section), 150);
-    });
-
-    // As fontes do Google chegam depois do primeiro paint e mudam a altura da
-    // descrição, então remede quando elas assentarem.
-    if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => syncHowTrack(section));
-    }
-
-    const steps = section.querySelectorAll('.how__step');
-    const fill = section.querySelector('.how__track-fill');
-    const headerItems = section.querySelectorAll('.section-header [data-reveal]');
-    if (!steps.length) return;
-
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let timers = [];
-    // Decisão do dono: a sequência desconstrói/reconstrói ao rolar, mas só até
-    // terminar de rodar uma vez inteira — depois disso trava no estado final e
-    // o observer desliga. "Completa" = o timer do último passo disparou; se a
-    // seção sair de vista no meio, hide() cancela os timers pendentes e a
-    // próxima entrada refaz a sequência do zero (comportamento de antes).
-    let observer = null;
-
-    const clearTimers = () => {
-        timers.forEach((id) => clearTimeout(id));
-        timers = [];
-    };
-
-    const show = () => {
-        clearTimers();
-        headerItems.forEach((el) => el.classList.add('is-visible'));
-        steps.forEach((step, i) => {
-            const id = setTimeout(() => {
-                step.classList.add('is-visible');
-                if (fill) fill.style.setProperty('--how-fill', (i + 1) / steps.length);
-                if (i === steps.length - 1 && observer) observer.disconnect();
-            }, reducedMotion ? 0 : i * 180);
-            timers.push(id);
-        });
-    };
-
-    const hide = () => {
-        clearTimers();
-        headerItems.forEach((el) => el.classList.remove('is-visible'));
-        steps.forEach((step) => step.classList.remove('is-visible'));
-        if (fill) fill.style.setProperty('--how-fill', 0);
-    };
-
-    if (reducedMotion) {
-        show();
-        return; // sem observer: fica sempre visível, sem reconstrução
-    }
-
-    observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                show();
-            } else {
-                hide();
-            }
-        });
-    }, { threshold: 0.35 });
-
-    observer.observe(section);
-}
-
-// Seção "Diferencial vs. QR code": coluna QR entra com stagger mais lento
-// (180ms) que a coluna Zaptag (90ms) — a diferença de ritmo reforça a
-// diferença de "quantidade de espera" antes mesmo da pessoa ler o texto.
-// Slogan de destaque entra depois, com scale-in próprio (ver CSS), seguido
-// pelos três diferenciais técnicos. Desconstrói ao sair da tela, como as
-// outras seções com scroll reveal (ver initHowSteps/initUseCases).
+// Seção "Como funciona" (fundida com o antigo "Diferencial vs. QR code"):
+// a coluna Zap Tag entra rápido (90ms entre passos) e a coluna QR devagar
+// (180ms) — a diferença de ritmo mostra a diferença de espera antes mesmo
+// da pessoa ler o texto. Slogan de destaque entra depois, com scale-in
+// próprio (ver CSS), seguido pelos três diferenciais. Se a seção sair de
+// vista no meio, desfaz e refaz na próxima entrada; depois de uma passagem
+// completa, trava no estado final.
 function initCompare() {
     const section = document.querySelector('.compare');
     if (!section) return;
@@ -200,7 +96,7 @@ function initCompare() {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let timers = [];
-    // Mesma trava do initHowSteps: os facts (720ms) são o último evento
+    // A trava: os facts (720ms) são o último evento
     // agendado por show(), então marcam o fim de uma passagem completa.
     let observer = null;
 
@@ -315,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initHeroReveal', initHeroReveal);
     run('initWhatsappLinks', initWhatsappLinks);
     run('initTouchAnimation', () => initTouchAnimation(document.getElementById('hero-touch-demo')));
-    run('initHowSteps', initHowSteps);
     run('initCompare', initCompare);
     run('initUseCases', initUseCases);
     run('initFinalCta', initFinalCta);

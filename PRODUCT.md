@@ -18,7 +18,7 @@ Adesivos NFC que disparam uma ação instantânea quando o celular do cliente en
 
 ## Positioning
 
-Mecanismo concreto e diferente do concorrente direto óbvio, o QR code: encostar é 2 passos (aproximar o celular, a ação abre) contra os 4 do QR (abrir câmera, focar, esperar reconhecer, às vezes cair em anúncio ou app store). A diferença não é alegada, é demonstrada na própria página (seção "Diferencial vs. QR code"). A tecnologia de gravação e redirecionamento é solução própria da Zap Tag, não revenda de plataforma terceirizada.
+Mecanismo concreto e diferente do concorrente direto óbvio, o QR code: encostar é 2 passos (aproximar o celular, a ação abre) contra os 4 do QR (abrir câmera, focar, esperar reconhecer, às vezes cair em anúncio ou app store). A diferença não é alegada, é demonstrada na própria página (seção "Como funciona", que é a própria comparação com o QR code). A tecnologia de gravação e redirecionamento é solução própria da Zap Tag, não revenda de plataforma terceirizada.
 
 ## Operating Context
 
@@ -35,7 +35,7 @@ O adesivo é instalado fisicamente no ambiente do negócio (mesa, balcão, vitri
 ## Brand Commitments
 
 - **Nome:** Zap Tag. Também é o nome fantasia decidido para o futuro CNPJ (2026-09-22), sem complemento descritivo — marca, nome fantasia, Instagram e Perfil da Empresa no Google usam o mesmo nome. A descrição do que a empresa faz vai na categoria/bio/descrição, nunca no nome. Ainda não há CNPJ.
-- **Slogan da marca:** "Encostou, ativou." (definido em 2026-09-22). Vale para a marca inteira — rodapé do site, bio do Instagram, adesivo, material impresso — e não só para a seção "Diferencial vs. QR code", onde nasceu. As duas palavras espelham os dois passos do produto contra os quatro do QR code.
+- **Slogan da marca:** "Encostou, ativou." (definido em 2026-09-22). Vale para a marca inteira — rodapé do site, bio do Instagram, adesivo, material impresso — e não só para a seção "Como funciona" (antes "Diferencial vs. QR code"), onde nasceu. As duas palavras espelham os dois passos do produto contra os quatro do QR code.
 - **Identidade visual travada:** logo, paleta de cores e sistema visual são intocáveis por palavras do dono — documentados em `DESIGN.md` (Volt Lime = ação, Circuit Cyan = interação do sistema, sobre fundo quase-preto). Token novo pode ser criado; hex existente não muda sem decisão consciente dele.
 - **Contatos reais:** WhatsApp `5562982233133`, e-mail `usezaptag@gmail.com`, Instagram `@zap_tag_`.
 - **Voz:** pt-BR, direta e coloquial, sem jargão técnico (“NFC”, “IoT”) na copy visível — a copy nomeia o resultado concreto pro cliente, não a tecnologia por trás.
