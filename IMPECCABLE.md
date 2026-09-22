@@ -428,26 +428,23 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 
 ## Placar
 
-| Eixo | Antes do bloco 1 | Depois dos 4 blocos (critique + audit de 2026-09-22) | Meta |
-|---|---|---|---|
-| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | **27/32** (Bom, 84%) ✅ | ≥ 24/32 |
-| Audit Health (5 dimensões) | 14/20 | **18/20** (Excelente) ✅ | ≥ 18/20 |
-| Detector | 8 achados | **0 achados reais** ✅ | 0 |
+| Eixo | Antes do bloco 1 | Depois dos 4 blocos | Depois do `f61f861` | Meta |
+|---|---|---|---|---|
+| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | 27/32 | **22/32** (Aceitável) | ≥ 24/32 |
+| Audit Health (5 dimensões) | 14/20 | 18/20 | **16/20** (Bom) | ≥ 18/20 |
+| Detector (`detect --json index.html`) | 8 achados | 0 reais | **0 reais** (3 advisory) | 0 |
 
-As duas notas foram recalculadas depois dos 4 blocos, com o `critique` e o
-`audit` rodados de novo em 2026-09-22 (snapshot em
-`.impeccable/critique/2026-09-22T12-52-36Z__index-html.md`, fora do git de
-propósito). Os achados do audit dessa rodada foram corrigidos depois, no
-commit `155bb1c`, então o 18/20 é o piso, não o estado atual.
-
-**As notas não incluem o commit `f61f861`** (Hero interativo, forma da tag na
-interface, ícone do WhatsApp e fusão de "Como funciona" com "Diferencial").
-Ele mexeu na estrutura da página, e o placar só volta a valer depois de rodar
-`/impeccable critique` e `/impeccable audit` de novo.
-
-**Sobre o detector:** a versão atual passou a emitir avisos `advisory` de
-aderência ao `DESIGN.md`. Em `f61f861` ele deu 38 avisos desse tipo e nenhum
-achado de verdade. São quase todos tamanhos de fonte (0,72–1,15rem) e raios
-(2, 4, 6, 20 e 32px) fora da escala documentada, a maioria de antes desse
-commit. Resolver isso é trabalho de sistema, não de defeito: ou a escala do
-`DESIGN.md` ganha esses degraus, ou o CSS converge pra escala atual.
+- **"Depois dos 4 blocos":** critique + audit rodados no PC do trabalho em
+  2026-09-22. O snapshot não foi versionado.
+- **"Depois do `f61f861`":** rodada seguinte, na máquina pessoal
+  (`.impeccable/critique/2026-09-22T15-28-49Z__index-html.md`). Esse revisor
+  não viu a nota anterior e foi mais exigente, então a queda não é
+  comparação exata. Mas os defeitos que ele apontou foram medidos e eram
+  reais.
+- **As correções dessa rodada já foram aplicadas:** os 3 P1 (foco do celular
+  da demo, "2 contra 4", entrelinha dos títulos) e os defeitos da demo
+  (morria ao rolar por cima no celular, saltava 62px ao ser agarrada,
+  autoplay de ~21s). Detalhes no `MEMORY.md`. O placar só volta a valer
+  depois de rodar `critique` + `audit` de novo.
+- **Detector:** passar só o markup. Passar o CSS direto inflava a contagem
+  para 38 avisos advisory.

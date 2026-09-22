@@ -41,6 +41,9 @@
     --tag-tip-ratio: 0.383;
 }
 
+/* "Wi-Fi" e afins: não quebrar no hífen. */
+.nowrap { white-space: nowrap; }
+
 /* Some da tela, fica pro leitor de tela (região aria-live da demo). */
 .sr-only {
     position: absolute;
@@ -579,7 +582,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     -webkit-tap-highlight-color: transparent;
 }
 
+/* A regra acima usa `outline` pro aro de 1px do aparelho, e com a mesma
+   especificidade ela vinha depois do :focus-visible global — o foco por
+   teclado ficava com esse 1px quase invisível (1,35:1). Aqui o anel da casa
+   volta, com folga maior por causa do raio de 32px. */
 .touch-demo__phone:focus-visible {
+    outline: 2px solid var(--color-secondary);
     outline-offset: 6px;
 }
 
@@ -784,9 +792,24 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-weight: 500;
     text-wrap: balance;
     font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+    /* Sem isto o H2 herdava o 1,5 do body: título de 40px em linha de 60px,
+       lendo como texto digitado em espaço duplo. */
+    line-height: 1.1;
     letter-spacing: -0.01em;
     color: var(--color-text);
     margin: 0;
+}
+
+/* Frase de apoio sob o H2 — hoje só na seção "Como funciona", onde carrega
+   a explicação que antes enchia os cards da Zap Tag e empatava a comparação. */
+.section-lead {
+    margin: 0;
+    max-width: 46ch;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
 }
 
 /* ---- Seção "Como funciona" (a comparação com o QR code É a explicação) ---- */
@@ -796,20 +819,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     border-top: 1px solid var(--color-border);
 }
 
+/* Duas colunas em TODA largura, inclusive no celular. Empilhadas, a pessoa
+   via os 2 passos da Zap Tag, rolava ~600px e só então os 4 do QR — o
+   argumento "2 contra 4" nunca aparecia inteiro na tela. */
 .compare__columns {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    gap: 12px;
     max-width: 900px;
     margin: 0 auto;
 }
 
 @media (min-width: 760px) {
-    .compare__columns {
-        grid-template-columns: 1fr 1fr;
-        gap: 56px;
-        align-items: start;
-    }
+    .compare__columns { gap: 56px; }
 }
 
 .compare__column-head {
@@ -850,6 +873,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-family: var(--font-display-alt);
     font-weight: 500;
     font-size: 1.05rem;
+    line-height: 1.25;
     margin: 0;
     color: var(--color-text);
 }
@@ -906,43 +930,78 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text-muted);
 }
 
-/* Os passos da Zap Tag agora carregam a explicação que antes morava na
-   seção "Como funciona": título + uma linha de descrição. O marcador do
-   número vira a silhueta da tag (o QR continua com o círculo neutro) — a
-   forma da marca só aparece do lado da marca. */
+/* Passos da Zap Tag do mesmo tamanho dos do QR: a comparação só convence se
+   a diferença for de QUANTIDADE, não de volume de texto (com descrição, os 2
+   cards da Zap Tag somavam ~220px contra ~236px dos 4 do QR — empate). O
+   marcador do número vira a silhueta da tag; o QR continua com o círculo
+   neutro — a forma da marca só aparece do lado da marca. */
 .compare__column--zaptag .compare__step {
-    padding-block: 16px;
-    padding-left: 60px;
+    padding-left: 58px;
     border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
 }
 
 .compare__column--zaptag .compare__step::before {
-    top: 16px;
-    left: 16px;
-    transform: none;
+    --mark-h: 22px;
     width: 30px;
-    height: 22px;
+    height: var(--mark-h);
     justify-content: flex-start;
     padding-left: 8px;
     border-radius: 4px 0 0 4px;
-    clip-path: polygon(0 0, calc(100% - 22px * var(--tag-tip-ratio)) 0, 100% 50%, calc(100% - 22px * var(--tag-tip-ratio)) 100%, 0 100%);
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 0,
+        100% 50%,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 100%,
+        0 100%
+    );
     background: var(--color-primary);
     color: var(--color-primary-text);
 }
 
-.compare__step-title {
-    display: block;
-    font-weight: 500;
-    font-size: 0.98rem;
-    color: var(--color-text);
-}
+/* Celular: as duas colunas dividem ~358px, então tudo encolhe junto. O
+   texto do QR quebra em 2 linhas e a coluna dele fica AINDA mais longa —
+   que é exatamente o argumento. */
+@media (max-width: 759px) {
+    .compare__column-head {
+        gap: 8px;
+        margin-bottom: 14px;
+    }
 
-.compare__step-desc {
-    display: block;
-    margin-top: 4px;
-    font-size: 0.88rem;
-    line-height: 1.5;
-    color: var(--color-text-muted);
+    .compare__column-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .compare__column-glyph {
+        width: 16px;
+        height: 16px;
+    }
+
+    .compare__column-title { font-size: 0.95rem; }
+
+    .compare__steps { gap: 8px; }
+
+    .compare__step {
+        padding: 11px 10px 11px 36px;
+        font-size: 0.82rem;
+        line-height: 1.35;
+    }
+
+    .compare__step::before {
+        left: 9px;
+        width: 20px;
+        height: 20px;
+        font-size: 0.66rem;
+    }
+
+    .compare__column--zaptag .compare__step { padding-left: 44px; }
+
+    .compare__column--zaptag .compare__step::before {
+        --mark-h: 20px;
+        width: 27px;
+        height: var(--mark-h);
+        padding-left: 7px;
+    }
 }
 
 .compare__slogan {
@@ -1187,6 +1246,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-family: var(--font-display-alt);
     font-weight: 500;
     font-size: 1.05rem;
+    line-height: 1.25;
     color: var(--color-text);
     margin: 0;
 }
@@ -1399,6 +1459,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-weight: 500;
     text-wrap: balance;
     font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.1;
     letter-spacing: -0.02em;
     color: var(--color-text);
     margin: 0;

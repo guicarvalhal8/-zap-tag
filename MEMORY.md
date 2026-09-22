@@ -531,6 +531,45 @@
     38 avisos `advisory` (tamanhos de fonte e raios fora da escala do
     `DESIGN.md`, a maioria de antes desta mudança) e nenhum achado de verdade.
 
+- **2026-09-22** — Nova rodada de `critique` + `audit` depois do `f61f861`:
+  **22/32** (Aceitável) e **16/20** (Bom). Antes eram 27/32 e 18/20, mas o
+  revisor desta vez não viu a nota anterior e foi mais exigente. Parte da
+  queda foi regressão real do `f61f861`. Snapshot em
+  `.impeccable/critique/2026-09-22T15-28-49Z__index-html.md`. Correções
+  aplicadas no mesmo dia (escopo escolhido pelo dono: os 3 P1 e os defeitos
+  da demo):
+  - **Foco do celular da demo:** o `outline: 1px` do aro do aparelho anulava o
+    anel ciano global (mesma especificidade, vinha depois). Agora
+    `.touch-demo__phone:focus-visible` repõe o anel de 2px. **Armadilha
+    recorrente deste CSS:** regra de componente que mexe em `outline` precisa
+    repor o `:focus-visible`.
+  - **Demo:** o `pointerdown` só registra o gesto. O controle muda de mão num
+    gesto confirmado (arraste passou de 6px, ou toque/clique soltou), e o
+    arraste parte da posição atual do celular. Isso corrigiu dois defeitos:
+    no celular, rolar a página por cima do aparelho matava a demo; no
+    desktop, o celular saltava 62px ao ser agarrado. Autoplay reduzido para
+    **1 ciclo (~3,6s)**, dentro dos 5s da WCAG 2.2.2, e no fim o celular
+    volta ao repouso. Também passou a tratar `lostpointercapture`.
+  - **"2 contra 4":** os passos da Zap Tag voltaram a ser curtos como os do QR,
+    e a explicação subiu pra um `.section-lead` sob o H2. As colunas ficam
+    lado a lado em toda largura, inclusive no celular. Medido: desktop 172 ×
+    296px, celular 137 × 272px (antes empatavam em ~220 × 236).
+  - **Títulos:** H2 com `line-height: 1.1` e H3 com 1.25 (antes herdavam 1.5
+    do body). H2 da seção com quebra forçada: "Dois passos. / O QR code pede
+    quatro.".
+  - **Texto, com fatos confirmados pelo dono:** o fact "Funciona com a tela
+    bloqueada, em muitos aparelhos" virou "Funciona em iPhone e Android que
+    pagam por aproximação". O CTA final trocou "fechamos um contrato simples"
+    por "combina tudo por escrito".
+  - **Ficou para depois** (P2 da crítica): demo abaixo da dobra e sem nome da
+    marca no Hero mobile; reasseguramento de 13px no CTA final; horário de
+    atendimento real; ícones de Wi-Fi e Pix; glows parados vs a regra
+    Flat-At-Rest; `theme-color`; rodapé dentro do `<main>`.
+  - **Correção de um número:** os "38 avisos do detector" do `f61f861` vieram
+    de passar o CSS direto para o `impeccable detect`, e a ferramenta pede só
+    markup. O certo é `impeccable detect --json index.html`, que dá 3 avisos
+    advisory e 0 achados reais.
+
 ## Próximo passo sugerido
 
 **O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,

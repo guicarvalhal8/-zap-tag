@@ -180,33 +180,48 @@ function initTouchAnimation(root) {
         phone.style.transform = '';
     };
 
+    // O `pointerdown` só REGISTRA o início. Assumir o controle ali tinha dois
+    // efeitos ruins: no celular, rolar a página começando em cima do aparelho
+    // (pointerdown → pointercancel) matava a demo automática sem a pessoa ter
+    // interagido; e no desktop o celular saltava 62px, porque tirar o
+    // `is-tapped` no mesmo instante em que a transition é desligada o levava
+    // do contato pro repouso sem animação. Agora o controle só muda de mão
+    // num gesto confirmado — arraste passou de 6px, ou toque/clique soltou —
+    // e o arraste parte de onde o celular ESTÁ, não do repouso.
+    const currentPhoneY = () => new DOMMatrixReadOnly(getComputedStyle(phone).transform).m42;
+
     phone.addEventListener('pointerdown', (event) => {
         if (busy || event.button !== 0) return;
-        takeOver();
         drag = {
             id: event.pointerId,
             type: event.pointerType,
             startX: event.clientX,
             startY: event.clientY,
+            baseY: currentPhoneY(),
             moved: false
         };
-        if (event.pointerType !== 'touch') {
-            phone.setPointerCapture(event.pointerId);
-            demo.classList.add('is-dragging');
-        }
+        if (event.pointerType !== 'touch') phone.setPointerCapture(event.pointerId);
     });
 
     phone.addEventListener('pointermove', (event) => {
         if (!drag || drag.id !== event.pointerId || drag.type === 'touch') return;
         const dx = event.clientX - drag.startX;
         const dy = event.clientY - drag.startY;
-        if (Math.abs(dx) + Math.abs(dy) > 6) drag.moved = true;
+        if (!drag.moved) {
+            if (Math.abs(dx) + Math.abs(dy) <= 6) return;
+            drag.moved = true;
+            // Ordem importa: congelar a posição (sem transition) ANTES de
+            // takeOver() tirar o `is-tapped`, senão o celular pula.
+            demo.classList.add('is-dragging');
+            phone.style.transform = `translate(0px, ${drag.baseY}px)`;
+            takeOver();
+        }
 
         // Pra baixo segue o cursor 1:1 até o contato; pra cima e pros lados
         // cede com resistência — o celular "quer" ir pra tag.
         const y = dy > 0
-            ? Math.min(TOUCH_DEMO_REST + dy, TOUCH_DEMO_CONTACT)
-            : TOUCH_DEMO_REST + Math.max(dy * 0.25, -14);
+            ? Math.min(drag.baseY + dy, TOUCH_DEMO_CONTACT)
+            : drag.baseY + Math.max(dy * 0.25, -14);
         const x = Math.max(-18, Math.min(18, dx * 0.25));
         phone.style.transform = `translate(${x}px, ${y}px)`;
 
@@ -228,6 +243,9 @@ function initTouchAnimation(root) {
     });
 
     phone.addEventListener('pointercancel', endDrag);
+    // Captura perdida sem pointerup (janela perde o foco, alt-tab no meio do
+    // arraste): sem isto o celular ficava preso em `is-dragging`.
+    phone.addEventListener('lostpointercapture', endDrag);
 
     // Teclado: Enter/Espaço disparam `click` com `detail === 0`. Clique de
     // ponteiro já foi tratado no pointerup — ignorá-lo aqui evita disparar
@@ -268,11 +286,12 @@ function initTouchAnimation(root) {
     }, { threshold: 0.1 });
     visibilityObserver.observe(root);
 
-    // WCAG 2.2.2 (Pause, Stop, Hide): conteúdo em movimento automático sem
-    // limite precisa de um jeito de parar. A demo assenta sozinha depois de 2
-    // passagens pelos 3 casos, e para na hora em que a pessoa assume o
-    // controle — a partir daí, só se move quando ela move.
-    const MAX_CYCLES = TOUCH_DEMO_CASES.length * 2;
+    // WCAG 2.2.2 (Pause, Stop, Hide): movimento automático que dura mais de
+    // 5s precisa de um controle de pausa. Antes eram 6 ciclos (~21s) sem
+    // controle nenhum. Agora é UM ciclo (~3,6s): o celular encosta, abre a
+    // avaliação e sobe de novo — o convite; daí em diante só se move quando
+    // a pessoa move.
+    const MAX_CYCLES = 1;
 
     (async () => {
         // Cada `await` pode terminar com a pessoa já no controle: o loop
@@ -301,6 +320,10 @@ function initTouchAnimation(root) {
         }
         visibilityObserver.disconnect();
         document.removeEventListener('visibilitychange', updatePaused);
+        // Fim natural do convite: o celular volta ao repouso e a tela continua
+        // mostrando o que abriu. Antes ele ficava encostado pra sempre — e era
+        // de lá que o próximo arraste partia.
+        if (!userInControl) demo.classList.remove('is-tapped');
         // Se a pessoa assumiu no meio de um "encostar", o loop pode ter
         // parado com o celular abaixado ou com a tela apagada pelo fade.
         // Deixa um estado limpo — a menos que o toque dela já esteja rodando.

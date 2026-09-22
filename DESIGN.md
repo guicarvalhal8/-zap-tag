@@ -115,7 +115,7 @@ Paleta de duas cores acesas sobre uma base quase-preta de duas camadas — trava
 
 ### Hierarchy
 - **Display** (peso 500, `clamp(2.25rem, 5vw, 3.5rem)`, altura de linha 1.08): só o H1 do Hero.
-- **Headline** (peso 500, `clamp(1.75rem, 3.4vw, 2.5rem)`): todo H2 (`.section-title`, `.final-cta__title`) e H3 (`.how__step-title`, `.compare__column-title`, `.usecase-card__title`).
+- **Headline** (peso 500, `clamp(1.75rem, 3.4vw, 2.5rem)`): todo H2 (`.section-title`, `.final-cta__title`, altura de linha 1.1) e H3 (`.compare__column-title`, `.usecase-card__title`, altura de linha 1.25). Nunca herdar o 1.5 do corpo do texto.
 - **Accent** (peso 600, `clamp(1.75rem, 4vw, 2.5rem)`): o slogan de destaque "Encostou, ativou." na seção "Como funciona". Reservado pra momentos únicos, não pra hierarquia recorrente.
 - **Body** (peso 400/500, 1rem, altura de linha 1.5): texto corrido, medida de linha confortável.
 - **Label** (peso 400–500, 0,75–0,95rem): legendas, trust lines, copyright — nunca abaixo de 12px.
