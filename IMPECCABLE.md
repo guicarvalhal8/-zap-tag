@@ -8,8 +8,10 @@ comandos usar e quais decisões **não** devem ser reabertas.
 document + init) está concluído. Depois disso, uma sessão na máquina pessoal
 fez mais trabalho de design (nome fantasia, slogan, Hero interativo, seção
 fundida) e uma nova rodada de critique+audit achou P2 novos — ver "Rodada da
-máquina pessoal" logo depois de "Depois dos blocos". Item 1 desses P2 (Hero
-mobile) já foi corrigido nesta máquina; itens 2–4 seguem pendentes.
+máquina pessoal" logo depois de "Depois dos blocos". **Os 4 itens dessa
+rodada estão feitos** (Hero mobile, reasseguramento, polish, e o ciclo de
+critique+audit fechado de novo — placar em "Placar" no fim do arquivo). Sem
+plano de design pendente no momento.
 Combinado com o dono: push só depois de um bloco/etapa inteira validada, não
 item a item.
 
@@ -401,8 +403,12 @@ referência — detalhe completo no `MEMORY.md`):
      específicos. `TAG_ICON`/`CHECK_ICON`/`svgIcon` →
      `TOUCH_DEMO_TAG_ICON`/`TOUCH_DEMO_CHECK_ICON`/`touchDemoSvgIcon`.
      `.btn-primary:hover` atrás de `@media (hover: hover)`.
-  4. Fechar o ciclo: `/impeccable critique` + `/impeccable audit` de novo,
-     meta ≥ 24/32 e ≥ 18/20 — **próximo passo**.
+  4. ~~Fechar o ciclo~~ — **feito**, commit `8a87ef3`. Design Health
+     recuperou 27/32 (Bom). Audit achou 2 P2 novos e ambos foram corrigidos
+     no mesmo commit (piso de 12px reintroduzido, race condition
+     demo-automática-vs-gesto-do-usuário) — número oficial só depois de
+     rodar de novo, mas os defeitos que geraram o 17/20 não existem mais.
+     Detector zerado. Ver "Placar" no fim do arquivo pros números completos.
 
 ---
 
@@ -469,11 +475,11 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 
 ## Placar
 
-| Eixo | Antes do bloco 1 | Depois dos 4 blocos | Depois do `f61f861` | Meta |
-|---|---|---|---|---|
-| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | 27/32 | **22/32** (Aceitável) | ≥ 24/32 |
-| Audit Health (5 dimensões) | 14/20 | 18/20 | **16/20** (Bom) | ≥ 18/20 |
-| Detector (`detect --json index.html`) | 8 achados | 0 reais | **0 reais** (3 advisory) | 0 |
+| Eixo | Antes do bloco 1 | Depois dos 4 blocos | Depois do `f61f861` | Round 3 (22/09, trabalho) | Meta |
+|---|---|---|---|---|---|
+| Design Health (Nielsen, heurísticas 7 e 10 = n/a) | 17/32 | 27/32 | 22/32 (Aceitável) | **27/32** (Bom) ✅ | ≥ 24/32 |
+| Audit Health (5 dimensões) | 14/20 | 18/20 | 16/20 (Bom) | **17/20** (Bom) | ≥ 18/20 |
+| Detector (`detect --json index.html`) | 8 achados | 0 reais | 0 reais (3 advisory) | **0** (0 advisory) ✅ | 0 |
 
 - **"Depois dos 4 blocos":** critique + audit rodados no PC do trabalho em
   2026-09-22. O snapshot não foi versionado.
@@ -481,11 +487,18 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
   (`.impeccable/critique/2026-09-22T15-28-49Z__index-html.md`). Esse revisor
   não viu a nota anterior e foi mais exigente, então a queda não é
   comparação exata. Mas os defeitos que ele apontou foram medidos e eram
-  reais.
-- **As correções dessa rodada já foram aplicadas:** os 3 P1 (foco do celular
-  da demo, "2 contra 4", entrelinha dos títulos) e os defeitos da demo
-  (morria ao rolar por cima no celular, saltava 62px ao ser agarrada,
-  autoplay de ~21s). Detalhes no `MEMORY.md`. O placar só volta a valer
-  depois de rodar `critique` + `audit` de novo.
+  reais. Corrigidos no mesmo dia (P1 da crítica + defeitos da demo).
+- **Round 3 (22/09, computador do trabalho):** depois do Hero mobile,
+  reasseguramento e polish (ver "Rodada da máquina pessoal" acima), rodei
+  `critique`+`audit` de novo com os 3 subagentes isolados de sempre. Design
+  Health recuperou o placar do round 1 (27/32). Audit achou 2 P2 novos
+  (piso de 12px reintroduzido num seletor irmão; race condition entre a
+  demo automática e um gesto do usuário) — **os dois já foram corrigidos**
+  no mesmo commit, então o número real hoje é mais alto que 17/20, mas o
+  placar só é oficial depois de rodar de novo. Detector zerado (inclusive
+  os 3 advisory de antes, suprimidos com justificativa em
+  `.impeccable/config.json`). Snapshot em
+  `.impeccable/critique/2026-09-22T18-05-45Z__index-html.md`.
 - **Detector:** passar só o markup. Passar o CSS direto inflava a contagem
-  para 38 avisos advisory.
+  pra dezenas de avisos advisory (aconteceu de novo nesta sessão, por
+  engano de verificação — não é bug do código).

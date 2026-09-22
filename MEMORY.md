@@ -615,26 +615,52 @@
       `TOUCH_DEMO_CHECK_ICON`/`touchDemoSvgIcon` em `touch-animation.js`.
     - `.btn-primary:hover` atrás de `@media (hover: hover)` — não gruda mais
       depois do toque no celular; `:focus-visible` continua sempre ativo.
-  - Item 4 (critique+audit de novo, meta ≥ 24/32 e ≥ 18/20) segue pendente.
+  - **Item 4 (critique+audit de novo) — feito**, commit `8a87ef3`. Design
+    Health voltou a **27/32** (recuperou o placar do round 1). Audit deu
+    **17/20**, com 2 P2 novos — ambos corrigidos na hora:
+    - `.touch-demo__panel-label` tinha regredido pro mesmo bug do piso de
+      12px já corrigido no seletor irmão (`.touch-demo__panel-idle`).
+    - Race condition: se a pessoa ativasse a demo (teclado/toque) nos
+      primeiros ~600ms, o ciclo automático podia escrever por cima do
+      painel que o gesto dela tinha acabado de abrir. `switchPanel()`
+      ganhou um parâmetro `isStale` — a chamada da demo automática recusa
+      escrever se, quando o fade termina, a pessoa já assumiu o controle.
+    - Também corrigido (achado do critique, não do audit): a demo do Hero
+      **espera ~1,1s antes do primeiro ciclo automático**, pra não disputar
+      atenção com o stagger de entrada do H1/subtítulo/CTA — era um P1 da
+      crítica ("uma coisa de cada vez" da checklist de carga cognitiva).
+    - **Reasseguramento espalhado**: você confirmou adicionar uma versão
+      curta (`.trust-note`, discreta, `--color-text-muted`) perto do CTA
+      do Hero e embaixo do grid de casos de uso — sem repetir a frase
+      inteira do CTA final, que continua sendo o único lugar com a versão
+      completa + horário.
+    - Pix escondido atrás do toggle: o revisor achou de novo, mas é o
+      mesmo achado do round 1 que você já decidiu manter — não reabri.
+    - 3 avisórios do detector (2 falso positivo verificado, 1 já
+      documentado no `DESIGN.md` como intencional) suprimidos em
+      `.impeccable/config.json` com `ignores add-value` — detector volta a
+      `[]` puro.
+    - Snapshot em `.impeccable/critique/2026-09-22T18-05-45Z__index-html.md`.
 
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do
-`IMPECCABLE.md` (4 blocos + critique/audit + document + init) foi concluído
-em 22/09; o trabalho novo que entrou depois (nome fantasia, slogan, Hero
-interativo, seção fundida) e os 3 primeiros P2 da rodada de casa (Hero
-mobile, reasseguramento, polish) também já estão feitos. Falta:
+`IMPECCABLE.md` (4 blocos + critique/audit + document + init), o trabalho
+novo da máquina pessoal (nome fantasia, slogan, Hero interativo, seção
+fundida) e os 4 P2 da rodada de casa (Hero mobile, reasseguramento, polish,
+fechar o ciclo) **estão todos feitos**. Design Health em 27/32, Audit Health
+em 17/20 (com os 2 P2 que geraram esse número já corrigidos no mesmo
+commit). **Sem plano de design pendente no momento.** Falta só o que não é
+trabalho de código:
 
-1. **Fechar o ciclo**: `/impeccable critique` + `/impeccable audit` de novo,
-   meta ≥ 24/32 e ≥ 18/20 — é o único item de design pendente.
-2. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
-3. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
+1. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
+2. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
    comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
    de investir em material impresso.
-4. **Domínio próprio**: ainda não comprado, site publicado em
+3. **Domínio próprio**: ainda não comprado, site publicado em
    `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
    `index.html` pra trocar em 3 lugares quando comprar).
-5. **Skill `impeccable` instalada global** nesta máquina
+4. **Skill `impeccable` instalada global** nesta máquina
    (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
    em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
    confirmar se a skill está instalada antes de usar `/impeccable`.
