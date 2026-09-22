@@ -311,6 +311,50 @@
   `TODO` que estava acima do link. Com isso, os três contatos do footer
   (WhatsApp, e-mail, Instagram) estão todos com dados reais.
 
+- **2026-09-22** — Passada de qualidade com o skill `impeccable`: um
+  `/impeccable critique` + `/impeccable audit` completos (dois subagentes
+  isolados para o critique, mais um terceiro para a auditoria técnica), e
+  depois o primeiro bloco de correções aplicado. **O plano inteiro, o que foi
+  feito e o que falta, está em `IMPECCABLE.md` na raiz** — este parágrafo é só
+  o resumo.
+  - Notas de partida: **17/32** no Design Health (Nielsen, heurísticas 7 e 10
+    como n/a) e **14/20** no Audit Health. Detector saiu de 8 achados para
+    **0**.
+  - Três bugs reais confirmados por medição, não por impressão: o
+    **hambúrguer estava visível e morto no desktop** (a media query que o
+    escondia vinha *antes* da regra base, e media query não soma
+    especificidade); a **trilha de "Como funciona" passava 32px acima dos
+    ícones**, porque as custom properties eram declaradas na `.how__steps` e
+    consumidas pelos irmãos dela — custom property herda para baixo, nunca
+    para o lado; e a **altura da trilha no mobile errava por ~20px**, porque o
+    `--how-card-h: 148px` era um número estimado e o passo mede 158px.
+  - O achado mais caro era de arquitetura: a página **construía** com JS o que
+    deveria só realçar. 19 nós em `opacity: 0`, os 6 casos de uso só em
+    `innerHTML`, e os 5 CTAs saindo do HTML com `href="#"`. Os 6 cards foram
+    para o markup, os CTAs ganharam URL real (o `?text=` segue montado em JS),
+    entrou um `<noscript>`, e cada init passou a rodar isolado com try/catch —
+    essa última parte é o que cobre a quebra histórica por colisão de nome no
+    escopo global, que o `<noscript>` sozinho **não** cobria.
+  - Acessibilidade: `--color-border` acumulava três papéis e dois deles eram
+    falha de WCAG 1.4.11 (o `.btn-outline` e o sublinhado do `.link-secondary`
+    ficavam em 1,35:1). Nasceu o token `--color-border-strong`. Nenhum hex
+    existente foi alterado — a paleta é intocável por decisão do Leandro.
+  - Boa notícia medida: a paleta neon-sobre-preto **passa AA em 24 de 24
+    pares** e AAA em 17. A hipótese de que o contraste seria o ponto fraco
+    estava errada.
+  - O maior buraco é de produto, não de código: a página vende um objeto
+    físico e **nunca mostra o objeto**, não tem preço nem prova social, e os 6
+    casos de uso não levam a lugar nenhum. É o bloco 2.
+
+- **2026-09-22** — Bloco 2, item 1 do `IMPECCABLE.md` feito: os 6 cards de
+  "Casos de uso" viraram links de WhatsApp (card inteiro clicável + rótulo
+  "Quero esse →"), cada um com mensagem que já nomeia a automação ("…quero o
+  adesivo de avaliação no Google."). Para um 7º card: copiar um
+  `li.usecases__item` e trocar `data-wa-message` e os ids
+  `uc-title-N`/`uc-cta-N`. De brinde, corrigida uma faixa vazia de 41px sob a
+  navbar em toda tela mobile (menu fechado não colapsava o padding). Detalhes
+  e medições no `IMPECCABLE.md`. **Não commitado.**
+
 ## Próximo passo sugerido
 
 **As 6 seções do fluxo estão prontas** (Hero, Como funciona, Diferencial vs.
@@ -321,7 +365,19 @@ de publicar:
 2. ~~E-mail real~~ — feito (`usezaptag@gmail.com`, footer).
    ~~Instagram real~~ — feito (`@zap_tag_`, footer).
 3. Decidir se entra uma seção de "prova social" (o espaço já está reservado
-   entre "Casos de uso" e "CTA final").
+   entre "Casos de uso" e "CTA final"). **A crítica de 22/09 apontou isto como
+   a maior fonte de abandono da página** — no instante em que a pessoa vai
+   mandar mensagem para um desconhecido sem saber o preço, não há nada que
+   reassegure. Entra no bloco 2 do `IMPECCABLE.md`.
 4. ~~Diferencial vs. QR code~~ — feito (seção nova). Falta ainda o nome
    fantasia completo/slogan de marca (o slogan "Encostou, ativou." é
    específico dessa seção, não necessariamente o slogan geral do site).
+5. **Retomar pelo `IMPECCABLE.md`.** O bloco 1 (defeitos) e o item 1 do
+   bloco 2 (cards como links) estão aplicados e verificados; próximo é o
+   bloco 2, item 2 (`clarify` do CTA final + prova social), depois o 3
+   (motion e performance) e o 4 (acabamento). O arquivo traz os comandos na ordem, as decisões que não
+   devem ser reabertas e as armadilhas do repositório.
+6. **Atenção ao abrir o Claude Code:** o skill `impeccable` está instalado em
+   `C:\Users\guica\.local\bin\.claude`, com escopo de projeto. Abrindo direto
+   nesta pasta, o `/impeccable` não existe. Ou abrir em `.local\bin`, ou
+   instalar global (`npx impeccable install` → location `global (~)`).

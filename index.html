@@ -13,6 +13,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&family=Manrope:wght@400;500&family=Unbounded:wght@600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/global.css">
+
+    <!-- Rede de proteção: a página tem 19 nós que nascem em `opacity: 0` e só
+         o JS os revela — incluindo o H1, o bloco de botões do Hero e o CTA
+         final inteiro. Se qualquer um dos 3 scripts falhar (já aconteceu duas
+         vezes, por colisão de nome no escopo global), o visitante recebia uma
+         página praticamente em branco, sem nada no visual indicando a causa.
+         Isto não conserta a colisão — conserta o impacto dela. -->
+    <noscript>
+        <style>
+            [data-reveal],
+            .usecase-card,
+            .compare__slogan {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            /* Sem JS o painel do menu nunca abre, então o hambúrguer é um
+               controle morto: melhor não oferecê-lo. Os links dele existem
+               na navbar e no footer. */
+            .navbar__toggle { display: none !important; }
+        </style>
+    </noscript>
 </head>
 <body>
 
@@ -35,7 +56,7 @@
                 <a href="#casos-de-uso" class="nav-link">Casos de uso</a>
                 <a
                     class="btn-primary btn-primary--compact"
-                    href="#"
+                    href="https://wa.me/5562982233133"
                     target="_blank"
                     rel="noopener"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
@@ -64,7 +85,7 @@
                 <a href="#casos-de-uso" class="navbar__mobile-link">Casos de uso</a>
                 <a
                     class="btn-primary"
-                    href="#"
+                    href="https://wa.me/5562982233133"
                     target="_blank"
                     rel="noopener"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
@@ -97,7 +118,7 @@
                     <div class="hero__actions" data-reveal>
                         <a
                             class="btn-primary"
-                            href="#"
+                            href="https://wa.me/5562982233133"
                             target="_blank"
                             rel="noopener"
                             data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
@@ -250,7 +271,78 @@
                     <h2 class="section-title" data-reveal>Escolha o que seu negócio precisa</h2>
                 </div>
 
-                <ul class="usecases__grid" id="usecases-primary"></ul>
+                <!-- Os 6 casos de uso vivem NO MARKUP, não num array de JS.
+                     Antes eles eram gerados por innerHTML a partir do
+                     USECASES_LIST, o que significa que sem JS eles não
+                     existiam no DOM — a seção de maior intenção de compra da
+                     página sumia inteira. Pra adicionar um 7º caso, copie um
+                     bloco "li.usecases__item" e cole no grid expansível
+                     abaixo — trocando o data-wa-message e os dois ids
+                     (uc-title-N / uc-cta-N) que o aria-labelledby aponta.
+                     Cada card é um link de WhatsApp que já diz qual
+                     automação o lead quer: é a seção de maior intenção de
+                     compra, e antes ela não levava a lugar nenhum.
+                     O JS agora só liga comportamento (reveal, tilt, expand,
+                     ?text= do link) no que já está aqui. -->
+                <ul class="usecases__grid" id="usecases-primary">
+                    <li class="usecases__item">
+                        <a
+                            class="usecase-card"
+                            href="https://wa.me/5562982233133"
+                            target="_blank"
+                            rel="noopener"
+                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de avaliação no Google."
+                            aria-labelledby="uc-title-1 uc-cta-1"
+                        >
+                            <span class="usecase-card__icon-wrap">
+                                <span class="usecase-card__icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg>
+                                </span>
+                            </span>
+                            <h3 class="usecase-card__title" id="uc-title-1">Avaliação Google</h3>
+                            <p class="usecase-card__desc">O cliente termina de comer, encosta o celular na mesa e a tela de avaliação já abre pronta pra 5 estrelas — sem precisar procurar o nome do estabelecimento.</p>
+                            <span class="usecase-card__cta" id="uc-cta-1">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                        </a>
+                    </li>
+                    <li class="usecases__item">
+                        <a
+                            class="usecase-card"
+                            href="https://wa.me/5562982233133"
+                            target="_blank"
+                            rel="noopener"
+                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cardápio digital."
+                            aria-labelledby="uc-title-2 uc-cta-2"
+                        >
+                            <span class="usecase-card__icon-wrap">
+                                <span class="usecase-card__icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+                                </span>
+                            </span>
+                            <h3 class="usecase-card__title" id="uc-title-2">Cardápio digital</h3>
+                            <p class="usecase-card__desc">Mudou o preço ou tirou um prato do menu? Atualiza uma vez só e todo mundo que encostar no adesivo já vê a versão certa — nada de reimprimir cardápio.</p>
+                            <span class="usecase-card__cta" id="uc-cta-2">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                        </a>
+                    </li>
+                    <li class="usecases__item">
+                        <a
+                            class="usecase-card"
+                            href="https://wa.me/5562982233133"
+                            target="_blank"
+                            rel="noopener"
+                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de Wi-Fi automático."
+                            aria-labelledby="uc-title-3 uc-cta-3"
+                        >
+                            <span class="usecase-card__icon-wrap">
+                                <span class="usecase-card__icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg>
+                                </span>
+                            </span>
+                            <h3 class="usecase-card__title" id="uc-title-3">Wi-Fi automático</h3>
+                            <p class="usecase-card__desc">Chega de gritar a senha do Wi-Fi pro salão inteiro. O cliente encosta o celular e conecta direto, sem digitar nada.</p>
+                            <span class="usecase-card__cta" id="uc-cta-3">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                        </a>
+                    </li>
+                </ul>
 
                 <div class="usecases__toggle-row">
                     <button
@@ -269,7 +361,65 @@
 
                 <div class="usecases__expand-wrap" id="usecases-expand-wrap">
                     <div class="usecases__expand-inner">
-                        <ul class="usecases__grid" id="usecases-expand"></ul>
+                        <ul class="usecases__grid" id="usecases-expand">
+                            <li class="usecases__item">
+                                <a
+                                    class="usecase-card"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cobrança via Pix."
+                                    aria-labelledby="uc-title-4 uc-cta-4"
+                                >
+                                    <span class="usecase-card__icon-wrap">
+                                        <span class="usecase-card__icon">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 2 L6 14 L11 14 L9 22 L19 9 L13 9 Z"/></svg>
+                                        </span>
+                                    </span>
+                                    <h3 class="usecase-card__title" id="uc-title-4">Pix</h3>
+                                    <p class="usecase-card__desc">A chave e o valor já vêm preenchidos na hora — o cliente só confirma o pagamento, sem erro de digitação nem confusão de valor.</p>
+                                    <span class="usecase-card__cta" id="uc-cta-4">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                </a>
+                            </li>
+                            <li class="usecases__item">
+                                <a
+                                    class="usecase-card"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de fidelidade."
+                                    aria-labelledby="uc-title-5 uc-cta-5"
+                                >
+                                    <span class="usecase-card__icon-wrap">
+                                        <span class="usecase-card__icon">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-2 -1) scale(0.5)" opacity="0.5"/><use href="#uc-star" transform="translate(4 4) scale(0.55)"/></svg>
+                                        </span>
+                                    </span>
+                                    <h3 class="usecase-card__title" id="uc-title-5">Fidelidade</h3>
+                                    <p class="usecase-card__desc">Cada encostada do cliente já conta como uma visita no seu programa de fidelidade — sem cartão de papel pra perder, sem carimbo manual.</p>
+                                    <span class="usecase-card__cta" id="uc-cta-5">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                </a>
+                            </li>
+                            <li class="usecases__item">
+                                <a
+                                    class="usecase-card"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de ficha de contato."
+                                    aria-labelledby="uc-title-6 uc-cta-6"
+                                >
+                                    <span class="usecase-card__icon-wrap">
+                                        <span class="usecase-card__icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg>
+                                        </span>
+                                    </span>
+                                    <h3 class="usecase-card__title" id="uc-title-6">Ficha de contato</h3>
+                                    <p class="usecase-card__desc">Seu cliente encosta o celular e o contato do negócio — telefone, endereço, redes sociais — já cai direto na agenda dele.</p>
+                                    <span class="usecase-card__cta" id="uc-cta-6">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -298,7 +448,7 @@
                 <p class="final-cta__subtitle">Sem contrato, sem mensalidade obrigatória — só o adesivo e a conversa.</p>
                 <a
                     class="btn-primary"
-                    href="#"
+                    href="https://wa.me/5562982233133"
                     target="_blank"
                     rel="noopener"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
@@ -336,7 +486,7 @@
                         <li>
                             <a
                                 class="site-footer__link"
-                                href="#"
+                                href="https://wa.me/5562982233133"
                                 target="_blank"
                                 rel="noopener"
                                 data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais."

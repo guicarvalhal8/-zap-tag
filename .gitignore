@@ -1,3 +1,10 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Impeccable. A config compartilhada e versionada de proposito: ela carrega
+# as decisoes de supressao do detector (e o motivo de cada uma), entao vale
+# para quem clonar o repo. O resto e artefato de sessao: snapshot de critique,
+# cache do hook, config do live mode e overrides locais.
+.impeccable/*
+!.impeccable/config.json

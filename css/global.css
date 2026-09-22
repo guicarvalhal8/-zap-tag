@@ -5,10 +5,24 @@
 :root {
     --color-bg: #0B0D0F;
     --color-surface: #16191D;
+
+    /* Duas bordas, de propósito. `--color-border` é DECORATIVA: 1,35:1 contra
+       o fundo, legítimo em card que já tem superfície própria pra se separar.
+       `--color-border-strong` é PORTADORA DE SIGNIFICADO: 4,0:1, pro caso em
+       que a borda é a única coisa que informa "isto é um controle" (ver
+       .btn-outline). Não usar a decorativa nesse papel — é falha de WCAG
+       1.4.11, que exige 3:1 pra limite de componente de UI. */
     --color-border: #262A2E;
+    --color-border-strong: #6B7280;
+
+    /* Lime = AÇÃO (o que a pessoa deve clicar). Ciano = INTERAÇÃO do sistema
+       (foco de teclado, ripple da demo, acento do eyebrow). Antes os dois
+       disputavam sem regra: o ciano era a cor de hover de borda do card,
+       competindo com o lime do botão. */
     --color-primary: #D4FF3F;
     --color-primary-text: #14170B;
     --color-secondary: #00E5FF;
+
     --color-text: #F2F4F5;
     --color-text-muted: #9CA3AF;
 
@@ -23,6 +37,20 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
+
+/* Anel de foco da casa. Antes o foco era comunicado SÓ por mudança de cor,
+   e em 4 das 6 regras :focus-visible a mudança era idêntica à de :hover —
+   o que significa que quem navega por teclado dependia inteiramente do anel
+   padrão do navegador, e o .navbar__toggle não tinha regra de foco nenhuma.
+   O ciano é a escolha certa aqui porque funciona sobre os DOIS fundos que a
+   página tem: 12,66:1 contra o preto e 10,17:1 contra o lime do botão
+   primário (o anel padrão sobre lime era o único par que eu não conseguia
+   medir sem abrir o navegador). As mudanças de cor existentes continuam,
+   agora como reforço e não como o indicador. */
+:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 3px;
+}
 
 body {
     margin: 0;
@@ -79,9 +107,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     gap: 28px;
 }
 
+/* Só `.navbar__nav` pode ficar aqui: a regra base dele (`display: none`) vem
+   ANTES desta media query, então a media query ganha e a nav aparece no
+   desktop. O `.navbar__toggle` NÃO pode: a regra base dele (`display: flex`)
+   vem DEPOIS, e como media query não soma especificidade, a última declaração
+   ganhava e o hambúrguer ficava visível em qualquer largura — inclusive a
+   1920px, ao lado da nav completa, com aria-expanded alternando sem abrir
+   painel nenhum. O esconde-no-desktop dele foi para a media query lá embaixo,
+   depois da regra base. */
 @media (min-width: 860px) {
     .navbar__nav { display: flex; }
-    .navbar__toggle { display: none; }
 }
 
 .nav-link {
@@ -130,30 +165,50 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .navbar__toggle.is-open .navbar__toggle-bar:nth-child(2) { opacity: 0; }
 .navbar__toggle.is-open .navbar__toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* O truque de `grid-template-rows: 0fr → 1fr` anima a altura, mas NÃO tira
+   nada do fluxo de foco: sem o `visibility`, quem navega por Tab em tela
+   estreita saía do hambúrguer e caía em 3 links invisíveis antes do Hero
+   (WCAG 2.4.3). `visibility` é animável e se comporta exatamente como a
+   gente quer: ao abrir vira `visible` na hora, e ao fechar continua
+   `visible` até o fim da transição — a altura ainda anima. */
 .navbar__mobile {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 350ms ease;
+    visibility: hidden;
+    transition: grid-template-rows 350ms ease, visibility 350ms ease;
     background: var(--color-surface);
-    border-top: 1px solid var(--color-border);
 }
 
 .navbar__mobile.is-open {
     grid-template-rows: 1fr;
+    visibility: visible;
 }
 
 @media (min-width: 860px) {
     .navbar__mobile { display: none; }
+    /* Vive aqui, e não na media query de cima, porque a regra base
+       `.navbar__toggle { display: flex }` fica entre as duas. */
+    .navbar__toggle { display: none; }
 }
 
+/* O `0fr` colapsa o conteúdo, mas não o padding nem a borda da própria
+   caixa: com `padding: 18px 24px 22px` aqui e `border-top` no pai, o menu
+   FECHADO ainda ocupava 41px, e toda tela mobile tinha uma faixa vazia
+   embaixo da barra (medido: .navbar 114px em vez de 72px). O respiro
+   vertical virou margem dos filhos, que o `overflow: hidden` recorta, e a
+   borda virou sombra interna, que não ocupa espaço e some com a altura. */
 .navbar__mobile-inner {
     overflow: hidden;
     min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 18px 24px 22px;
+    padding-inline: 24px;
+    box-shadow: inset 0 1px 0 var(--color-border);
 }
+
+.navbar__mobile-inner > :first-child { margin-top: 18px; }
+.navbar__mobile-inner > :last-child { margin-bottom: 22px; }
 
 .navbar__mobile-link {
     padding: 12px 0;
@@ -218,7 +273,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     right: -10%;
     width: 60%;
     aspect-ratio: 1;
-    background: radial-gradient(circle, rgba(212, 255, 63, 0.14) 0%, rgba(212, 255, 63, 0) 70%);
+    /* Derivado de --color-primary, não escrito à mão: este era um dos dois
+       únicos literais de cor do projeto, e trocar a cor da marca deixaria o
+       glow na cor antiga. Mesmo valor de antes (14%). */
+    background: radial-gradient(circle,
+        color-mix(in srgb, var(--color-primary) 14%, transparent) 0%,
+        transparent 70%);
     pointer-events: none;
 }
 
@@ -315,7 +375,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .btn-primary:hover,
 .btn-primary:focus-visible {
     transform: scale(1.03);
-    box-shadow: 0 10px 30px -8px rgba(212, 255, 63, 0.45);
+    /* Segundo e último literal de cor, agora derivado do token. Mantém o
+       offset de 10px e o spread negativo: é elevação direcional, não o halo
+       cromático de offset zero que o craft-floor trata como decoração. */
+    box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--color-primary) 45%, transparent);
 }
 
 .btn-primary:active { transform: scale(0.98); }
@@ -327,7 +390,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text);
     text-decoration: underline;
     text-underline-offset: 4px;
-    text-decoration-color: var(--color-border);
+    /* Era `--color-border` (1,35:1): o link usava a cor do corpo do texto E
+       um sublinhado quase invisível, então o CTA secundário do Hero não se
+       distinguia de texto comum até a pessoa passar o mouse por cima e
+       descobrir por acidente. `--color-text-muted` dá 7,67:1 e mantém a
+       discrição pretendida. */
+    text-decoration-color: var(--color-text-muted);
     transition: text-decoration-color 180ms ease, color 180ms ease;
 }
 
@@ -576,15 +644,23 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
+/* As três variáveis moram AQUI, e não na `.how__steps`, porque quem as
+   consome são `.how__track` e `.how__track-fill` — que no HTML são IRMÃOS da
+   `<ol>`, não filhos. Custom property herda para baixo, nunca para o lado:
+   declaradas na `.how__steps`, as duas trilhas recebiam `var()` inválida no
+   computed-value time e caíam para `auto`. Medido antes da correção: `top`
+   computado = 0px onde a intenção era 32px, ou seja a trilha passava 32px
+   acima do centro dos ícones e lia como um sublinhado perdido embaixo do H2.
+   O `.how__steps-wrap` é o ancestral comum dos três. */
 .how__steps-wrap {
-    position: relative;
-}
-
-.how__steps {
     --how-icon: 64px;
     --how-card-h: 148px;
     --how-gap-mobile: 40px;
 
+    position: relative;
+}
+
+.how__steps {
     position: relative;
     z-index: 1;
     list-style: none;
@@ -608,7 +684,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     left: 50%;
     top: calc(var(--how-icon) / 2);
     width: 2px;
-    height: calc(2 * (var(--how-card-h) + var(--how-gap-mobile)));
+    /* `--how-track-h` é MEDIDO em JS (centro do 1º ícone ao centro do 3º) em
+       vez de estimado, porque a altura real do passo depende de a descrição
+       quebrar em 2 ou 3 linhas — e ela está presa a ~26 caracteres por linha
+       pelo `max-width: 26ch`, independente do viewport. Medido: o passo tem
+       158px de altura real contra os 148px que o `--how-card-h` assumia, o
+       que fazia a trilha parar ~20px antes do terceiro ícone em toda largura
+       mobile. O `calc()` antigo continua como fallback pra quando o JS não
+       roda: aproximado, mas melhor que altura zero. */
+    height: var(--how-track-h, calc(2 * (var(--how-card-h) + var(--how-gap-mobile))));
     background: var(--color-border);
     transform: translateX(-50%);
     z-index: 0;
@@ -662,20 +746,36 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin-bottom: 4px;
 }
 
+/* O número sai de trás do círculo. Ele estava centralizado no mesmo ponto do
+   `.how__step-icon`, que tem `background: var(--color-surface)` opaco de 64px
+   — o círculo bissectava cada dígito e sobravam fragmentos nas laterais. A
+   `opacity: 0.14` dava ~1,2:1, então ele era invisível como informação e
+   visível como ruído: o pior dos dois mundos, justamente no andaime que
+   comunica "passo 1 de 3".
+   O deslocamento acompanha o eixo da trilha, que troca entre os breakpoints:
+   no mobile a trilha é VERTICAL pelo centro, então o número vai pro lado; no
+   desktop ela é HORIZONTAL na altura do centro do ícone, então o número vai
+   pra cima. Nos dois casos ele fica livre da linha.
+   `opacity: 0.6` sobre o fundo dá ~3,15:1, que passa o mínimo de 3:1 para
+   texto grande — ele deixa de ser textura e volta a ser informação. */
 .how__step-number {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-118%, -50%);
     font-family: var(--font-display-highlight);
     font-weight: 600;
     font-size: clamp(2.75rem, 5vw, 3.75rem);
     line-height: 1;
     color: var(--color-text-muted);
-    opacity: 0.14;
+    opacity: 0.6;
     z-index: 0;
     user-select: none;
     white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+    .how__step-number { transform: translate(-50%, -104%); }
 }
 
 .how__step-icon {
@@ -852,7 +952,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-primary);
     opacity: 0;
     transform: scale(0.95);
-    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Era cubic-bezier(0.34, 1.56, 0.64, 1) — y1 = 1,56, ou seja overshoot
+       elástico. Trocado pela ease-out-quint que este arquivo já usava na
+       linha 464: objeto real desacelera, não quica. Mesma duração, e agora a
+       página tem UM vocabulário de movimento em vez de dois. */
+    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .compare__slogan.is-visible {
@@ -900,7 +1004,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 0.9rem;
-    border: 1.5px solid var(--color-border);
+    /* O fundo é transparente, então esta borda é a ÚNICA coisa que informa
+       que isto é um controle clicável — e é a porta pra metade dos casos de
+       uso. Com `--color-border` dava 1,35:1, abaixo dos 3:1 que o WCAG
+       1.4.11 exige pra limite de componente. */
+    border: 1.5px solid var(--color-border-strong);
     border-radius: 10px;
     transition: border-color 200ms ease, color 200ms ease;
 }
@@ -934,7 +1042,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     }
 }
 
+/* O <li> é só o item da lista; o card (e o alvo do toque) é o <a> dentro
+   dele. O flex aqui faz o link esticar na altura da linha do grid, pra que
+   os 3 cards de uma linha tenham a mesma altura e o "Quero esse" alinhe
+   no rodapé de todos. */
+.usecases__item {
+    display: flex;
+}
+
 .usecase-card {
+    flex: 1;
+    color: inherit;
+    text-decoration: none;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 16px;
@@ -945,9 +1064,38 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     transition: border-color 200ms ease, transform 200ms ease, opacity 500ms ease;
 }
 
-.usecase-card:hover {
-    border-color: var(--color-secondary);
-    transform: translateY(-3px);
+/* Era ciano (cor de INTERAÇÃO do sistema) e depois virou a borda forte
+   neutra, porque o card não era clicável e o lime da ação primária não se
+   gasta em decoração. Agora o card É a ação — abre o WhatsApp já dizendo
+   qual automação o lead quer — então o lime é o certo. O foco usa a mesma
+   borda como reforço; o indicador continua sendo o anel ciano global.
+   O hover fica atrás de `(hover: hover)`: no toque o :hover gruda depois do
+   tap, e o card continuaria aceso quando a pessoa voltasse do WhatsApp. */
+.usecase-card:focus-visible,
+.usecase-card:active {
+    border-color: var(--color-primary);
+}
+
+/* O Chromium do Android pinta um retângulo azul translúcido sobre o link no
+   toque — fora da paleta e desenhado sem o border-radius do card. O
+   :active acima dá o retorno do toque com a cor da marca no lugar dele. */
+.usecase-card {
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+    .usecase-card:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-3px);
+    }
+
+    .usecase-card:hover .usecase-card__cta svg {
+        transform: translateX(4px);
+    }
+}
+
+.usecase-card:focus-visible {
+    outline-offset: 4px;
 }
 
 .usecase-card__icon-wrap {
@@ -982,7 +1130,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .usecase-card.is-visible .usecase-card__icon {
-    animation: usecase-icon-pop 550ms cubic-bezier(0.34, 1.56, 0.64, 1) 150ms both;
+    /* Mesma troca da .compare__slogan: ease-out-quint em vez de overshoot
+       elástico. O keyframe `usecase-icon-pop` ainda tem um pico próprio de
+       `scale(1.15)` a 60% — isso é overshoot AUTORADO no keyframe, não na
+       curva, e o detector não sinaliza. Fica, porque era o efeito pedido. */
+    animation: usecase-icon-pop 550ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
 }
 
 .usecase-card.is-visible .usecase-card__icon-wrap::after {
@@ -1017,6 +1169,32 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
+/* Sem este rótulo o card só se anunciava como link pelo hover — que não
+   existe no celular, onde está a maior parte do tráfego vindo de WhatsApp.
+   `margin-top: auto` empurra pro rodapé, alinhando entre cards de alturas
+   diferentes na mesma linha. */
+.usecase-card__cta {
+    margin-top: auto;
+    padding-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--color-primary);
+}
+
+.usecase-card__cta svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.usecase-card:focus-visible .usecase-card__cta svg {
+    transform: translateX(4px);
+}
+
 /* Cards do grid principal (reveal por scroll) e do grid expansível
    (reveal ao abrir) partem do mesmo estado oculto. */
 .usecase-card {
@@ -1046,14 +1224,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     transform: rotate(180deg);
 }
 
+/* Mesmo `visibility` do `.navbar__mobile`, e pelo mesmo motivo: o truque de
+   `0fr → 1fr` colapsa a altura sem remover nada da árvore de acessibilidade.
+   Sem isto, o leitor de tela anunciava os 3 casos de uso escondidos (com os
+   <h3> aparecendo na navegação por headings) enquanto o botão que os controla
+   dizia `aria-expanded="false"` — o que o ARIA declarava e o que a árvore
+   entregava se contradiziam. */
 .usecases__expand-wrap {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 450ms ease;
+    visibility: hidden;
+    transition: grid-template-rows 450ms ease, visibility 450ms ease;
 }
 
 .usecases__expand-wrap.is-open {
     grid-template-rows: 1fr;
+    visibility: visible;
 }
 
 .usecases__expand-inner {
@@ -1209,6 +1395,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     .how__track-fill { transition: none; }
     .how__step-icon { transition: none; }
     .usecase-card { transition: none; }
+    .usecase-card__cta svg { transition: none; }
     .usecases__expand-wrap { transition: none; }
     .compare__slogan { transition: none; }
     .usecases-toggle__chevron { transition: none; }

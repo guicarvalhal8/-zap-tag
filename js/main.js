@@ -39,7 +39,13 @@ function initNavbarMenu() {
     });
 
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') closeMenu();
+        if (event.key !== 'Escape') return;
+        if (!menu.classList.contains('is-open')) return;
+        closeMenu();
+        // Devolve o foco a quem abriu. Sem isto, fechar por Esc deixava o
+        // foco num link que o CSS acabou de esconder (`visibility: hidden`),
+        // e a próxima tecla Tab recomeçava do topo do documento.
+        toggle.focus();
     });
 }
 
@@ -61,9 +67,49 @@ function initWhatsappLinks() {
 // trilha conectora acende junto com cada passo. Ao sair da tela (pra cima
 // ou pra baixo), desfaz tudo — se o usuário voltar, a sequência roda de novo
 // do zero, em vez de ficar só marcada como "já vista".
+// A trilha vertical do mobile precisa ir do centro do 1º ícone ao centro do
+// 3º, e essa distância depende da altura REAL do passo — a descrição quebra
+// em 2 ou 3 linhas conforme a largura, porque está presa a ~26 caracteres por
+// linha pelo `max-width: 26ch`. O CSS assumia 148px fixos (`--how-card-h`) e
+// o passo mede 158px já com 2 linhas, então a trilha parava ~20px antes do
+// terceiro ícone em toda largura mobile. Aqui a altura é medida em vez de
+// estimada.
+//
+// Isto é leitura de layout, mas não é o padrão de thrash: são duas leituras
+// (init e resize), não uma por evento contínuo. O `transform` do reveal não
+// contamina a medida porque os dois ícones estão deslocados igualmente e o
+// que interessa é a diferença entre eles.
+function syncHowTrack(section) {
+    const wrap = section.querySelector('.how__steps-wrap');
+    const icons = section.querySelectorAll('.how__step-icon');
+    if (!wrap || icons.length < 2) return;
+
+    const first = icons[0].getBoundingClientRect();
+    const last = icons[icons.length - 1].getBoundingClientRect();
+    const height = (last.top + last.height / 2) - (first.top + first.height / 2);
+
+    // No desktop os ícones ficam lado a lado e a distância vertical é 0 — não
+    // tem problema, a media query de 900px sobrescreve a altura com 2px.
+    wrap.style.setProperty('--how-track-h', `${Math.max(0, Math.round(height))}px`);
+}
+
 function initHowSteps() {
     const section = document.querySelector('.how');
     if (!section) return;
+
+    syncHowTrack(section);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => syncHowTrack(section), 150);
+    });
+
+    // As fontes do Google chegam depois do primeiro paint e mudam a altura da
+    // descrição, então remede quando elas assentarem.
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => syncHowTrack(section));
+    }
 
     const steps = section.querySelectorAll('.how__step');
     const fill = section.querySelector('.how__track-fill');
@@ -204,14 +250,41 @@ function initFinalCta() {
     observer.observe(block);
 }
 
+// Rede de segurança: mostra tudo que depende de JS pra aparecer. Chamada
+// quando algum init falha — a página perde a animação, não o conteúdo.
+function revealEverything() {
+    document
+        .querySelectorAll('[data-reveal], .usecase-card, .compare__slogan')
+        .forEach((el) => el.classList.add('is-visible'));
+}
+
+// Cada init roda ISOLADO, e isso não é paranoia genérica: o modo de falha
+// histórico deste projeto (duas vezes) foi um SyntaxError num dos js/*.js
+// com o JavaScript perfeitamente ligado. Como os três scripts são clássicos
+// e compartilham escopo global, um `const` repetido fazia o arquivo inteiro
+// não executar; a função dele deixava de existir; a chamada aqui lançava
+// ReferenceError; e o callback ABORTAVA no meio, levando embora todos os
+// inits seguintes. Foi assim que o CTA de fechamento ficou invisível sem
+// nada no visual indicando a causa.
+// O <noscript> do index.html cobre o caso de JS desligado ou bloqueado.
+// Isto cobre o caso de JS ligado que quebra — que é o mais provável aqui.
+function run(name, fn) {
+    try {
+        fn();
+    } catch (error) {
+        console.error(`[zaptag] ${name} falhou, seguindo sem ele:`, error);
+        revealEverything();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    initNavbarScroll();
-    initNavbarMenu();
-    initHeroReveal();
-    initWhatsappLinks();
-    initTouchAnimation(document.getElementById('hero-touch-demo'));
-    initHowSteps();
-    initCompare();
-    initUseCases();
-    initFinalCta();
+    run('initNavbarScroll', initNavbarScroll);
+    run('initNavbarMenu', initNavbarMenu);
+    run('initHeroReveal', initHeroReveal);
+    run('initWhatsappLinks', initWhatsappLinks);
+    run('initTouchAnimation', () => initTouchAnimation(document.getElementById('hero-touch-demo')));
+    run('initHowSteps', initHowSteps);
+    run('initCompare', initCompare);
+    run('initUseCases', initUseCases);
+    run('initFinalCta', initFinalCta);
 });
