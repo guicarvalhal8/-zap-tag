@@ -56,6 +56,28 @@
     outline-offset: 3px;
 }
 
+/* Só o hambúrguer/footer/nav ficam entre o topo da página e o conteúdo hoje
+   (poucos tab stops), mas é uma checagem WCAG 2.4.1 de verdade e o site não
+   tinha nenhum bypass. Fora da tela até ganhar foco por teclado. */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 100;
+    padding: 12px 20px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    transition: top 180ms ease;
+}
+
+.skip-link:focus {
+    top: 16px;
+}
+
 body {
     margin: 0;
     background: var(--color-bg);
@@ -1294,6 +1316,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     font-size: 0.9rem;
     color: var(--color-text-muted);
     transition: color 180ms ease;
+    /* Mesmo alvo de toque de 44px do .site-footer__link — padrão idêntico,
+       só nasceu depois (bloco 2) e ficou de fora daquela passada. */
+    min-height: 44px;
 }
 
 .trust-strip__instagram:hover,

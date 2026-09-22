@@ -136,9 +136,16 @@ function initTouchAnimation(root) {
 
     root.addEventListener('touch-demo:stop', () => visibilityObserver.disconnect(), { once: true });
 
+    // WCAG 2.2.2 (Pause, Stop, Hide): conteúdo em movimento automático sem
+    // limite precisa de um jeito de parar. Em vez de adicionar um controle de
+    // pausa visível a um Hero já fechado, a demo simplesmente assenta sozinha
+    // depois de 2 passagens completas pelos 3 casos — para no último caso
+    // mostrado, não volta pro "Aproxime o celular".
+    const MAX_CYCLES = TOUCH_DEMO_CASES.length * 2;
+
     (async () => {
         let i = 0;
-        while (running) {
+        while (running && i < MAX_CYCLES) {
             if (paused) {
                 await touchDemoSleep(200);
                 continue;

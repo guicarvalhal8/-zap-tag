@@ -82,10 +82,12 @@
 </head>
 <body>
 
+    <a href="#top" class="skip-link">Pular para o conteúdo</a>
+
     <header class="navbar">
         <div class="container navbar__inner">
             <a href="#top" class="logo" aria-label="Zap Tag — início">
-                <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <mask id="zt-cutout-nav">
                         <rect width="100" height="100" fill="white"/>
                         <circle cx="30" cy="28" r="6" fill="black"/>
@@ -103,7 +105,7 @@
                     class="btn-primary btn-primary--compact"
                     href="https://wa.me/5562982233133"
                     target="_blank"
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
                 >
                     Falar no WhatsApp
@@ -132,7 +134,7 @@
                     class="btn-primary"
                     href="https://wa.me/5562982233133"
                     target="_blank"
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
                 >
                     Falar no WhatsApp
@@ -141,7 +143,7 @@
         </div>
     </header>
 
-    <main id="top">
+    <main id="top" tabindex="-1">
         <section class="hero">
             <div class="hero__glow" aria-hidden="true"></div>
 
@@ -165,7 +167,7 @@
                             class="btn-primary"
                             href="https://wa.me/5562982233133"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                             data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais sobre os adesivos NFC."
                         >
                             Falar no WhatsApp
@@ -174,7 +176,7 @@
                     </div>
                 </div>
 
-                <div class="hero__demo" data-reveal>
+                <div class="hero__demo" data-reveal aria-hidden="true">
                     <div id="hero-touch-demo"></div>
                 </div>
             </div>
@@ -203,7 +205,7 @@
                         <div class="how__step-visual">
                             <span class="how__step-number" aria-hidden="true">01</span>
                             <span class="how__step-icon">
-                                <svg class="how__step-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                <svg class="how__step-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <rect x="10" y="4" width="15" height="24" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                     <line x1="15" y1="23.5" x2="20" y2="23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     <path d="M14 19 L6 27 L10 27 L8 33 L16 24 L11 24 Z" fill="currentColor"/>
@@ -218,7 +220,7 @@
                         <div class="how__step-visual">
                             <span class="how__step-number" aria-hidden="true">02</span>
                             <span class="how__step-icon">
-                                <svg class="how__step-glyph" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                <svg class="how__step-glyph" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <mask id="zt-cutout-how">
                                         <rect width="100" height="100" fill="white"/>
                                         <circle cx="30" cy="28" r="6" fill="black"/>
@@ -236,7 +238,7 @@
                         <div class="how__step-visual">
                             <span class="how__step-number" aria-hidden="true">03</span>
                             <span class="how__step-icon">
-                                <svg class="how__step-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                <svg class="how__step-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <polyline points="4 13 10 19 20 6"/>
                                 </svg>
                             </span>
@@ -263,7 +265,7 @@
                     <div class="compare__column compare__column--qr">
                         <div class="compare__column-head">
                             <span class="compare__column-icon">
-                                <svg class="compare__column-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                <svg class="compare__column-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path d="M3 8h4l2-3h6l2 3h4v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/>
                                     <circle cx="12" cy="13.5" r="3.5"/>
                                 </svg>
@@ -281,7 +283,7 @@
                     <div class="compare__column compare__column--zaptag">
                         <div class="compare__column-head">
                             <span class="compare__column-icon">
-                                <svg class="compare__column-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                                <svg class="compare__column-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <rect x="10" y="4" width="15" height="24" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
                                     <line x1="15" y1="23.5" x2="20" y2="23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                                     <path d="M14 19 L6 27 L10 27 L8 33 L16 24 L11 24 Z" fill="currentColor"/>
@@ -335,7 +337,7 @@
                             class="usecase-card"
                             href="https://wa.me/5562982233133"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                             data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de avaliação no Google."
                             aria-labelledby="uc-title-1 uc-cta-1"
                         >
@@ -354,7 +356,7 @@
                             class="usecase-card"
                             href="https://wa.me/5562982233133"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                             data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cardápio digital."
                             aria-labelledby="uc-title-2 uc-cta-2"
                         >
@@ -373,7 +375,7 @@
                             class="usecase-card"
                             href="https://wa.me/5562982233133"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                             data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de Wi-Fi automático."
                             aria-labelledby="uc-title-3 uc-cta-3"
                         >
@@ -412,7 +414,7 @@
                                     class="usecase-card"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
-                                    rel="noopener"
+                                    rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cobrança via Pix."
                                     aria-labelledby="uc-title-4 uc-cta-4"
                                 >
@@ -431,7 +433,7 @@
                                     class="usecase-card"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
-                                    rel="noopener"
+                                    rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de fidelidade."
                                     aria-labelledby="uc-title-5 uc-cta-5"
                                 >
@@ -450,7 +452,7 @@
                                     class="usecase-card"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
-                                    rel="noopener"
+                                    rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de ficha de contato."
                                     aria-labelledby="uc-title-6 uc-cta-6"
                                 >
@@ -492,7 +494,7 @@
 
         <section class="final-cta">
             <div class="final-cta__glow" aria-hidden="true">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <mask id="zt-cutout-final">
                         <rect width="100" height="100" fill="white"/>
                         <circle cx="30" cy="28" r="6" fill="black"/>
@@ -510,7 +512,7 @@
                     class="btn-primary"
                     href="https://wa.me/5562982233133"
                     target="_blank"
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
                 >
                     Falar no WhatsApp
@@ -520,7 +522,7 @@
             <footer class="site-footer" role="contentinfo">
                 <div class="container site-footer__inner">
                     <a href="#top" class="logo" aria-label="Zap Tag — início">
-                        <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <mask id="zt-cutout-footer">
                                 <rect width="100" height="100" fill="white"/>
                                 <circle cx="30" cy="28" r="6" fill="black"/>
@@ -547,7 +549,7 @@
                                 class="site-footer__link"
                                 href="https://wa.me/5562982233133"
                                 target="_blank"
-                                rel="noopener"
+                                rel="noopener noreferrer"
                                 data-wa-message="Olá! Vi o site da Zap Tag e quero saber mais."
                             >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
