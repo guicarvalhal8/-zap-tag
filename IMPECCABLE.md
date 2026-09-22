@@ -4,10 +4,12 @@ Trabalho de design e qualidade da landing, feito com o skill `impeccable`.
 Este arquivo é o ponto de retomada: o que já foi feito, o que falta, quais
 comandos usar e quais decisões **não** devem ser reabertas.
 
-Última sessão: **2026-09-22**. **O plano inteiro está concluído**: os 4
-blocos, o critique+audit de novo, `/impeccable document` (`DESIGN.md`) e
-`/impeccable init` (`PRODUCT.md`). Não há mais nada pendente deste arquivo —
-próximo trabalho de design vem de um pedido novo, não deste plano.
+Última sessão: **2026-09-22**. O plano original (4 blocos + critique/audit +
+document + init) está concluído. Depois disso, uma sessão na máquina pessoal
+fez mais trabalho de design (nome fantasia, slogan, Hero interativo, seção
+fundida) e uma nova rodada de critique+audit achou P2 novos — ver "Rodada da
+máquina pessoal" logo depois de "Depois dos blocos". Item 1 desses P2 (Hero
+mobile) já foi corrigido nesta máquina; itens 2–4 seguem pendentes.
 Combinado com o dono: push só depois de um bloco/etapa inteira validada, não
 item a item.
 
@@ -365,6 +367,39 @@ local, sem automação de hover/scroll.
   derivados — o mais citável: "nunca fabricar prova social" e "WhatsApp é o
   único canal de conversão".
 
+### Rodada da máquina pessoal (22/09, à noite) — commits `8f250b7`..`1c9aa2f`
+
+Depois do plano fechado nesta máquina, a sessão da máquina pessoal fez mais
+trabalho de design (fora deste plano original, registrado aqui só como
+referência — detalhe completo no `MEMORY.md`):
+
+- Nome fantasia "**Zap Tag**" e slogan "**Encostou, ativou.**" definidos.
+- "Como funciona" + "Diferencial vs. QR code" fundidas numa seção só.
+- Hero virou interativo (arrastar/tocar/teclado no celular da demo).
+- Ícone oficial do WhatsApp; silhueta da tag como forma de interface.
+- Nova rodada de critique+audit: **22/32** e **16/20** (caiu de 27/32 e
+  18/20 — parte é regressão real, parte é revisor mais exigente sem ver a
+  nota anterior). Os 3 P1 e os defeitos da demo já foram corrigidos lá.
+  Placar detalhado na seção "Placar" no fim deste arquivo.
+- **P2 que sobraram**, retomados nesta máquina em 2026-09-22:
+  1. ~~Hero mobile (`/impeccable adapt`)~~ — **feito**, commit `20adcac`.
+     Demo encolhida abaixo de 640px (telefone 168×300 → 128×228, escala
+     ~0,76 em tudo dentro dela); `TOUCH_DEMO_REST`/`CONTACT` do JS não
+     mudaram, de propósito. Nome "Zap Tag" sempre visível ao lado do
+     hambúrguer (tirado o `display:none` de `.logo__wordmark`). Linha de
+     "role pra baixo" só aparece a partir de 960px.
+  2. Reasseguramento no CTA final — pendente. Precisa do horário real de
+     atendimento antes de trocar "Resposta em poucos minutos".
+  3. Acabamento (`/impeccable polish`) — pendente: ícones Wi-Fi/Pix
+     semanticamente errados, glows parados (`.hero__glow`/`.final-cta__glow`)
+     contradizendo a regra Flat-At-Rest do `DESIGN.md` (perguntar ao dono se
+     o documento muda ou o código muda), `theme-color` faltando, alvo de
+     toque de `.link-secondary` em 23px, texto de `.touch-demo__panel-idle`
+     em 11,2px (piso do `DESIGN.md` é 12px), `TAG_ICON`/`CHECK_ICON`/
+     `svgIcon` sem prefixo em `touch-animation.js`.
+  4. Fechar o ciclo: `/impeccable critique` + `/impeccable audit` de novo
+     depois dos itens 2 e 3, meta ≥ 24/32 e ≥ 18/20.
+
 ---
 
 ## Protocolo de verificação que funciona aqui
@@ -411,8 +446,10 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 1. **Os 3 JS são scripts clássicos e compartilham escopo global.** Um
    `const`/`function` de mesmo nome em dois arquivos dá `SyntaxError`
    silencioso — invisível no visual, só aparece no console. Já derrubou o site
-   **duas vezes**. Hoje não há colisão, mas `USE_CASES` e `sleep` continuam
-   sem prefixo (bloco 4, item 9). Verificar com:
+   **duas vezes**. `USE_CASES`/`sleep` foram renomeados pra
+   `TOUCH_DEMO_CASES`/`touchDemoSleep` no bloco 4, item 9 — mas `TAG_ICON`,
+   `CHECK_ICON` e `svgIcon` em `touch-animation.js` continuam sem prefixo
+   (P3 pendente da rodada da máquina pessoal). Verificar com:
    `for f in js/*.js; do grep -hoE '^(const|let|var|function) [A-Za-z_$]+' "$f" | awk '{print $2}'; done | sort | uniq -d`
 2. **`[data-reveal]` nasce em `opacity: 0`.** Qualquer coisa nova que use esse
    atributo depende de JS para aparecer. O `<noscript>` e o `run()` cobrem,

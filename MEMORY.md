@@ -570,22 +570,54 @@
     markup. O certo é `impeccable detect --json index.html`, que dá 3 avisos
     advisory e 0 achados reais.
 
+- **2026-09-22 (computador do trabalho, depois da rodada da máquina
+  pessoal)** — `git pull` trouxe 6 commits (`8f250b7`..`37887a9`): nome
+  fantasia "Zap Tag", slogan "Encostou, ativou.", seção "Como funciona"
+  fundida com "Diferencial vs. QR code", Hero interativo (arrastar/tocar/
+  teclado), ícone oficial do WhatsApp, silhueta da tag como forma de
+  interface, e nova rodada de critique+audit (22/32, 16/20 — 3 P1 já
+  corrigidos lá). `HANDOFF-CLAUDE.md` lido e removido, commit `0ca5de6`.
+  Detalhe completo de cada mudança está nas entradas acima (vieram junto no
+  pull) e em `IMPECCABLE.md` → "Rodada da máquina pessoal".
+  - **Item 1 do P2 que sobrou — Hero mobile (`/impeccable adapt`) — feito**,
+    commit `20adcac`. Demo encolhida abaixo de 640px (telefone 168×300 →
+    128×228, ~0,76x em tudo dentro do `.touch-demo`); `TOUCH_DEMO_REST`/
+    `CONTACT` do JS mantidos idênticos nos dois tamanhos, de propósito —
+    evita a armadilha que o handoff avisou (os dois valores têm que ficar
+    iguais entre CSS e JS). `.logo__wordmark` sempre visível (tirado o
+    `display:none` que só liberava a partir de 768px). `.hero__scroll-hint`
+    só aparece a partir de 960px, onde o Hero já tem espaço vertical de
+    verdade. Sem Playwright nesta máquina — aprovado pelo dono sem
+    verificação automatizada em 390×844.
+  - Itens 2 (reasseguramento — precisa do horário real de atendimento), 3
+    (polish — ícones, glows parados, theme-color, alvos de toque, nomes sem
+    prefixo) e 4 (critique+audit de novo) **seguem pendentes**.
+
 ## Próximo passo sugerido
 
-**O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,
-`DESIGN.md`, `PRODUCT.md`) e as 6 seções do fluxo estão prontas e no ar
-localmente. Não há mais um plano em andamento — o próximo trabalho de design
-vem de um pedido novo do dono, não deste arquivo. Pendências reais que
-sobraram, registradas como decisão em aberto (não bloqueiam nada):
+As 6 seções do fluxo estão prontas e no ar. O plano original do
+`IMPECCABLE.md` (4 blocos + critique/audit + document + init) foi concluído
+em 22/09, mas **trabalho novo entrou depois** (ver acima) e ainda tem 3
+itens em aberto — não é mais "sem plano em andamento":
 
-- **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
-- **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
-  comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
-  de investir em material impresso.
-- **Domínio próprio**: ainda não comprado, site publicado em
-  `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
-  `index.html` pra trocar em 3 lugares quando comprar).
-- **Skill `impeccable` instalada global** nesta máquina
-  (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
-  em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
-  confirmar se a skill está instalada antes de usar `/impeccable`.
+1. **Reasseguramento no CTA final** (`/impeccable clarify`) — perguntar o
+   horário real de atendimento antes de mexer (hoje é "Resposta em poucos
+   minutos", genérico).
+2. **Acabamento** (`/impeccable polish`) — ícones Wi-Fi/Pix errados, glows
+   parados vs. regra Flat-At-Rest do `DESIGN.md` (perguntar ao dono se muda
+   o documento ou o código), `theme-color` faltando, `.link-secondary` com
+   23px de alvo de toque, `.touch-demo__panel-idle` com 11,2px, nomes sem
+   prefixo em `touch-animation.js`.
+3. **Fechar o ciclo**: `critique` + `audit` de novo depois dos itens acima,
+   meta ≥ 24/32 e ≥ 18/20.
+4. **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
+5. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
+   comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
+   de investir em material impresso.
+6. **Domínio próprio**: ainda não comprado, site publicado em
+   `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
+   `index.html` pra trocar em 3 lugares quando comprar).
+7. **Skill `impeccable` instalada global** nesta máquina
+   (`C:\Users\Guilherme\.claude\skills\impeccable`) — `/impeccable` funciona
+   em qualquer pasta aqui. Se abrir o Claude Code numa máquina diferente,
+   confirmar se a skill está instalada antes de usar `/impeccable`.
