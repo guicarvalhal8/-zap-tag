@@ -34,7 +34,7 @@ O adesivo é instalado fisicamente no ambiente do negócio (mesa, balcão, vitri
 
 ## Brand Commitments
 
-- **Nome:** Zap Tag.
+- **Nome:** Zap Tag. Também é o nome fantasia decidido para o futuro CNPJ (2026-09-22), sem complemento descritivo — marca, nome fantasia, Instagram e Perfil da Empresa no Google usam o mesmo nome. A descrição do que a empresa faz vai na categoria/bio/descrição, nunca no nome. Ainda não há CNPJ.
 - **Slogan da marca:** "Encostou, ativou." (definido em 2026-09-22). Vale para a marca inteira — rodapé do site, bio do Instagram, adesivo, material impresso — e não só para a seção "Diferencial vs. QR code", onde nasceu. As duas palavras espelham os dois passos do produto contra os quatro do QR code.
 - **Identidade visual travada:** logo, paleta de cores e sistema visual são intocáveis por palavras do dono — documentados em `DESIGN.md` (Volt Lime = ação, Circuit Cyan = interação do sistema, sobre fundo quase-preto). Token novo pode ser criado; hex existente não muda sem decisão consciente dele.
 - **Contatos reais:** WhatsApp `5562982233133`, e-mail `usezaptag@gmail.com`, Instagram `@zap_tag_`.

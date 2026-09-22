@@ -39,7 +39,8 @@
 ### Ainda não definido (perguntar quando for relevante)
 
 - Tipografia.
-- Nome fantasia completo. (Slogan definido em 2026-09-22: "Encostou, ativou.")
+- ~~Nome fantasia / slogan~~ — definidos em 2026-09-22 (ver entradas abaixo).
+- CNPJ: ainda não aberto. Quando abrir, conferir se vale pôr CNPJ no rodapé.
 - Preço, planos, como funciona a venda (loja online? sob encomenda?).
 - Diferencial frente a concorrentes (QR code é a alternativa óbvia — por que
   NFC é melhor?).
@@ -493,6 +494,13 @@
   - `<title>` e metadados de compartilhamento **não** foram mexidos.
   - Registrado também em `PRODUCT.md` (Brand Commitments).
 
+- **2026-09-22** — Nome fantasia definido: **"Zap Tag"**, igual à marca,
+  sem complemento. Descartados "Zap Tag Adesivos Inteligentes" e "Zap Tag
+  Automação por Aproximação". Motivos: o cliente nunca vê nome diferente
+  (nota, Pix, Google), e o Perfil da Empresa no Google proíbe palavra-chave
+  no nome — a descrição vai na categoria/bio. Ainda não há CNPJ; quando
+  abrir, usar esse nome fantasia. Nada mudou no site (já usa "Zap Tag").
+
 ## Próximo passo sugerido
 
 **O plano do `IMPECCABLE.md` está 100% completo** (os 4 blocos, critique+audit,
@@ -501,8 +509,10 @@ localmente. Não há mais um plano em andamento — o próximo trabalho de desig
 vem de um pedido novo do dono, não deste arquivo. Pendências reais que
 sobraram, registradas como decisão em aberto (não bloqueiam nada):
 
-- **Nome fantasia completo**: ainda não definido. (O slogan já foi — ver
-  entrada de 2026-09-22 acima.)
+- **CNPJ**: ainda não aberto. Nome fantasia já decidido: "Zap Tag".
+- **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
+  comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
+  de investir em material impresso.
 - **Domínio próprio**: ainda não comprado, site publicado em
   `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
   `index.html` pra trocar em 3 lugares quando comprar).
