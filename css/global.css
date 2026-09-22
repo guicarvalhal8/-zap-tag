@@ -1545,8 +1545,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .final-cta__trust {
     font-family: var(--font-body);
     font-weight: 400;
-    font-size: 0.8125rem;
-    color: var(--color-text-muted);
+    /* Era 13px em cinza — o texto mais fraco do bloco, bem no momento de
+       maior ansiedade da página (decidir mandar mensagem sem saber o
+       preço). Sobe pra --color-text e um tamanho que compete de verdade
+       com o resto do bloco. */
+    font-size: 0.95rem;
+    color: var(--color-text);
 }
 
 .site-footer {
