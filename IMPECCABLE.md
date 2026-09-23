@@ -475,8 +475,17 @@ e as duas têm que ser `http`, senão o navegador bloqueia por mixed content.
 
 ## Fila pendente — round 4 (22/09, 21h38)
 
-**Status: nada foi implementado.** O dono pediu para deixar tudo anotado e
-retomar quando sair da faculdade. Esta seção é a lista de trabalho; não
+**Status (22/09, noite): itens 1, 2, 3, 5, 6 e 7 implementados, não
+commitados.** Falta só o **item 4** (perguntas de quem vai instalar), que
+depende das respostas reais do dono. Detalhes do que foi feito no
+`MEMORY.md` (entrada "Fila round 4 aplicada"). Decisões tomadas na
+implementação: item 2 só com a opção (a), botão abaixo do slogan, sem CTA
+fixo na zona do polegar; item 3 com o corte de maior efeito (H1 todo em
+`--color-text`); item 7: o detector **não aceita** valor nomeado para
+`cramped-padding` ("no extractable ignore value"), então o curinga ficou e a
+justificativa foi reescrita cobrindo as 4 ocorrências; o `ai-color-palette`
+não foi suprimido porque só aparece no detector de navegador e não deu pra
+conferir o valor exato. Esta seção é a lista de trabalho; não
 precisa rodar `critique` de novo antes de começar, é só pegar daqui.
 
 A rodada foi um `/impeccable critique` com os 2 subagentes isolados de sempre.

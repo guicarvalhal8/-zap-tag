@@ -100,7 +100,7 @@ Paleta de duas cores acesas sobre uma base quase-preta de duas camadas — trava
 - **Meaningful Border** (#6B7280): borda 4,0:1 — quando a borda é a ÚNICA informação de que algo é um controle interativo (ex. `.btn-outline`).
 
 ### Named Rules
-**The One Action Rule.** Lime é a única cor de ação primária na página inteira. Nunca dividir "clique aqui" entre duas cores diferentes.
+**The One Action Rule.** Lime é a única cor de ação primária na página inteira. Nunca dividir "clique aqui" entre duas cores diferentes. O H1 é todo em Signal White: acima da dobra, a única massa lime é o botão.
 
 **The Border Role Rule.** Duas bordas existem por design: a decorativa (1,35:1, `--color-border`) nunca carrega significado sozinha; a portadora de significado (4,0:1, `--color-border-strong`) é obrigatória sempre que a borda é o único sinal de interatividade.
 
@@ -125,7 +125,7 @@ Paleta de duas cores acesas sobre uma base quase-preta de duas camadas — trava
 
 ## Layout
 
-Container centralizado, seções empilhadas verticalmente (Hero → Como funciona, que é a comparação com o QR code → Casos de uso → faixa de confiança → CTA final + rodapé). Mobile-first: grid de 1 coluna até ~760/860px, 2–3 colunas acima disso conforme a seção. Navbar fixa no topo (`--nav-height: 72px`), com painel mobile que desliza abaixo dela via `grid-template-rows: 0fr → 1fr` (nunca `display: none` abrupto). Ritmo vertical generoso entre seções (padding-block na casa de 80–120px), mais apertado dentro de cards.
+O CTA final tem duas colunas a partir de 960px: o convite à esquerda e, à direita, uma prévia neutra da mensagem do WhatsApp (sem resposta simulada) mais 3 passos com marcador ciano. Container centralizado (até 1600px, respiro lateral `clamp(24px, 5vw, 80px)`), seções empilhadas verticalmente (Hero → Como funciona, que é a comparação com o QR code → Casos de uso → Formatos → faixa de confiança → CTA final + rodapé). Em Formatos, os objetos são desenhados em escala real entre si (`--mm` px por milímetro), em papel Signal White com tinta Deep Ink; o lime aparece só no ponto do ícone de toque e nas estrelas. Mobile-first: grid de 1 coluna até ~760/860px, 2–3 colunas acima disso conforme a seção. Navbar fixa no topo (`--nav-height: 72px`), com painel mobile que desliza abaixo dela via `grid-template-rows: 0fr → 1fr` (nunca `display: none` abrupto). Ritmo vertical generoso entre seções (padding-block na casa de 80–120px), mais apertado dentro de cards.
 
 ## Elevation & Depth
 
@@ -162,7 +162,7 @@ Cantos de 4px e 6px existem só no lado reto dessas tags pequenas, proporcionais
 
 ### Buttons
 - **Shape:** cantos de 10px (`{rounded.md}`).
-- **Primary:** em forma de tag (ver Shapes), fundo Volt Lime, texto Deep Ink, glifo do WhatsApp à esquerda do rótulo, altura 52px. É a única ação de conversão do site — sempre o mesmo componente, nunca uma variação de cor.
+- **Primary:** em forma de tag (ver Shapes), fundo Volt Lime, texto Deep Ink, glifo do WhatsApp à esquerda do rótulo, seta diagonal de link externo (12px) à direita e um `.sr-only` "(abre o WhatsApp)", altura 52px. É a única ação de conversão do site — sempre o mesmo componente, nunca uma variação de cor.
 - **Hover / Focus:** `transform: scale(1.03)` + `filter: drop-shadow` lime com offset pra baixo, que segue a silhueta da tag (box-shadow desenharia um retângulo). Anel de foco ciano por cima, sempre visível.
 - **Outline:** fundo transparente, borda 1,5px em Meaningful Border (nunca Decorative Border — token errado aqui é falha de contraste WCAG 1.4.11), texto Signal White. Vira lime no hover/foco.
 - **Compact:** mesma família do primary, padding reduzido (`10px 20px`), usado só na navbar. `min-height: 44px` garantido mesmo compacto.
@@ -179,7 +179,7 @@ Cantos de 4px e 6px existem só no lado reto dessas tags pequenas, proporcionais
 - **Mobile:** hambúrguer 44×44px que vira X; painel desliza abaixo da barra via altura animada, nunca `display: none` abrupto — preserva foco e árvore de acessibilidade durante a transição.
 
 ### Touch Demo (componente de assinatura)
-Mockup de celular com um "adesivo" ao lado — ao "tocar", um ripple ciano se expande e o mockup troca de painel mostrando o caso de uso ativado. É a peça mais distintiva do sistema: transforma o conceito abstrato "NFC" numa animação concreta e legível em 2 segundos. Painéis trocam com fade sequencial (nunca crossfade sobreposto — ver `switchPanel()` em `touch-animation.js`), e a demo assenta sozinha depois de 2 ciclos completos em vez de rodar pra sempre. **É interativa:** o celular é um `<button>`. Com mouse, a pessoa arrasta o celular até a tag, a tag reage perto do contato (ciano, resposta do sistema) e o toque dispara ao encostar. No touch, um toque faz o gesto, porque arrastar ali prenderia a rolagem da página. No teclado, Enter/Espaço. A demo automática para no primeiro gesto da pessoa, e o resultado é anunciado por `aria-live`.
+Mockup de celular com um "adesivo" ao lado — ao "tocar", um ripple ciano se expande e o mockup troca de painel mostrando o caso de uso ativado. É a peça mais distintiva do sistema: transforma o conceito abstrato "NFC" numa animação concreta e legível em 2 segundos. Painéis trocam com fade sequencial (nunca crossfade sobreposto — ver `switchPanel()` em `touch-animation.js`), e o ciclo pausa fora de vista e com a aba oculta. **É interativa:** o celular é um `<button>`. Com mouse, a pessoa arrasta o celular até a tag, a tag reage perto do contato (ciano, resposta do sistema) e o toque dispara ao encostar. No touch, um toque faz o gesto, porque arrastar ali prenderia a rolagem da página. No teclado, Enter/Espaço. A demo automática roda em ciclo contínuo pelos 3 casos (decisão do dono de 22/09), para no primeiro gesto da pessoa e volta sozinha depois de 6s sem gesto; só o gesto da pessoa é anunciado por `aria-live`. **Abaixo de 640px a demo fica deitada** (celular à esquerda, adesivo à direita, ~180px de altura) e o percurso até a tag é horizontal (`translateX` −24 → 14px, espelhado em `TOUCH_DEMO_REST_ROW`/`CONTACT_ROW` no JS). O convite automático só dispara quando o adesivo está 90% visível. Acima de 640px, anéis ciano finos (campo de aproximação) saem do adesivo e acendem no contato. A partir de 1200px a demo fica 1,2x maior, cercada por 3 etiquetas dos casos de uso, e a do caso aberto acende em ciano (resposta do sistema).
 
 ## Do's and Don'ts
 

@@ -101,6 +101,7 @@ function initCompare() {
     const qrSteps = section.querySelectorAll('.compare__column--qr .compare__step');
     const zaptagSteps = section.querySelectorAll('.compare__column--zaptag .compare__step');
     const slogan = section.querySelector('.compare__slogan');
+    const cta = section.querySelector('.compare__cta');
     const facts = section.querySelector('.compare__facts');
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -127,7 +128,10 @@ function initCompare() {
         stagger(qrSteps, 180);
         stagger(zaptagSteps, 90);
         timers.push(setTimeout(() => slogan && slogan.classList.add('is-visible'), reducedMotion ? 0 : 550));
+        // O botão entra junto com os facts, logo depois do slogan: é o
+        // "e agora?" do argumento, não uma peça que compete com ele.
         timers.push(setTimeout(() => {
+            if (cta) cta.classList.add('is-visible');
             if (facts) facts.classList.add('is-visible');
             if (observer) observer.disconnect();
         }, reducedMotion ? 0 : 720));
@@ -139,6 +143,7 @@ function initCompare() {
         qrSteps.forEach((el) => el.classList.remove('is-visible'));
         zaptagSteps.forEach((el) => el.classList.remove('is-visible'));
         if (slogan) slogan.classList.remove('is-visible');
+        if (cta) cta.classList.remove('is-visible');
         if (facts) facts.classList.remove('is-visible');
     };
 
@@ -168,11 +173,20 @@ function initFinalCta() {
     const block = section.querySelector('[data-reveal]');
     if (!block) return;
 
+    // A prévia da conversa mostra a MESMA mensagem que o botão envia: lê do
+    // data-wa-message, pra as duas nunca ficarem diferentes.
+    const button = document.getElementById('final-cta-button');
+    const bubbleText = section.querySelector('.wa-preview__text');
+    if (button && bubbleText && button.dataset.waMessage) {
+        bubbleText.textContent = button.dataset.waMessage;
+    }
+
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) {
         block.classList.add('is-visible');
         return;
     }
+    section.classList.add('final-cta--animate');
 
     // Sem stagger aqui — a própria entrada em viewport já é "a sequência
     // completa", então trava e desliga o observer na primeira vez que aparece.
@@ -187,11 +201,62 @@ function initFinalCta() {
     observer.observe(block);
 }
 
+// Etiquetas em volta da demo do Hero (só aparecem a partir de 1200px): a do
+// caso que o celular acabou de abrir acende. "idle" apaga todas.
+function initHeroChips() {
+    const demo = document.querySelector('.hero__demo');
+    if (!demo) return;
+    const chips = demo.querySelectorAll('.hero__chip');
+    demo.addEventListener('touch-demo:open', (event) => {
+        chips.forEach((chip) => {
+            chip.classList.toggle('is-active', chip.dataset.case === event.detail.key);
+        });
+    });
+}
+
+// Formatos: cada objeto entra quando chega na tela, UM POR VEZ. Se vários
+// cruzam o gatilho juntos (uma linha inteira da grade, ou quem chega pelo
+// link #formatos), eles vão pra uma fila e saem em ordem, a cada 240ms.
+// Depois de revelado, fica: mesma trava das outras seções.
+function initFormats() {
+    const section = document.querySelector('.formats');
+    if (!section) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    const items = Array.from(section.querySelectorAll('.format'));
+    section.classList.add('formats--animate');
+
+    const queue = [];
+    let draining = false;
+
+    const drain = () => {
+        if (!queue.length) { draining = false; return; }
+        draining = true;
+        queue.sort((a, b) => items.indexOf(a) - items.indexOf(b));
+        queue.shift().classList.add('is-visible');
+        setTimeout(drain, 240);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            queue.push(entry.target);
+        });
+        if (!draining) drain();
+    // -30% embaixo: o gatilho fica no terço de baixo da tela, então a 2ª
+    // linha da grade espera a pessoa rolar, mesmo em monitor alto.
+    }, { threshold: 0.35, rootMargin: '0px 0px -30% 0px' });
+
+    items.forEach((item) => observer.observe(item));
+}
+
 // Rede de segurança: mostra tudo que depende de JS pra aparecer. Chamada
 // quando algum init falha — a página perde a animação, não o conteúdo.
 function revealEverything() {
     document
-        .querySelectorAll('[data-reveal], .usecase-card, .compare__slogan')
+        .querySelectorAll('[data-reveal], .usecase-card, .compare__slogan, .format')
         .forEach((el) => el.classList.add('is-visible'));
 }
 
@@ -219,8 +284,10 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initNavbarMenu', initNavbarMenu);
     run('initHeroReveal', initHeroReveal);
     run('initWhatsappLinks', initWhatsappLinks);
+    run('initHeroChips', initHeroChips);
     run('initTouchAnimation', () => initTouchAnimation(document.getElementById('hero-touch-demo')));
     run('initCompare', initCompare);
     run('initUseCases', initUseCases);
+    run('initFormats', initFormats);
     run('initFinalCta', initFinalCta);
 });

@@ -117,11 +117,15 @@ a { color: inherit; text-decoration: none; }
 
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
+/* Largura da página. Era 1280px fixo com 24px de respiro: em 1920 o
+   conteúdo ficava em 1232px e sobravam 344px vazios de cada lado, em todas as
+   seções. Agora vai até 1600px, e o respiro lateral cresce com a tela (24px
+   no celular, 80px em tela larga): em 1920 o conteúdo tem 1440px. */
 .container {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 clamp(24px, 5vw, 80px);
 }
 
 /* ---- Navbar ---- */
@@ -168,7 +172,11 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     .navbar__nav { display: flex; }
 }
 
+/* Alvo de 44px: o link media só a linha do texto (21,6px de altura). */
 .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 0.9rem;
@@ -285,10 +293,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     justify-content: center;
 }
 
+/* Alvo de 44px na navbar e no rodapé: o ícone de 32px definia a altura do
+   link inteiro. */
 .logo {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-height: 44px;
 }
 
 .logo__icon {
@@ -312,7 +323,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .hero {
     position: relative;
-    min-height: 100svh;
+    /* Teto de 760px: em tela alta o Hero comprava altura que não usava e
+       empurrava a próxima seção pra longe. */
+    min-height: min(100svh, 760px);
     display: flex;
     align-items: center;
     padding-top: var(--nav-height);
@@ -392,7 +405,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
-.hero__title-accent { color: var(--color-primary); }
+/* O H1 é todo em --color-text de propósito. A metade final ("A ação
+   acontece sozinha.") era lime a 56px, a maior massa lime da primeira dobra,
+   maior que o próprio botão, e não era clicável. Isso quebrava a One Action
+   Rule do DESIGN.md. Agora o botão é o único bloco lime acima da dobra. */
 
 .hero__subtitle {
     font-family: var(--font-body);
@@ -475,6 +491,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     flex-shrink: 0;
 }
 
+/* Seta diagonal: avisa que o clique sai da página e abre o WhatsApp (no
+   desktop, o wa.me leva pra tela de QR do WhatsApp Web). O aviso falado vem
+   do .sr-only "(abre o WhatsApp)" ao lado dela. */
+.btn-primary__external {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    margin-left: -2px;
+}
+
 /* :hover fica atrás de (hover: hover): sem isso, o toque no celular "gruda"
    o scale+glow depois do dedo sair, porque touch dispara :hover sem nunca
    disparar :hover-out até o próximo toque em outro lugar. :focus-visible
@@ -532,8 +558,131 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .hero__demo {
+    position: relative;
     display: flex;
     justify-content: center;
+}
+
+/* Campo de aproximação: anéis ciano centrados no adesivo (a tag é o último
+   item da .touch-demo, 56px de altura, colada no fundo). Sempre fraco;
+   acende no contato. Não é glow: é linha fina, e reage ao toque, como pede a
+   Flat-At-Rest Rule. */
+.touch-demo__field {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    width: 600px;
+    height: 600px;
+    /* A regra global `svg { max-width: 100% }` espremia os anéis pra largura
+       da demo (240px). */
+    max-width: none;
+    transform: translate(-50%, 50%);
+    fill: none;
+    stroke: var(--color-secondary);
+    stroke-width: 1;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 500ms ease;
+}
+
+/* As ondas saem sozinhas do adesivo: cada anel nasce pequeno, cresce e se
+   apaga, e um novo sai a cada 1,5s. Os atrasos são POSITIVOS de propósito:
+   no carregamento os anéis entram um por um, e o campo se forma aos poucos
+   em vez de aparecer pronto. Pausam fora de vista e com a aba oculta
+   (.is-field-paused, via JS). */
+.touch-demo__field circle {
+    transform-box: view-box;
+    transform-origin: 300px 300px;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+    animation: touch-field-wave 6s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
+}
+
+.touch-demo__field circle:nth-child(2) { animation-delay: 1.5s; }
+.touch-demo__field circle:nth-child(3) { animation-delay: 3s; }
+.touch-demo__field circle:nth-child(4) { animation-delay: 4.5s; }
+
+.touch-demo.is-field-paused .touch-demo__field circle { animation-play-state: paused; }
+
+@keyframes touch-field-wave {
+    0%   { transform: scale(0.14); opacity: 0; }
+    12%  { opacity: 1; }
+    100% { transform: scale(1);    opacity: 0; }
+}
+
+/* No contato o campo inteiro acende: o adesivo "respondeu". */
+.touch-demo.is-tapped .touch-demo__field { opacity: 0.8; }
+
+.hero__chips { display: none; }
+
+@media (min-width: 1600px) {
+    .hero { --hero-demo-scale: 1.32; }
+    .hero__content { max-width: 640px; }
+}
+
+/* Em tela larga o Hero ficava com a demo pequena numa coluna estreita e
+   sobra dos dois lados. A partir de 1200px: colunas meio a meio, demo 1,2x
+   (o JS compensa a escala no arraste) e as etiquetas dos casos em volta. */
+@media (min-width: 1200px) {
+    .hero__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 48px;
+    }
+
+    #hero-touch-demo {
+        transform: scale(var(--hero-demo-scale, 1.2));
+        transform-origin: 50% 60%;
+    }
+
+    .hero__chips {
+        display: block;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+
+    .hero__chip {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border: 1px solid var(--color-border);
+        border-radius: 999px;
+        background: var(--color-surface);
+        font-family: var(--font-body);
+        font-weight: 500;
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        white-space: nowrap;
+        transition: color 300ms ease, border-color 300ms ease, transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero__chip svg {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+
+    /* Ciano: é a resposta do sistema ao toque, não uma ação. */
+    .hero__chip.is-active {
+        color: var(--color-text);
+        border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
+        transform: translateY(-3px);
+    }
+
+    .hero__chip.is-active svg { color: var(--color-secondary); }
+
+    /* Em 1200px a coluna tem ~560px e o celular ampliado ocupa o meio: a
+       etiqueta de cima encostava nele com left: 0. */
+    .hero__chip--review   { top: 8%;  left: -4%; }
+    .hero__chip--cardapio { top: 36%; right: 0; }
+    .hero__chip--wifi     { top: 64%; left: 0; }
+}
+
+@media (max-width: 639px) {
+    .touch-demo__field { display: none; }
 }
 
 .hero__scroll-hint {
@@ -790,48 +939,68 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     stroke: var(--color-primary-text);
 }
 
-/* A demo inteira (240×380 + o texto de instrução embaixo) não cabia acima da
-   dobra em celular — o aparelho começava em y≈553 num viewport de 844px de
-   altura, e a instrução ficava fora da tela. Encolhe pra ~0,76x só aqui;
-   TOUCH_DEMO_REST/CONTACT em touch-animation.js continuam os mesmos valores
-   absolutos nos dois tamanhos — o percurso do arraste fica proporcionalmente
-   maior no celular, não incorreto, e evita duplicar a constante por
-   breakpoint. */
+/* Abaixo de 640px a demo fica DEITADA: celular à esquerda, adesivo à
+   direita, ~180px de altura no total. Empilhada (celular em cima, tag
+   embaixo), mesmo encolhida, ela terminava 135,8px abaixo da dobra em
+   390×844, e o adesivo, o pulso e o check, que são o que se vende, ficavam
+   fora da primeira tela. Deitada, o celular vai até o adesivo na horizontal.
+   O repouso e o contato usam translateX com os mesmos valores de
+   TOUCH_DEMO_REST_ROW / TOUCH_DEMO_CONTACT_ROW em touch-animation.js, e os
+   dois lugares precisam continuar iguais. */
 @media (max-width: 639px) {
     .touch-demo {
-        width: 182px;
-        height: 290px;
+        width: 204px;
+        height: 180px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
         gap: 20px;
     }
 
     .touch-demo__phone {
-        width: 128px;
-        height: 228px;
-        border-width: 6px;
-        border-radius: 24px;
+        width: 96px;
+        height: 170px;
+        border-width: 5px;
+        border-radius: 18px;
+        /* Repouso: mesmo valor de TOUCH_DEMO_REST_ROW. */
+        transform: translateX(-24px);
+    }
+
+    /* Contato: mesmo valor de TOUCH_DEMO_CONTACT_ROW. Sobram ~6px dos 20px
+       de gap até o adesivo. */
+    .touch-demo.is-tapped .touch-demo__phone {
+        transform: translateX(14px);
     }
 
     .touch-demo__phone::before {
-        top: 8px;
-        width: 28px;
+        top: 6px;
+        width: 22px;
         height: 3px;
     }
 
     .touch-demo__screen {
-        inset: 17px 8px 8px;
-        border-radius: 15px;
+        inset: 13px 6px 6px;
+        border-radius: 12px;
+    }
+
+    .touch-demo__panel {
+        gap: 6px;
+        padding: 8px;
     }
 
     .touch-demo__panel-icon {
-        width: 26px;
-        height: 26px;
+        width: 22px;
+        height: 22px;
     }
 
     .touch-demo__panel-label {
         /* Piso de 12px do DESIGN.md -- mesmo bug do .touch-demo__panel-idle
            (já corrigido), reintroduzido no seletor irmão. */
         font-size: 0.75rem;
+        line-height: 1.25;
     }
+
+    .touch-demo__panel-idle { line-height: 1.25; }
 
     .touch-demo__tag {
         width: 44px;
@@ -853,6 +1022,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     .touch-demo__success svg {
         width: 10px;
         height: 10px;
+    }
+
+    .touch-demo__hint { margin-top: 12px; }
+
+    /* Os 48px de padding e de gap do Hero eram o que ainda empurrava a demo
+       pra baixo da dobra no celular. */
+    .hero__grid {
+        gap: 28px;
+        padding-block: 24px;
     }
 }
 
@@ -933,6 +1111,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     gap: 12px;
     max-width: 900px;
     margin: 0 auto;
+}
+
+@media (min-width: 1400px) {
+    .compare__columns { max-width: 1080px; }
 }
 
 @media (min-width: 760px) {
@@ -1127,6 +1309,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .compare__slogan.is-visible {
     opacity: 1;
     transform: scale(1);
+}
+
+.compare__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
 }
 
 .compare__facts {
@@ -1445,6 +1633,264 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin-top: 24px;
 }
 
+/* ---- Formatos (desenhos dos protótipos, em escala entre si) ---- */
+
+/* --mm = pixels por milímetro. Cada objeto mede --fmt-w × --fmt-h mm (vem
+   do style inline do li), então a mesma regra desenha o selo de 35mm e o
+   decalque de 110mm na proporção real entre os dois. */
+.formats {
+    /* No celular a escala encolhe com a tela: em 320px a coluna tem ~128px e
+       o decalque (110mm) precisa caber nela. 224 = 2 colunas × 112mm. */
+    --mm: min(1.3px, calc((100vw - 64px) / 224));
+    padding-block: 96px;
+    border-top: 1px solid var(--color-border);
+}
+
+/* A escala acompanha a largura da coluna: o maior objeto (decalque, 110mm)
+   precisa caber numa coluna em qualquer largura. */
+@media (min-width: 640px) {
+    .formats { --mm: 1.7px; }
+}
+
+@media (min-width: 900px) {
+    .formats { --mm: 1.55px; }
+}
+
+@media (min-width: 1200px) {
+    .formats { --mm: 2px; }
+}
+
+/* Coluna de ~330px em 1920: cabe o decalque (110mm) a 2,5px/mm. */
+@media (min-width: 1600px) {
+    .formats { --mm: 2.4px; }
+}
+
+/* Grade fixa: 2 colunas no celular, 4 a partir de 900px, ou seja 2 linhas de
+   4. A ordem do markup agrupa a primeira linha no que fica NA MESA (cartão,
+   porta-copo, selo do cardápio, suporte) e a segunda no que fica em parede,
+   porta ou carteira. Antes era flex-wrap, que quebrava em 5 + 3. */
+.formats__shelf {
+    list-style: none;
+    margin: 56px auto 0;
+    padding: 0;
+    max-width: 1400px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 56px;
+}
+
+@media (min-width: 900px) {
+    .formats__shelf {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 32px;
+        row-gap: 88px;
+    }
+}
+
+.format {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+    /* Desencontro proposital: cada formato sobe/desce e escorrega um pouco
+       dentro da própria coluna, pra grade não ler como tabela. Os valores
+       ficam por item (nth-child abaixo); --loose escala tudo de uma vez
+       (metade no celular, onde a coluna é estreita). */
+    --loose: 0.5;
+    transform: translate(
+        calc(var(--nx, 0px) * var(--loose)),
+        calc(var(--ny, 0px) * var(--loose))
+    );
+}
+
+@media (min-width: 900px) {
+    .format { --loose: 1; }
+}
+
+/* Inclinação só no desenho, nunca no texto: como um objeto largado na
+   mesa. O decalque fica reto, porque vai colado alinhado na porta. */
+.format:nth-child(1) { --ny: 0px;   --nx: 8px;   --tilt: -4deg; }
+.format:nth-child(2) { --ny: 44px;  --nx: -6px;  --tilt: 0deg; }
+.format:nth-child(3) { --ny: -12px; --nx: 10px;  --tilt: 8deg; }
+.format:nth-child(4) { --ny: 28px;  --nx: -10px; --tilt: 0deg; }
+.format:nth-child(5) { --ny: 20px;  --nx: 14px;  --tilt: -6deg; }
+.format:nth-child(6) { --ny: -20px; --nx: -4px;  --tilt: 5deg; }
+.format:nth-child(7) { --ny: 36px;  --nx: 6px;   --tilt: -3deg; }
+.format:nth-child(8) { --ny: -6px;  --nx: -12px; --tilt: 0deg; }
+
+/* O "palco" tem a altura do maior objeto (110mm + folga): todos os objetos
+   assentam na mesma linha de base, como numa prateleira, e os nomes ficam
+   alinhados embaixo. */
+/* Sem linha de prateleira: o dono pediu um arranjo mais solto. O palco
+   continua com a altura do maior objeto, pra os nomes não saltarem demais. */
+.format__stage {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    height: calc(112 * var(--mm));
+    margin-bottom: 18px;
+}
+
+.format__object {
+    width: calc(var(--fmt-w) * var(--mm));
+    height: calc(var(--fmt-h) * var(--mm));
+    overflow: visible;
+    transform: rotate(var(--tilt, 0deg));
+}
+
+.fmt-paper {
+    fill: var(--color-text);
+    stroke: var(--color-border-strong);
+    stroke-width: 0.5;
+}
+
+.fmt-paper--dashed {
+    stroke: var(--color-text-muted);
+    stroke-dasharray: 1.6 1.2;
+}
+
+.fmt-glass {
+    fill: var(--color-surface);
+    stroke: color-mix(in srgb, var(--color-secondary) 45%, transparent);
+    stroke-width: 0.6;
+}
+
+.fmt-base {
+    fill: var(--color-surface);
+    stroke: var(--color-border-strong);
+    stroke-width: 0.5;
+}
+
+.fmt-zone {
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 0.45;
+    stroke-dasharray: 1.6 1.2;
+}
+
+.fmt-ring {
+    fill: none;
+    stroke: var(--color-text-muted);
+    stroke-width: 0.35;
+    opacity: 0.6;
+}
+
+.fmt-ink { fill: var(--color-primary-text); }
+
+.fmt-star { fill: var(--color-primary); }
+
+.fmt-text {
+    font-family: var(--font-display);
+    font-weight: 500;
+    fill: var(--color-primary-text);
+}
+
+.fmt-text--light { fill: var(--color-text); }
+
+.format__name {
+    margin: 0;
+    text-wrap: balance;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: var(--color-text);
+}
+
+.format__idea {
+    margin: 6px 0 0;
+    max-width: 30ch;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+}
+
+.format__idea-label {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+/* A legenda vem depois do maior desencontro vertical (--ny até 44px):
+   com a margem padrão ela encostava na medida do Cartão CR-80. */
+.formats .trust-note--center { margin-top: 80px; }
+
+/* ---- Formatos: entrada um por um ----
+   Só existe com JS e sem prefers-reduced-motion: initFormats() põe a classe
+   .formats--animate na seção. Sem ela, tudo já nasce visível.
+   A entrada é "colocar o objeto na mesa": o desenho desce girando e assenta
+   na própria inclinação (--tilt), o pulso ciano sai (a resposta do sistema,
+   o "encostou, ativou"), e só então vêm nome, ideia de uso e medida. */
+.formats--animate .format__object {
+    opacity: 0;
+    transform: translateY(-40px) rotate(calc(var(--tilt, 0deg) - 14deg)) scale(0.9);
+    transition:
+        opacity 450ms ease,
+        transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.formats--animate .format.is-visible .format__object {
+    opacity: 1;
+    transform: rotate(var(--tilt, 0deg));
+}
+
+.formats--animate .format__name,
+.formats--animate .format__idea,
+.formats--animate .format__size {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.formats--animate .format.is-visible .format__name { transition-delay: 380ms; }
+.formats--animate .format.is-visible .format__idea { transition-delay: 520ms; }
+.formats--animate .format.is-visible .format__size { transition-delay: 620ms; }
+
+.formats--animate .format.is-visible .format__name,
+.formats--animate .format.is-visible .format__idea,
+.formats--animate .format.is-visible .format__size {
+    opacity: 1;
+    transform: none;
+}
+
+.format__stage { position: relative; }
+
+/* Pulso centrado no meio do desenho: --fmt-h vem do style inline do li. */
+.formats--animate .format__stage::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--fmt-h) * var(--mm) / 2 - 24px);
+    width: 48px;
+    height: 48px;
+    margin-left: -24px;
+    border-radius: 50%;
+    border: 2px solid var(--color-secondary);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.formats--animate .format.is-visible .format__stage::after {
+    animation: format-ping 900ms ease-out 420ms 1 both;
+}
+
+@keyframes format-ping {
+    0%   { opacity: 0.85; transform: scale(0.4); }
+    100% { opacity: 0;    transform: scale(3.2); }
+}
+
+.format__size {
+    margin: 2px 0 0;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+}
+
 /* ---- Seção "CTA final" + footer ---- */
 
 .trust-strip {
@@ -1545,17 +1991,238 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     height: 100%;
 }
 
+/* Celular: uma coluna, o convite em cima e "o que acontece depois" embaixo.
+   A partir de 960px: duas colunas, convite à esquerda. */
 .final-cta__inner {
     position: relative;
     z-index: 1;
+    display: grid;
+    gap: 56px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 96px;
+}
+
+.final-cta__pitch {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 20px;
-    max-width: 640px;
-    margin: 0 auto;
-    padding-bottom: 96px;
+}
+
+@media (min-width: 960px) {
+    .final-cta__inner {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 72px;
+    }
+
+    .final-cta__pitch {
+        align-items: flex-start;
+        text-align: left;
+    }
+}
+
+.final-cta__next {
+    width: 100%;
+    max-width: 460px;
+    justify-self: center;
+}
+
+.final-cta__next-title {
+    margin: 0 0 16px;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.25;
+    color: var(--color-text-muted);
+}
+
+/* Prévia de conversa: superfície neutra do sistema, não o verde do
+   WhatsApp (seria uma terceira cor de destaque). */
+.wa-preview {
+    margin: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    overflow: hidden;
+}
+
+.wa-preview__bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.wa-preview__avatar {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    color: var(--color-text);
+    flex-shrink: 0;
+}
+
+.wa-preview__avatar svg {
+    width: 18px;
+    height: 18px;
+}
+
+.wa-preview__who {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.wa-preview__name {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--color-text);
+}
+
+.wa-preview__status {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.wa-preview__chat {
+    display: flex;
+    justify-content: flex-end;
+    padding: 24px 16px 20px;
+    background: var(--color-bg);
+}
+
+.wa-preview__bubble {
+    margin: 0;
+    max-width: 85%;
+    padding: 10px 12px 8px;
+    border: 1px solid var(--color-border-strong);
+    /* Escala do DESIGN.md: lg (16px) com a "ponta" do balão em sm (8px). */
+    border-radius: 16px 16px 8px 16px;
+    background: var(--color-surface);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--color-text);
+}
+
+.wa-preview__meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 2px;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.wa-preview__ticks {
+    width: 16px;
+    height: 12px;
+    color: var(--color-secondary);
+}
+
+/* Linha do tempo: marcador neutro que acende em ciano (resposta do sistema)
+   quando o passo entra. Nunca lime: a ação desta seção é só o botão. */
+.final-cta__steps {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    counter-reset: final-step;
+}
+
+.final-cta__step {
+    position: relative;
+    padding: 0 0 18px 44px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    counter-increment: final-step;
+}
+
+.final-cta__step:last-child { padding-bottom: 0; }
+
+.final-cta__step::before {
+    content: counter(final-step);
+    position: absolute;
+    left: 0;
+    top: -2px;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-secondary);
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text);
+    background: var(--color-bg);
+    transition: border-color 400ms ease, color 400ms ease;
+}
+
+/* Fio entre os marcadores. */
+.final-cta__step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 12.5px;
+    top: 26px;
+    bottom: 2px;
+    width: 1px;
+    background: var(--color-border-strong);
+}
+
+.final-cta__step-title {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+/* ---- CTA final: entrada ----
+   Só com JS e sem reduced-motion (initFinalCta põe .final-cta--animate).
+   Quando o bloco entra: a mensagem "chega" na conversa e os passos acendem
+   um depois do outro. */
+.final-cta--animate .wa-preview__bubble {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    transform-origin: 100% 100%;
+    transition: opacity 450ms ease 350ms, transform 600ms cubic-bezier(0.22, 1, 0.36, 1) 350ms;
+}
+
+.final-cta--animate .final-cta__step {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 450ms ease, transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.final-cta--animate .final-cta__step::before {
+    border-color: var(--color-border-strong);
+    color: var(--color-text-muted);
+}
+
+.final-cta--animate .final-cta__step:nth-child(1) { transition-delay: 850ms; }
+.final-cta--animate .final-cta__step:nth-child(2) { transition-delay: 1100ms; }
+.final-cta--animate .final-cta__step:nth-child(3) { transition-delay: 1350ms; }
+.final-cta--animate .final-cta__step:nth-child(1)::before { transition-delay: 850ms; }
+.final-cta--animate .final-cta__step:nth-child(2)::before { transition-delay: 1100ms; }
+.final-cta--animate .final-cta__step:nth-child(3)::before { transition-delay: 1350ms; }
+
+.final-cta--animate .is-visible .wa-preview__bubble,
+.final-cta--animate .is-visible .final-cta__step {
+    opacity: 1;
+    transform: none;
+}
+
+.final-cta--animate .is-visible .final-cta__step::before {
+    border-color: var(--color-secondary);
+    color: var(--color-text);
 }
 
 .final-cta__title {
@@ -1569,15 +2236,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
-.final-cta__subtitle {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 1.05rem;
-    color: var(--color-text-muted);
-    max-width: 46ch;
-    margin: 0;
-}
-
 .final-cta__trust {
     font-family: var(--font-body);
     font-weight: 400;
@@ -1585,8 +2243,24 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
        maior ansiedade da página (decidir mandar mensagem sem saber o
        preço). Sobe pra --color-text e um tamanho que compete de verdade
        com o resto do bloco. */
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     color: var(--color-text);
+    margin: 0;
+}
+
+.final-cta__number {
+    margin: -4px 0 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.final-cta__number .nowrap {
+    color: var(--color-text);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    user-select: all;
 }
 
 .site-footer {
@@ -1689,6 +2363,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { transition: none; }
     .touch-demo__phone { transition: none; }
+    .hero__chip { transition: none; }
+    .touch-demo__field circle { animation: none; opacity: 0.5; }
+    .touch-demo__field circle:nth-child(1) { transform: scale(0.26); }
+    .touch-demo__field circle:nth-child(2) { transform: scale(0.49); }
+    .touch-demo__field circle:nth-child(3) { transform: scale(0.74); opacity: 0.35; }
+    .touch-demo__field circle:nth-child(4) { transform: scale(1); opacity: 0.2; }
     .touch-demo__tag { transition: none; }
     .usecase-card { transition: none; }
     .usecase-card__cta svg { transition: none; }

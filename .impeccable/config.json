@@ -12,7 +12,7 @@
           "index.html"
         ],
         "createdAt": "2026-09-22T03:00:48.204Z",
-        "reason": "Falso positivo mecanico, refutado duas vezes: as tres secoes sinalizadas (.how, .compare, .usecases) declaram padding-block 96px em global.css 533/727/917; o computed paddingTop medido no navegador deu 96px nas tres; e o detector de navegador, que le estilo computado, nao reportou nenhuma delas. Causa: o parser estatico do CLI nao resolve a longhand logica padding-block, procura apenas padding/padding-top. Decidido pelo orquestrador com base nessa evidencia, nao pelo usuario."
+        "reason": "Falso positivo mecanico nas 4 ocorrencias (conferido em 2026-09-22 rodando o detector sem esta supressao): .compare e .usecases declaram padding-block 96px (global.css), .trust-strip tem o respiro no filho .trust-strip__inner (padding-block 40px) e .navbar__mobile tem o respiro no filho .navbar__mobile-inner (padding-inline 24px + margem dos filhos). O parser estatico nao resolve padding-block nem padding de filho. O wildcard e obrigatorio: o CLI responde que cramped-padding nao tem valor extraivel pra suprimir por seletor. Se aparecer uma 5a ocorrencia, rodar o detector sem esta entrada e conferir antes de aceitar."
       },
       {
         "rule": "overused-font",
@@ -30,7 +30,7 @@
           "index.html"
         ],
         "createdAt": "2026-09-22T03:06:06.434Z",
-        "reason": "Usuario confirmou nesta sessao, com estas palavras: \"a logo e a paleta de cores e a identidade visual o resto pode alterar\". O MEMORY.md define a identidade como \"neon sobre preto, alto contraste\" (decisao de 2026-09-18), entao o glow/halo lime E a marca. Escopado a index.html porque e o unico arquivo que o detector varre. Nota factual: o dark-glow vive so em .btn-primary:hover/:focus-visible e tem offset-y 10px com spread -8px, ou seja elevacao direcional, nao o halo de offset zero que o craft-floor trata como decoracao."
+        "reason": "Glow lime e identidade da marca (neon sobre preto, decisao do dono de 2026-09-18). Onde vive hoje: .btn-primary:hover/:focus-visible usa filter: drop-shadow(0 8px 14px ...) com offset pra baixo seguindo a silhueta da tag (elevacao direcional, nao halo de offset zero); o box-shadow antigo em global.css:318 nao existe mais desde o b00c595."
       },
       {
         "rule": "radial-halo",

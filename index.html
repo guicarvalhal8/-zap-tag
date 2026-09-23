@@ -88,6 +88,10 @@
          <use>, em vez de repetir o path de ~1 KB em cada botão. -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
         <symbol id="icon-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
+        <symbol id="fmt-wave" viewBox="0 0 20 20"><g fill="none" stroke-linecap="round" style="stroke: var(--color-secondary)"><path d="M4 10.5A5.5 5.5 0 0 1 9.5 16" stroke-width="1.8"/><path d="M4 6A10 10 0 0 1 14 16" stroke-width="1.8" opacity="0.7"/><path d="M4 1.5A14.5 14.5 0 0 1 18.5 16" stroke-width="1.8" opacity="0.4"/></g><circle cx="4" cy="16" r="2.4" style="fill: var(--color-primary)"/></symbol>
+        <symbol id="fmt-mark" viewBox="0 0 100 100"><path fill-rule="evenodd" d="M15 20 L62 20 L85 50 L62 80 L15 80 Z M24 28 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0 Z M58 20 L38 54 L50 54 L42 80 L66 45 L53 45 Z"/></symbol>
+        <symbol id="fmt-star" viewBox="0 0 24 24"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></symbol>
+        <symbol id="icon-external" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M9 7h8v8"/></symbol>
     </svg>
 
     <a href="#top" class="skip-link">Pular para o conteúdo</a>
@@ -109,6 +113,7 @@
             <nav class="navbar__nav" aria-label="Navegação principal">
                 <a href="#como-funciona" class="nav-link">Como funciona</a>
                 <a href="#casos-de-uso" class="nav-link">Casos de uso</a>
+                <a href="#formatos" class="nav-link">Formatos</a>
                 <a
                     class="btn-primary btn-primary--compact"
                     href="https://wa.me/5562982233133"
@@ -118,6 +123,8 @@
                 >
                     <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
                     Falar no WhatsApp
+                    <span class="sr-only">(abre o WhatsApp)</span>
+                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                 </a>
             </nav>
 
@@ -139,6 +146,7 @@
             <div class="navbar__mobile-inner">
                 <a href="#como-funciona" class="navbar__mobile-link">Como funciona</a>
                 <a href="#casos-de-uso" class="navbar__mobile-link">Casos de uso</a>
+                <a href="#formatos" class="navbar__mobile-link">Formatos</a>
                 <a
                     class="btn-primary"
                     href="https://wa.me/5562982233133"
@@ -148,6 +156,8 @@
                 >
                     <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
                     Falar no WhatsApp
+                    <span class="sr-only">(abre o WhatsApp)</span>
+                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                 </a>
             </div>
         </div>
@@ -165,7 +175,7 @@
                     </span>
 
                     <h1 class="hero__title" data-reveal>
-                        Encoste o celular. <span class="hero__title-accent">A ação acontece sozinha.</span>
+                        Encoste o celular. A ação acontece sozinha.
                     </h1>
 
                     <p class="hero__subtitle" data-reveal>
@@ -182,6 +192,8 @@
                         >
                             <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
                             Falar no WhatsApp
+                            <span class="sr-only">(abre o WhatsApp)</span>
+                            <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                         </a>
                         <a class="link-secondary" href="#como-funciona">Ver como funciona</a>
                     </div>
@@ -190,6 +202,24 @@
                 </div>
 
                 <div class="hero__demo" data-reveal>
+                    <!-- Só a partir de 1200px (CSS). Ocupam o vazio em volta da
+                         demo com o que ela faz: a etiqueta do caso que o
+                         celular abriu acende (evento touch-demo:open). Decorativas
+                         pro leitor de tela, que já ouve o aria-live da demo. -->
+                    <div class="hero__chips" aria-hidden="true">
+                        <span class="hero__chip hero__chip--review" data-case="review">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg>
+                            Avaliação no Google
+                        </span>
+                        <span class="hero__chip hero__chip--cardapio" data-case="cardapio">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+                            Cardápio digital
+                        </span>
+                        <span class="hero__chip hero__chip--wifi" data-case="wifi">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg>
+                            Wi-Fi liberado
+                        </span>
+                    </div>
                     <div id="hero-touch-demo"></div>
                 </div>
             </div>
@@ -252,6 +282,25 @@
                 </div>
 
                 <p class="compare__slogan">Encostou, ativou.</p>
+
+                <!-- A seção que ganha o argumento não tinha onde clicar: no
+                     celular eram 1.784px de rolagem sem nenhum botão entre o
+                     Hero e o primeiro card de casos de uso. Mesmo componente,
+                     mesmo canal, com mensagem própria. -->
+                <div class="compare__cta" data-reveal>
+                    <a
+                        class="btn-primary"
+                        href="https://wa.me/5562982233133"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-wa-message="Olá! Vi a comparação com o QR code no site da Zap Tag e quero entender como funciona pro meu negócio."
+                    >
+                        <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                        Falar no WhatsApp
+                        <span class="sr-only">(abre o WhatsApp)</span>
+                        <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                    </a>
+                </div>
 
                 <ul class="compare__facts" role="list" data-reveal>
                     <li>Funciona em iPhone e Android que pagam por aproximação</li>
@@ -427,6 +476,112 @@
             </div>
         </section>
 
+        <!-- Formatos: a página vendia um objeto físico e nunca mostrava o
+             objeto. São DESENHOS dos protótipos do dono (22/09), não fotos:
+             nenhum cliente, nenhuma instalação real, nada que seja prova
+             social. Material, prazo e resistência ficam de fora de propósito:
+             ainda não foram testados. Cada SVG tem viewBox em milímetros e a
+             largura vem de --fmt-w × --mm, então os tamanhos ficam em escala
+             entre si. Pra um 9º formato: copiar um li.format, trocar
+             --fmt-w/--fmt-h (mm), o viewBox e o desenho. -->
+        <section class="formats" id="formatos">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-eyebrow">
+                        <span class="section-eyebrow-dot"></span>
+                        Da mesa à vitrine
+                    </span>
+                    <h2 class="section-title">O mesmo toque, em oito formatos.</h2>
+                    <p class="section-lead">O adesivo vai onde o seu cliente já está: na mesa, no cardápio, no balcão ou na porta. O formato certo pro seu negócio a gente escolhe junto, na conversa.</p>
+                </div>
+
+                <ul class="formats__shelf" role="list">
+                    <li class="format" style="--fmt-w: 70; --fmt-h: 100">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 70 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect x="0.5" y="0.5" width="69" height="99" rx="5" class="fmt-paper"/><use href="#fmt-mark" x="24" y="7.5" width="6" height="6" class="fmt-ink"/><text x="32" y="12.3" font-size="4.2" text-anchor="start" class="fmt-text">Zap Tag</text><circle cx="35" cy="40" r="13" class="fmt-zone"/><use href="#fmt-wave" x="28" y="33" width="14" height="14"/><text x="35" y="68" font-size="6" text-anchor="middle" class="fmt-text">Encoste seu</text><text x="35" y="75.5" font-size="6" text-anchor="middle" class="fmt-text">celular aqui</text>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Cartão de mesa</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Na mesa, enquanto o cliente espera a conta: avaliação no Google ou cardápio.</p>
+                        <p class="format__size">70 × 100 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 90; --fmt-h: 90">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <circle cx="45" cy="45" r="44.5" class="fmt-paper"/><circle cx="45" cy="45" r="36" class="fmt-ring"/><use href="#fmt-wave" x="38" y="22" width="14" height="14"/><text x="45" y="50" font-size="6.5" text-anchor="middle" class="fmt-text">Avalie sua</text><text x="45" y="58" font-size="6.5" text-anchor="middle" class="fmt-text">experiência</text>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Porta-copo</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Chega junto com a bebida e pede a avaliação sem interromper ninguém.</p>
+                        <p class="format__size">Ø 90 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 35; --fmt-h: 35">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <circle cx="17.5" cy="17.5" r="17" class="fmt-paper fmt-paper--dashed"/><use href="#fmt-star" x="6.9" y="9" width="3.6" height="3.6" class="fmt-star"/><use href="#fmt-star" x="11.3" y="9" width="3.6" height="3.6" class="fmt-star"/><use href="#fmt-star" x="15.700000000000001" y="9" width="3.6" height="3.6" class="fmt-star"/><use href="#fmt-star" x="20.1" y="9" width="3.6" height="3.6" class="fmt-star"/><use href="#fmt-star" x="24.5" y="9" width="3.6" height="3.6" class="fmt-star"/><text x="17.5" y="20" font-size="3.8" text-anchor="middle" class="fmt-text">Avalie no</text><text x="17.5" y="24.8" font-size="3.8" text-anchor="middle" class="fmt-text">Google</text>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Selo pro cardápio</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> No cardápio de papel, abre a versão digital sempre atualizada.</p>
+                        <p class="format__size">Ø 35 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 80; --fmt-h: 100">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 80 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect x="4" y="92" width="72" height="7.5" rx="1.5" class="fmt-base"/><g transform="rotate(-6 40 50)"><rect x="13" y="6" width="54" height="84" rx="4" class="fmt-paper"/><use href="#fmt-mark" x="37" y="12" width="6" height="6" class="fmt-ink"/><use href="#fmt-wave" x="33" y="38" width="14" height="14"/><text x="40" y="78" font-size="5" text-anchor="middle" class="fmt-text">Encoste aqui</text></g>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Suporte acrílico em L</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> No caixa, o Pix já abre com a chave preenchida. Mudou a ação, troca o papel.</p>
+                        <p class="format__size">Insert trocável</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 55; --fmt-h: 55">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 55 55" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <circle cx="27.5" cy="27.5" r="27" class="fmt-paper"/><use href="#fmt-mark" x="25" y="7" width="5" height="5" class="fmt-ink"/><circle cx="27.5" cy="25" r="8.5" class="fmt-zone"/><use href="#fmt-wave" x="22.5" y="20" width="10" height="10"/><text x="27.5" y="41" font-size="4.6" text-anchor="middle" class="fmt-text">Encoste aqui</text>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Etiqueta redonda</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Na parede perto da entrada: o Wi-Fi conecta sem ninguém ditar senha.</p>
+                        <p class="format__size">Ø 55 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 40; --fmt-h: 60">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect x="0.5" y="0.5" width="39" height="59" rx="4" class="fmt-paper"/><use href="#fmt-mark" x="17" y="6" width="6" height="6" class="fmt-ink"/><use href="#fmt-wave" x="14" y="22" width="12" height="12"/><text x="20" y="51" font-size="5" text-anchor="middle" class="fmt-text">Encoste</text>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Etiqueta direta</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Cola onde precisar: no balcão, no espelho do salão, na máquina de café.</p>
+                        <p class="format__size">40 × 60 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 85; --fmt-h: 54">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 85 54" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect x="0.5" y="0.5" width="84" height="53" rx="3.5" class="fmt-paper"/><use href="#fmt-mark" x="7" y="9.5" width="5.5" height="5.5" class="fmt-ink"/><text x="14.5" y="14" font-size="4.2" text-anchor="start" class="fmt-text">Zap Tag</text><text x="7.5" y="29" font-size="6" text-anchor="start" class="fmt-text">Encoste</text><text x="7.5" y="36.5" font-size="6" text-anchor="start" class="fmt-text">seu celular</text><use href="#fmt-wave" x="58" y="17" width="18" height="18"/>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Cartão CR-80</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Vai na carteira do cliente: fidelidade que conta cada visita, ou o seu contato.</p>
+                        <p class="format__size">85 × 54 mm</p>
+                    </li>
+                    <li class="format" style="--fmt-w: 110; --fmt-h: 110">
+                        <div class="format__stage">
+                            <svg class="format__object" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect x="0.5" y="0.5" width="109" height="109" rx="4" class="fmt-glass"/><use href="#fmt-star" x="33.5" y="26" width="7" height="7" class="fmt-star"/><use href="#fmt-star" x="42.5" y="26" width="7" height="7" class="fmt-star"/><use href="#fmt-star" x="51.5" y="26" width="7" height="7" class="fmt-star"/><use href="#fmt-star" x="60.5" y="26" width="7" height="7" class="fmt-star"/><use href="#fmt-star" x="69.5" y="26" width="7" height="7" class="fmt-star"/><text x="55" y="55" font-size="9" text-anchor="middle" class="fmt-text fmt-text--light">Avalie no</text><text x="55" y="66" font-size="9" text-anchor="middle" class="fmt-text fmt-text--light">Google</text><use href="#fmt-wave" x="48" y="76" width="14" height="14"/>
+                            </svg>
+                        </div>
+                        <h3 class="format__name">Decalque de porta</h3>
+                        <p class="format__idea"><span class="format__idea-label">Ideia de uso:</span> Na porta ou na vitrine: quem passa na calçada já abre o cardápio ou avalia.</p>
+                        <p class="format__size">≈ 110 × 110 mm</p>
+                    </li>
+                </ul>
+
+                <p class="trust-note trust-note--center">Desenhos ilustrativos, em escala entre si. O suporte acrílico ainda não tem medida definida.</p>
+            </div>
+        </section>
+
         <section class="trust-strip" aria-label="Presença da Zap Tag">
             <div class="container trust-strip__inner">
                 <a
@@ -459,20 +614,64 @@
                 </svg>
             </div>
 
+            <!-- Duas colunas no computador: à esquerda o convite, à direita o que
+                 acontece depois do clique. O parágrafo antigo ("conversa rápida,
+                 combina por escrito, só depois a produção") virou os 3 passos,
+                 com o mesmo conteúdo confirmado pelo dono; o texto total quase
+                 não cresceu. A prévia mostra SÓ a mensagem que o botão já deixa
+                 escrita. Nenhuma resposta da empresa é simulada, pra não
+                 fabricar conversa. -->
             <div class="container final-cta__inner" data-reveal>
-                <h2 class="final-cta__title">Comece com o primeiro adesivo.</h2>
-                <p class="final-cta__subtitle">Chame no WhatsApp: numa conversa rápida a gente entende o seu negócio e combina tudo por escrito. Só depois disso a produção do seu adesivo começa.</p>
-                <span class="final-cta__trust">Sem compromisso — você decide depois de saber o valor. Atendemos Anápolis e região, todos os dias das 7h às 23h.</span>
-                <a
-                    class="btn-primary"
-                    href="https://wa.me/5562982233133"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
-                >
-                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
-                    Falar no WhatsApp
-                </a>
+                <div class="final-cta__pitch">
+                    <h2 class="final-cta__title">Comece com o primeiro adesivo.</h2>
+                    <p class="final-cta__trust">Sem compromisso: você decide depois de saber o valor.</p>
+                    <a
+                        class="btn-primary"
+                        id="final-cta-button"
+                        href="https://wa.me/5562982233133"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
+                    >
+                        <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                        Falar no WhatsApp
+                        <span class="sr-only">(abre o WhatsApp)</span>
+                        <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                    </a>
+                    <!-- O número por escrito é o mesmo canal (WhatsApp), não um
+                         segundo: se o wa.me falhar (desktop sem WhatsApp Web
+                         aberto, bloqueio de pop-up), a pessoa ainda tem como
+                         chegar. Texto puro de propósito, fácil de selecionar e
+                         copiar. -->
+                    <p class="final-cta__number">ou salve o número: <span class="nowrap">(62) 98223-3133</span></p>
+                </div>
+
+                <div class="final-cta__next">
+                    <h3 class="final-cta__next-title">O que acontece depois do clique</h3>
+
+                    <figure class="wa-preview">
+                        <div class="wa-preview__bar">
+                            <span class="wa-preview__avatar" aria-hidden="true"><svg focusable="false"><use href="#icon-whatsapp"/></svg></span>
+                            <span class="wa-preview__who">
+                                <span class="wa-preview__name">Zap Tag</span>
+                                <span class="wa-preview__status">atende todos os dias, das 7h às 23h</span>
+                            </span>
+                        </div>
+                        <div class="wa-preview__chat">
+                            <!-- Preenchido pelo JS com o data-wa-message do botão
+                                 #final-cta-button; o texto aqui é o mesmo, pra quem
+                                 está sem JS. -->
+                            <p class="wa-preview__bubble"><span class="wa-preview__text">Olá! Vi o site da Zap Tag e quero começar.</span><span class="wa-preview__meta">sua mensagem <svg class="wa-preview__ticks" viewBox="0 0 18 12" aria-hidden="true" focusable="false"><path d="M1 6.5 4.5 10 11 2.5M7.5 10 14 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></p>
+                        </div>
+                        <figcaption class="sr-only">A mensagem que o botão já deixa escrita pra você enviar.</figcaption>
+                    </figure>
+
+                    <ol class="final-cta__steps" role="list">
+                        <li class="final-cta__step"><span class="final-cta__step-title">Você chama no WhatsApp</span> com a mensagem já escrita.</li>
+                        <li class="final-cta__step"><span class="final-cta__step-title">A gente entende o seu negócio</span> e combina tudo por escrito.</li>
+                        <li class="final-cta__step"><span class="final-cta__step-title">A produção do seu adesivo começa.</span> Atendemos Anápolis e região.</li>
+                    </ol>
+                </div>
             </div>
 
             <footer class="site-footer" role="contentinfo">

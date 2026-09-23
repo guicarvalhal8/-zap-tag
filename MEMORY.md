@@ -682,6 +682,177 @@
     fazer com o lime do `.hero__title-accent` (viola a One Action Rule do
     próprio `DESIGN.md`) e qual o escopo da próxima leva.
 
+- **2026-09-22 (noite, máquina `guica`)** — **Fila round 4 aplicada**
+  (pedido do dono: "faça as alterações"). **Não commitado.** Itens do
+  `IMPECCABLE.md` → "Fila pendente — round 4":
+  - **1. Demo no celular:** abaixo de 640px a demo fica deitada (celular
+    96×170 à esquerda, adesivo à direita, 180px de altura). O arraste com
+    mouse passou a ser horizontal nessa largura (`dragAxis()` em
+    `touch-animation.js`). **Armadilha nova:** agora são DOIS pares de
+    constantes a manter iguais entre JS e CSS: `TOUCH_DEMO_REST/CONTACT`
+    (−40/22, `translateY`) e `TOUCH_DEMO_REST_ROW/CONTACT_ROW` (−24/14,
+    `translateX`, na media query `max-width: 639px`). O gatilho do convite
+    observa o `.touch-demo__tag` com threshold 0.9 (antes o root com 0.1).
+    Hero com `min-height: min(100svh, 760px)`, e no celular o gap/padding
+    do grid caíram de 48 para 28/24px. **Medido em 390×844:** demo em
+    y 609→820 (antes 652→980), adesivo em 677→721. Em 320×568 o adesivo
+    ainda fica abaixo da dobra (y 759): o texto do Hero sozinho já ocupa
+    quase a tela.
+  - **2. CTA na comparação:** `.compare__cta` com `.btn-primary` logo
+    abaixo do slogan, mensagem própria ("vi a comparação com o QR code...").
+    Entra junto com os facts no `initCompare()`. Não foi feito o CTA fixo
+    na zona do polegar (opção b), que ficou como opcional.
+  - **3. Lime:** `.hero__title-accent` removido, H1 todo em `--color-text`.
+    Nenhum hex mudou.
+  - **5. Rede de segurança do WhatsApp:** os 5 `.btn-primary` ganharam a
+    seta diagonal (`#icon-external` no sprite) e o `.sr-only` "(abre o
+    WhatsApp)". No CTA final: "ou salve o número: (62) 98223-3133", em
+    texto puro, sem `tel:`, pra não virar um segundo canal.
+  - **6. Alvos de 44px:** `.logo` (navbar e rodapé) e `.nav-link`.
+  - **7. Config:** justificativas de `cramped-padding` e `dark-glow`
+    reescritas (ver `IMPECCABLE.md`).
+  - **Verificação:** `node --check` nos 3 JS, tags do HTML balanceadas,
+    detector `[]` (exit 0), 0px de overflow lateral em 390/320/768/1440,
+    os 5 botões com `?text=` correto, contato da demo deitada sobrando 6px
+    até o adesivo. Medido em iframe no Chrome. A aba ficava em
+    `visibilityState: hidden`, então as transições e a demo automática
+    **não** puderam ser vistas animando: o dono precisa conferir no celular
+    de verdade.
+  - **Falta:** item 4 (FAQ de instalação), que depende das respostas do
+    dono sobre onde cola, resistência, durabilidade, prazo e celular sem NFC.
+
+- **2026-09-22 (noite)** — O dono mandou os **protótipos dos formatos
+  físicos** (2 PDFs em `C:UsersguicaDownloadsProtótipos Imagens`, fora
+  do repositório): cartão de mesa 70×100mm (PVC ou papel plastificado, tag
+  Ø~25mm na zona tracejada), etiqueta redonda Ø55mm (vinil laminado, tag
+  embaixo), etiqueta direta 40×60mm (vinil), porta-copo Ø90mm (papelão ou
+  PVC), cartão CR-80 85×54mm, selo de cardápio Ø35mm, suporte acrílico em L
+  com insert trocável e decalque de porta/vitrine ~110×110mm (vinil
+  translúcido). São **mockups, não fotos**. Responde em parte o item 4 do
+  round 4 ("onde cola") e a pergunta 3 (mostrar o objeto). Os mockups
+  escrevem a marca como "zaptag" minúsculo, e a grafia oficial é "Zap Tag".
+  **Respostas do dono (mesma noite):** os 8 são protótipos, mas a ideia é
+  ter todos; testes de água e gordura não foram feitos; durabilidade e prazo
+  de entrega ainda não existem; o caso do celular sem aproximação nunca foi
+  pensado. **Consequência: o FAQ do item 4 fica parado.** Não escrever
+  nenhuma dessas respostas no site até o dono ter o dado real.
+
+- **2026-09-22 (noite)** — **Seção "Formatos" construída** (`section.formats#formatos`,
+  entre "Casos de uso" e a faixa de confiança; link "Formatos" na navbar
+  desktop e mobile). **Não commitado.** Os 8 protótipos desenhados em SVG
+  inline, com viewBox em mm e largura `--fmt-w × --mm` (1,3px/mm no
+  celular, 1,7 a partir de 640px, 2 a partir de 1100px): ficam em escala
+  entre si, apoiados numa "prateleira" de altura fixa (112mm). Símbolos
+  novos no sprite: `fmt-wave`, `fmt-mark`, `fmt-star`. Cada item mostra
+  nome, onde fica e tamanho. **Material, prazo e resistência ficaram de
+  fora de propósito**, porque não foram testados. Legenda honesta: "Desenhos
+  ilustrativos, em escala entre si. O suporte acrílico ainda não tem medida
+  definida." Sem JS e sem `data-reveal`: o conteúdo aparece mesmo se o script
+  falhar. Na página a marca aparece como "Zap Tag" (nos mockups do dono está
+  "zaptag"). Verificado: detector `[]`, 0px de overflow em 390 e 1100.
+  - **Reorganizada a pedido do dono** ("mais organizado e distribuído"):
+    trocado o `flex-wrap` (quebrava 5 + 3) por grade fixa, 2 colunas no
+    celular e 4 a partir de 900px (2 linhas de 4). A 1ª linha é o que fica na
+    mesa, a 2ª o que fica em parede, porta ou carteira. Cada célula tem uma
+    linha de prateleira (`border-bottom` no `.format__stage`). A escala `--mm`
+    acompanha a coluna: no celular `min(1.3px, (100vw − 64px) / 224)`, 1,7 a
+    partir de 640, 1,55 a partir de 900 e 2 a partir de 1200. Medido: nenhum
+    objeto passa da largura da célula em 320/390/900/1200, 0px de overflow.
+  - **Soltada de novo** (dono: "não quero exatamente simétrico"): saiu a
+    linha de prateleira. Cada `.format` ganhou deslocamento próprio (`--nx`,
+    `--ny` por `nth-child`, multiplicados por `--loose`: 0,5 no celular e 1 a
+    partir de 900px) e inclinação só no desenho (`--tilt`, de −6° a 8°). O
+    decalque fica reto, porque vai colado alinhado na porta. A grade de 4/2
+    colunas continua por baixo, e é ela que mantém a distribuição. Para mudar
+    o arranjo, é só mexer nos 8 valores `nth-child` no `global.css`. Medido:
+    nenhum desenho sai do container em 320/390/1200.
+  - **Animação de entrada um por um** (pedido do dono): `initFormats()` em
+    `main.js` põe `.formats--animate` na seção (só com JS e sem
+    reduced-motion; sem a classe tudo nasce visível) e observa cada
+    `.format` (threshold 0.35, rootMargin −30% embaixo). Quem cruza o gatilho
+    vai pra uma fila que libera um a cada 240ms, na ordem do markup. Entrada:
+    o desenho desce girando e assenta no `--tilt`, sai um pulso ciano
+    (`format-ping`, a resposta do sistema) e depois entram nome, ideia e
+    medida. `revealEverything()` inclui `.format`. A linha "onde fica" virou
+    **"Ideia de uso: …"** (sugestões de uso, sem prometer material nem
+    prazo). A legenda ganhou `margin-top: 80px`, porque encostava na medida
+    do CR-80. **Verificação:** a ordem de entrada foi medida por log de
+    classes (1º sozinho, os outros conforme o scroll). A animação em si
+    **não** foi vista rodando: os prints do Chrome saíram pretos e a aba
+    ficava em segundo plano. Precisa de conferência do dono.
+
+- **2026-09-22 (noite)** — **Hero de tela larga preenchido** (dono: "as
+  pontas muito vazias, parece que falta algo", print em 1920px). **Não
+  commitado.** Só a partir de 1200px: grid do Hero passa pra `1fr 1fr`, e
+  `#hero-touch-demo` fica em `scale(1.2)`. O arraste divide o deslocamento do
+  cursor pela escala (`drag.scale`), senão o celular corria 1,2x mais que o
+  mouse. Entraram 3 **etiquetas** (`.hero__chip`: avaliação, cardápio,
+  Wi-Fi) em volta do celular. A do caso aberto acende em ciano via evento
+  `touch-demo:open`, que o `showPanel()` dispara e o `initHeroChips()`
+  escuta; ele precisa rodar ANTES do `initTouchAnimation`. Em qualquer
+  largura acima de 640px: **campo de anéis ciano** (`.touch-demo__field`,
+  SVG de 600px centrado no adesivo, opacidade 0,16) que sobe pra 0,4 no
+  contato. **Armadilha:** a regra global `svg { max-width: 100% }` espremia o
+  campo pra 240px; ele precisa de `max-width: none`. Medido: folga
+  etiqueta↔celular de 21 a 25px em 1200 e de 47 a 62px em 1920, 0px de
+  overflow. **Cache:** o navegador segurou o `touch-animation.js` antigo;
+  ao conferir, dar Ctrl+F5.
+  - **Ondas em movimento** (dono: "o círculo tá muito fixo, deve entrar
+    suave sem a pessoa mexer"): os 4 anéis têm o mesmo raio e a animação
+    `touch-field-wave` (6s, infinita) faz cada um crescer de 0,14 a 1 e se
+    apagar; um novo sai a cada 1,5s. Os atrasos são positivos, então no load
+    o campo se forma aos poucos. Pausa com `.is-field-paused` (observer
+    próprio no root + `visibilitychange`), porque o observer da demo
+    automática é desligado quando o convite acaba. Com reduced-motion ficam
+    parados em escalas escalonadas. **Tensão com a WCAG 2.2.2:** é movimento
+    automático de mais de 5s sem botão de pausa, e o projeto já tinha
+    limitado a demo a 1 ciclo por esse motivo. Atenuantes: é fundo, fino,
+    pausa fora de vista e respeita reduced-motion. Se o dono quiser seguir à
+    risca, limitar a N ciclos (`animation-iteration-count`).
+
+- **2026-09-22 (noite)** — **Demo do Hero em ciclo contínuo** (dono: "ainda
+  está sendo necessário eu mexer no celular para conectar"). **Decisão do
+  dono que substitui a de 1 ciclo só (WCAG 2.2.2).** O celular encosta
+  sozinho, abre o caso, sobe com a tela mostrando o que abriu e repete pelos
+  3 casos (~4s por ciclo). O gesto da pessoa assume o controle, e a demo
+  volta sozinha depois de `AUTO_RESUME_MS` (6s) sem gesto (`lastUserAt`). O
+  ciclo automático **não anuncia** no aria-live, pra não falar a cada 4s;
+  só o gesto anuncia. Continua pausando fora de vista (adesivo 90% visível)
+  e com a aba oculta, e com reduced-motion não se move. **Como testar
+  quando a aba do Chrome fica `hidden`:** a demo nunca anda (é a pausa
+  funcionando). Carregar o HTML num iframe via `document.write` com um
+  stub de `visibilityState` e de `IntersectionObserver` no `<head>`.
+  Assim confirmado: review → cardápio → …, com as etiquetas acompanhando.
+
+- **2026-09-22 (noite)** — **Página mais larga em tela grande** (dono: "em
+  todas as abas, mais espaçado pra preencher as pontas"). **Não commitado.**
+  `.container` passou de 1280px/24px pra **1600px com respiro
+  `clamp(24px, 5vw, 80px)`**: em 1920 o conteúdo foi de 1232 pra 1440px e a
+  sobra lateral caiu de 337 pra 233px. Acompanhando: `.compare__columns` vai
+  até 1080px a partir de 1400; a grade de formatos vai até 1400px, com
+  `--mm: 2.4px` a partir de 1600; e no Hero, a partir de 1600, demo em
+  `scale(1.32)` (via `--hero-demo-scale`, que o arraste já compensa) e texto
+  com `max-width: 640px`. Medido em 1280/1440/1920/390: 0px de overflow,
+  nenhum formato estoura a coluna, e a folga das etiquetas do Hero fica
+  entre 21 e 93px. No celular nada muda (o clamp dá 24px até ~480px).
+
+- **2026-09-22 (noite)** — **CTA final em duas colunas** (dono: "está
+  vazio, aumentar o conteúdo sem ficar cansativo"). **Não commitado.** A
+  partir de 960px, `.final-cta__inner` vira grid 1fr 1fr (até 1200px). À
+  esquerda (`.final-cta__pitch`): título, "Sem compromisso: você decide
+  depois de saber o valor.", botão (`#final-cta-button`) e o número. À
+  direita (`.final-cta__next`): "O que acontece depois do clique", com uma
+  **prévia de conversa** (`.wa-preview`) que mostra SÓ a mensagem que o
+  botão manda (o JS copia o `data-wa-message` do botão pro balão), **sem
+  resposta simulada da empresa**, e 3 passos numa linha do tempo. O
+  parágrafo antigo virou esses passos, então o texto quase não cresceu.
+  Horário e área foram pra prévia/passos. Superfície neutra, não o verde do
+  WhatsApp. Marcadores dos passos em ciano, nunca lime. Animação (só com
+  `.final-cta--animate`): o balão "chega" em 350ms e os passos acendem em
+  850/1100/1350ms. `.final-cta__subtitle` removido. Balão com raios 16/8px
+  (escala do DESIGN.md; 14/4 davam aviso no detector). Verificado: detector
+  `[]`, tags balanceadas, 0px de overflow em 1440 e 390.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do

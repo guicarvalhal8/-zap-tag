@@ -53,6 +53,13 @@ function touchDemoSleep(ms) {
 const TOUCH_DEMO_REST = -40;
 const TOUCH_DEMO_CONTACT = 22;
 
+// Abaixo de 640px a demo fica deitada (celular à esquerda, adesivo à direita)
+// e o percurso é horizontal. Mesmos valores do `translateX` na media query
+// (max-width: 639px) do global.css — manter iguais.
+const TOUCH_DEMO_REST_ROW = -24;
+const TOUCH_DEMO_CONTACT_ROW = 14;
+const TOUCH_DEMO_ROW_QUERY = '(max-width: 639px)';
+
 function initTouchAnimation(root) {
     if (!root) return;
 
@@ -62,6 +69,12 @@ function initTouchAnimation(root) {
     // `aria-live` logo abaixo.
     root.innerHTML = `
         <div class="touch-demo">
+            <svg class="touch-demo__field" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+                <circle cx="300" cy="300" r="265"/>
+                <circle cx="300" cy="300" r="265"/>
+                <circle cx="300" cy="300" r="265"/>
+                <circle cx="300" cy="300" r="265"/>
+            </svg>
             <button type="button" class="touch-demo__phone" aria-label="Encostar o celular no adesivo">
                 <span class="touch-demo__screen" aria-hidden="true">
                     ${TOUCH_DEMO_CASES.map((useCase) => `
@@ -89,6 +102,16 @@ function initTouchAnimation(root) {
     `;
 
     const demo = root.querySelector('.touch-demo');
+
+    let fieldInView = true;
+    const syncField = () => {
+        demo.classList.toggle('is-field-paused', !fieldInView || document.visibilityState === 'hidden');
+    };
+    new IntersectionObserver((entries) => {
+        entries.forEach((entry) => { fieldInView = entry.isIntersecting; });
+        syncField();
+    }).observe(root);
+    document.addEventListener('visibilitychange', syncField);
     const phone = root.querySelector('.touch-demo__phone');
     const ripple = root.querySelector('.touch-demo__ripple');
     const panels = root.querySelectorAll('.touch-demo__panel');
@@ -107,6 +130,7 @@ function initTouchAnimation(root) {
         panels.forEach((panel) => {
             panel.classList.toggle('is-active', panel.dataset.panel === key);
         });
+        root.dispatchEvent(new CustomEvent('touch-demo:open', { bubbles: true, detail: { key } }));
     };
 
     // `isStale` é só da demo automática: se a pessoa assumir o controle
@@ -143,8 +167,10 @@ function initTouchAnimation(root) {
 
     let userInControl = false;
     let busy = false;
+    let lastUserAt = 0;
 
     const takeOver = () => {
+        lastUserAt = performance.now();
         if (userInControl) return;
         userInControl = true;
         // A demo automática pode ter deixado o celular abaixado; o gesto da
@@ -171,6 +197,7 @@ function initTouchAnimation(root) {
         await touchDemoSleep(reducedMotion ? 600 : 1200);
         demo.classList.remove('is-tapped');
         busy = false;
+        lastUserAt = performance.now();
     };
 
     // Arraste só com mouse/caneta. No touch, arrastar dentro de uma área de
@@ -195,16 +222,30 @@ function initTouchAnimation(root) {
     // do contato pro repouso sem animação. Agora o controle só muda de mão
     // num gesto confirmado — arraste passou de 6px, ou toque/clique soltou —
     // e o arraste parte de onde o celular ESTÁ, não do repouso.
-    const currentPhoneY = () => new DOMMatrixReadOnly(getComputedStyle(phone).transform).m42;
+    const rowQuery = window.matchMedia(TOUCH_DEMO_ROW_QUERY);
+    const dragAxis = () => (rowQuery.matches
+        ? { row: true, rest: TOUCH_DEMO_REST_ROW, contact: TOUCH_DEMO_CONTACT_ROW }
+        : { row: false, rest: TOUCH_DEMO_REST, contact: TOUCH_DEMO_CONTACT });
+    const currentPhoneOffset = (row) => {
+        const matrix = new DOMMatrixReadOnly(getComputedStyle(phone).transform);
+        return row ? matrix.m41 : matrix.m42;
+    };
+    // `along` é o eixo do percurso até a tag; `cross` é o lado, que só cede.
+    const phoneTransform = (axis, along, cross) => (axis.row
+        ? `translate(${along}px, ${cross}px)`
+        : `translate(${cross}px, ${along}px)`);
 
     phone.addEventListener('pointerdown', (event) => {
         if (busy || event.button !== 0) return;
+        const axis = dragAxis();
         drag = {
+            axis,
             id: event.pointerId,
             type: event.pointerType,
             startX: event.clientX,
             startY: event.clientY,
-            baseY: currentPhoneY(),
+            base: currentPhoneOffset(axis.row),
+            scale: (root.getBoundingClientRect().width / root.offsetWidth) || 1,
             moved: false
         };
         if (event.pointerType !== 'touch') phone.setPointerCapture(event.pointerId);
@@ -212,30 +253,34 @@ function initTouchAnimation(root) {
 
     phone.addEventListener('pointermove', (event) => {
         if (!drag || drag.id !== event.pointerId || drag.type === 'touch') return;
-        const dx = event.clientX - drag.startX;
-        const dy = event.clientY - drag.startY;
+        const dx = (event.clientX - drag.startX) / drag.scale;
+        const dy = (event.clientY - drag.startY) / drag.scale;
         if (!drag.moved) {
             if (Math.abs(dx) + Math.abs(dy) <= 6) return;
             drag.moved = true;
             // Ordem importa: congelar a posição (sem transition) ANTES de
             // takeOver() tirar o `is-tapped`, senão o celular pula.
             demo.classList.add('is-dragging');
-            phone.style.transform = `translate(0px, ${drag.baseY}px)`;
+            phone.style.transform = phoneTransform(drag.axis, drag.base, 0);
             takeOver();
         }
 
-        // Pra baixo segue o cursor 1:1 até o contato; pra cima e pros lados
-        // cede com resistência — o celular "quer" ir pra tag.
-        const y = dy > 0
-            ? Math.min(drag.baseY + dy, TOUCH_DEMO_CONTACT)
-            : drag.baseY + Math.max(dy * 0.25, -14);
-        const x = Math.max(-18, Math.min(18, dx * 0.25));
-        phone.style.transform = `translate(${x}px, ${y}px)`;
+        // Na direção da tag (pra baixo; deitada, pra direita) segue o cursor
+        // 1:1 até o contato; no sentido contrário e pros lados cede com
+        // resistência — o celular "quer" ir pra tag.
+        const { axis } = drag;
+        const main = axis.row ? dx : dy;
+        const side = axis.row ? dy : dx;
+        const along = main > 0
+            ? Math.min(drag.base + main, axis.contact)
+            : drag.base + Math.max(main * 0.25, -14);
+        const cross = Math.max(-18, Math.min(18, side * 0.25));
+        phone.style.transform = phoneTransform(axis, along, cross);
 
-        const progress = (y - TOUCH_DEMO_REST) / (TOUCH_DEMO_CONTACT - TOUCH_DEMO_REST);
+        const progress = (along - axis.rest) / (axis.contact - axis.rest);
         demo.classList.toggle('is-near', progress > 0.55);
 
-        if (y >= TOUCH_DEMO_CONTACT) {
+        if (along >= axis.contact) {
             phone.releasePointerCapture(event.pointerId);
             endDrag();
             tap();
@@ -279,7 +324,7 @@ function initTouchAnimation(root) {
     // aba em segundo plano ou o Hero rolado pra fora da tela. `paused` só some
     // a checagem — não interrompe a sequência no meio, apenas volta a
     // verificar a cada 200ms até a demo ficar visível de novo.
-    let inView = true;
+    let inView = false;
     let paused = document.visibilityState === 'hidden';
     const updatePaused = () => {
         paused = !inView || document.visibilityState === 'hidden';
@@ -290,15 +335,21 @@ function initTouchAnimation(root) {
     const visibilityObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => { inView = entry.isIntersecting; });
         updatePaused();
-    }, { threshold: 0.1 });
-    visibilityObserver.observe(root);
+    }, { threshold: 0.9 });
+    // Observa o ADESIVO, não a demo inteira. Com o root e threshold 0.1, o
+    // convite automático disparava quando só o topo do celular tinha
+    // aparecido, e a animação rodava contra um alvo que ninguém via.
+    visibilityObserver.observe(root.querySelector('.touch-demo__tag'));
 
-    // WCAG 2.2.2 (Pause, Stop, Hide): movimento automático que dura mais de
-    // 5s precisa de um controle de pausa. Antes eram 6 ciclos (~21s) sem
-    // controle nenhum. Agora é UM ciclo (~3,6s): o celular encosta, abre a
-    // avaliação e sobe de novo — o convite; daí em diante só se move quando
-    // a pessoa move.
-    const MAX_CYCLES = 1;
+    // Demo contínua (pedido do dono, 22/09): o celular encosta sozinho, abre o
+    // caso, sobe com a tela ainda mostrando o que abriu, e repete passando
+    // pelos 3 casos, sem ninguém precisar mexer. Antes era 1 ciclo só, por
+    // causa da WCAG 2.2.2; a decisão mudou, e o que sobra do cuidado é: pausa
+    // fora de vista e com a aba oculta, nenhum movimento com reduced-motion, e
+    // o gesto da pessoa sempre vence. Se ela mexer, a demo para e só volta
+    // depois de AUTO_RESUME_MS sem gesto nenhum.
+    const AUTO_RESUME_MS = 6000;
+    const auto = () => running && !userInControl;
 
     (async () => {
         // Espera o stagger de entrada do Hero terminar (5 itens × 120ms +
@@ -306,47 +357,47 @@ function initTouchAnimation(root) {
         // mover sozinha — sem isto, o convite automático competia com o H1/
         // subtítulo/CTA pela atenção nos primeiros segundos da página.
         await touchDemoSleep(1100);
-        if (!alive()) return;
 
-        // Cada `await` pode terminar com a pessoa já no controle: o loop
+        // Cada `await` pode terminar com a pessoa já no controle: o ciclo
         // confere antes de mexer em qualquer estado, pra não brigar com ela.
-        let cycles = 0;
-        while (alive() && cycles < MAX_CYCLES) {
-            if (paused) {
+        while (running) {
+            if (paused || busy || drag) {
                 await touchDemoSleep(200);
                 continue;
             }
+            if (userInControl) {
+                // Se a pessoa assumiu no meio de um fade, a tela pode ter
+                // ficado apagada: deixa "Aproxime o celular" enquanto espera.
+                if (!root.querySelector('.touch-demo__panel.is-active')) showPanel('idle');
+                if (performance.now() - lastUserAt < AUTO_RESUME_MS) {
+                    await touchDemoSleep(300);
+                    continue;
+                }
+                userInControl = false;
+                demo.classList.remove('is-interactive');
+            }
+
             const useCase = TOUCH_DEMO_CASES[caseIndex % TOUCH_DEMO_CASES.length];
-            await switchPanel('idle', () => !alive());
-            if (!alive()) break;
-            demo.classList.remove('is-tapped');
+            await switchPanel('idle', () => !auto());
+            if (!auto()) continue;
             await touchDemoSleep(500);
-            if (!alive()) break;
+            if (!auto()) continue;
             demo.classList.add('is-tapped');
             fireRipple();
             await touchDemoSleep(220);
-            if (!alive()) break;
-            await switchPanel(useCase.key, () => !alive());
-            if (!alive()) break;
-            // Paridade com tap(): sem isto, quem usa leitor de tela não
-            // recebia nenhum anúncio durante o único ciclo automático.
-            live.textContent = `Prévia: ${useCase.label}`;
+            if (!auto()) continue;
+            await switchPanel(useCase.key, () => !auto());
+            if (!auto()) continue;
             caseIndex += 1;
-            await touchDemoSleep(2200);
-            cycles += 1;
-        }
-        visibilityObserver.disconnect();
-        document.removeEventListener('visibilitychange', updatePaused);
-        // Fim natural do convite: o celular volta ao repouso e a tela continua
-        // mostrando o que abriu. Antes ele ficava encostado pra sempre — e era
-        // de lá que o próximo arraste partia.
-        if (!userInControl) demo.classList.remove('is-tapped');
-        // Se a pessoa assumiu no meio de um "encostar", o loop pode ter
-        // parado com o celular abaixado ou com a tela apagada pelo fade.
-        // Deixa um estado limpo — a menos que o toque dela já esteja rodando.
-        if (userInControl && !busy) {
+            // Sem anúncio no aria-live aqui: num ciclo contínuo ele falaria a
+            // cada 4s por cima da leitura da página. Só o gesto da pessoa
+            // (tap) anuncia.
+            await touchDemoSleep(900);
+            if (!auto()) continue;
+            // Sobe; a tela continua mostrando o que abriu, como num celular de
+            // verdade, e o próximo ciclo começa do repouso.
             demo.classList.remove('is-tapped');
-            if (!root.querySelector('.touch-demo__panel.is-active')) showPanel('idle');
+            await touchDemoSleep(1800);
         }
     })();
 }
