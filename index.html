@@ -473,6 +473,16 @@
                 </div>
 
                 <p class="trust-note trust-note--center">Sem compromisso em nenhum dos casos acima.</p>
+
+                <!-- Vitrine 3D: complemento opcional, não é CTA. Nasce com
+                     `hidden` e só o initShowcase() mostra, porque sem JS o
+                     botão não teria o que abrir. -->
+                <p class="showcase-trigger-row">
+                    <button type="button" class="link-secondary showcase-trigger" id="showcase-open" aria-haspopup="dialog" aria-controls="showcase" hidden>
+                        Prefere uma peça rígida, com a tag dentro do plástico? Veja em 3D
+                        <svg class="showcase-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </button>
+                </p>
             </div>
         </section>
 
@@ -736,8 +746,48 @@
         </section>
     </main>
 
+    <!-- Vitrine 3D (aberta pelo botão em "Casos de uso"). O three.js NÃO é
+         carregado aqui: o js/showcase.js injeta o script do cdnjs só na
+         primeira vez que o modal abre. <dialog> com showModal() deixa o resto
+         da página inerte, e é isso que prende o Tab dentro do modal. -->
+    <dialog class="showcase" id="showcase" aria-labelledby="showcase-title">
+        <div class="showcase__panel">
+            <div class="showcase__head">
+                <h2 class="showcase__title" id="showcase-title">Peças impressas em 3D</h2>
+                <button type="button" class="showcase__close" id="showcase-close" aria-label="Fechar vitrine 3D">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg>
+                </button>
+            </div>
+
+            <div class="showcase__stage" id="showcase-stage">
+                <p class="showcase__status" id="showcase-status">Carregando…</p>
+            </div>
+            <p class="showcase__hint">Arraste para girar</p>
+
+            <div class="showcase__info" aria-live="polite">
+                <p class="showcase__name" id="showcase-name"></p>
+                <p class="showcase__desc" id="showcase-desc"></p>
+            </div>
+
+            <div class="showcase__nav">
+                <button type="button" class="btn-outline showcase__arrow" id="showcase-prev">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M15 6l-6 6 6 6"/></svg>
+                    Anterior
+                </button>
+                <span class="showcase__count" id="showcase-count"></span>
+                <button type="button" class="btn-outline showcase__arrow" id="showcase-next">
+                    Próximo
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+            </div>
+
+            <p class="showcase__note">Modelos ilustrativos, ainda em protótipo.</p>
+        </div>
+    </dialog>
+
     <script src="js/touch-animation.js"></script>
     <script src="js/usecases.js"></script>
+    <script src="js/showcase.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

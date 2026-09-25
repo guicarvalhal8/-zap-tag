@@ -2360,6 +2360,234 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
+/* ---- Vitrine 3D (modal aberto a partir de "Casos de uso") ----
+   Complemento opcional, não CTA: o gatilho é um link discreto em texto
+   cinza, nunca o lime preenchido dos botões de conversão (One Action Rule). */
+
+.showcase-trigger-row {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0 0;
+}
+
+.showcase-trigger {
+    gap: 8px;
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* O .link-secondary é inline-flex, o que anularia o atributo `hidden` que o
+   botão tem até o JS ligar a vitrine. */
+.showcase-trigger[hidden] { display: none; }
+
+.showcase-trigger__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform 180ms ease;
+}
+
+.showcase-trigger:hover .showcase-trigger__icon,
+.showcase-trigger:focus-visible .showcase-trigger__icon {
+    transform: translateX(3px);
+}
+
+/* Trava a rolagem da página por trás enquanto o modal está aberto. */
+html.is-showcase-open { overflow: hidden; }
+
+/* O próprio <dialog> é o overlay: ocupa a tela toda, escurece a página e
+   centraliza o painel. O ::backdrop nativo fica transparente porque não dá
+   pra animar a saída dele junto com o painel. */
+.showcase {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 16px;
+    border: none;
+    background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+    color: var(--color-text);
+    opacity: 0;
+    transition: opacity 240ms ease;
+}
+
+.showcase[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.showcase::backdrop { background: transparent; }
+
+.showcase.is-open { opacity: 1; }
+
+.showcase__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(100%, 720px);
+    max-height: 100%;
+    overflow-y: auto;
+    padding: 20px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transform: scale(0.96);
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.showcase.is-open .showcase__panel { transform: scale(1); }
+
+.showcase__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.showcase__title {
+    margin: 0;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1.15rem;
+    line-height: 1.25;
+}
+
+.showcase__close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    color: var(--color-text-muted);
+    transition: color 180ms ease;
+}
+
+.showcase__close svg { width: 20px; height: 20px; }
+
+.showcase__close:hover,
+.showcase__close:focus-visible { color: var(--color-text); }
+
+/* Palco do modelo: o fundo da página, pra que as peças (que têm a cor da
+   superfície) se destaquem do painel. */
+.showcase__stage {
+    position: relative;
+    height: clamp(240px, 50vh, 460px);
+    background: var(--color-bg);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.showcase__canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+    transition: opacity 160ms ease;
+}
+
+.showcase__canvas:active { cursor: grabbing; }
+
+.showcase__status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.showcase__status[hidden] { display: none; }
+
+.showcase__hint {
+    margin: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* Altura reservada pra 1 linha de nome + 2 de descrição: sem isso a troca de
+   peça faz o painel pular. */
+.showcase__info {
+    min-height: 5.2rem;
+    text-align: center;
+    transition: opacity 160ms ease;
+}
+
+.showcase__name {
+    margin: 0 0 4px;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1.05rem;
+    line-height: 1.25;
+}
+
+.showcase__desc {
+    margin: 0 auto;
+    max-width: 44ch;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+/* Troca de peça: modelo e texto saem juntos, o novo entra com fade. */
+.showcase.is-swapping .showcase__canvas,
+.showcase.is-swapping .showcase__info { opacity: 0; }
+
+.showcase__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.showcase__arrow {
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 16px;
+}
+
+.showcase__arrow svg { width: 16px; height: 16px; }
+
+.showcase__count {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.showcase__note {
+    margin: 0;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+@media (max-width: 639px) {
+    .showcase { padding: 12px; }
+    .showcase__panel { padding: 16px; }
+    .showcase__stage { height: clamp(220px, 42vh, 360px); }
+    .showcase__arrow { padding: 0 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .showcase,
+    .showcase__panel,
+    .showcase__canvas,
+    .showcase__info,
+    .showcase-trigger__icon { transition: none; }
+    .showcase__panel { transform: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { transition: none; }
     .touch-demo__phone { transition: none; }

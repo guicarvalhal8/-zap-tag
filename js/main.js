@@ -289,5 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initCompare', initCompare);
     run('initUseCases', initUseCases);
     run('initFormats', initFormats);
+    run('initShowcase', initShowcase);
     run('initFinalCta', initFinalCta);
 });

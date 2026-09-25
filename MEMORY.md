@@ -853,6 +853,49 @@
   (escala do DESIGN.md; 14/4 davam aviso no detector). Verificado: detector
   `[]`, tags balanceadas, 0px de overflow em 1440 e 390.
 
+- **2026-09-24 (máquina `guica`)** — **Vitrine 3D** (prompt do dono: botão
+  + modal em "Casos de uso"). **Não commitado.** A fonte foi o protótipo do
+  dono `Downloads/zaptag-placa-avalie-aqui.html` (fora do repositório).
+  - **Gatilho:** `.link-secondary.showcase-trigger`, em cinza, logo abaixo de
+    "Sem compromisso em nenhum dos casos acima.". Nasce com `hidden` e só o
+    JS mostra. O texto sugerido no prompt ("Prefere algo mais durável?") virou
+    **"Prefere uma peça rígida, com a tag dentro do plástico? Veja em 3D"**,
+    porque durabilidade não foi testada (mesma regra do FAQ parado).
+  - **Modal:** `<dialog id="showcase">` no fim do `<body>`. O `showModal()`
+    deixa a página inerte, e é isso que faz o focus trap. O próprio
+    `<dialog>` é o overlay (`color-mix` do `--color-bg`). Fecha por X, Esc
+    (o `cancel` é interceptado para animar) e clique fora (só se o clique
+    também começou fora, pra um arraste do modelo não fechar). Setas
+    Anterior/Próximo + ←/→ do teclado, contador "N / 7", e a ordem pedida.
+    Nota "Modelos ilustrativos, ainda em protótipo.". Nenhum WhatsApp dentro.
+  - **`js/showcase.js`** (novo, carregado antes do `main.js`,
+    `run('initShowcase')`). O three.js **r128** do cdnjs, com SRI, é injetado
+    só na primeira abertura, e o WebGL é checado antes de baixar. As
+    texturas leem os tokens do `global.css` via `getComputedStyle`. Únicas
+    cores fora dos tokens: `SHOWCASE_PRINT_COLORS` (o "Google" colorido e o
+    verde-água do Pix, marcas de terceiros impressas na peça). "zaptag" das
+    texturas virou "Zap Tag".
+  - **Diferenças em relação ao protótipo** (de comportamento, não de forma):
+    (1) cada peça fica num pivô, porque o loop do protótipo sobrescrevia o
+    `rotation.x` dos builders e os discos apareciam de perfil; (2) os discos
+    inclinam +55° (−55° deixaria a face impressa de costas); (3) a câmera
+    enquadra cada peça pelo raio dela e pelo lado mais estreito do palco
+    (piso de distância 3,2), com `lookAt` no centro, pois o porta-copo
+    cortava e no celular a placa também; (4) a auto-rotação para com
+    `prefers-reduced-motion`, e o arraste continua.
+  - **Armadilha medida:** no Chromium o evento `close` do `<dialog>` e a
+    devolução de foco só acontecem no próximo frame. Numa aba em segundo
+    plano, nunca. Por isso a limpeza (trava de rolagem, loop) roda direto no
+    `close()` **e** no evento `close`.
+  - **Verificação:** `node --check`, sem colisão de nomes, detector `[]`,
+    tags balanceadas, console limpo. As 7 peças foram renderizadas em
+    680×420 e 334×354 via `toDataURL` e conferidas em imagem: nenhuma corta.
+    Esc/X/clique fora, trava de rolagem, volta do foco, página inerte,
+    aviso sem WebGL e o three.js ausente no load foram testados por script.
+    0px de overflow em 320/390/1440, e o painel cabe sem rolar. **A aba do
+    Chrome ficava `hidden`**, então fade/scale, troca com fade e
+    auto-rotação **não foram vistos rodando**: o dono precisa conferir.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do
