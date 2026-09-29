@@ -917,9 +917,11 @@ Fora isso, o que falta não é trabalho de código:
 2. **Registro de marca no INPI**: não pesquisado ainda. "Zap" é termo
    comum (ex.: ZAP Imóveis) — pesquisar "Zap Tag" nas classes 9 e 42 antes
    de investir em material impresso.
-3. **Domínio próprio**: ainda não comprado, site publicado em
-   `zap-tag.onrender.com` (provisório — ver comentário no `<head>` do
-   `index.html` pra trocar em 3 lugares quando comprar).
+3. **Domínio próprio**: `usezaptag.com.br` comprado em 2026-09-29. O site
+   (esta landing) é o domínio principal; o app de fidelidade fica em
+   `app.usezaptag.com.br`. Canonical, Open Graph e JSON-LD do `index.html`
+   já apontam para `https://usezaptag.com.br/`. Falta (com o dono): DNS e
+   domínio personalizado no Render.
 4. **Skill `impeccable`** está instalada nas duas máquinas: na pessoal em
    `C:\Users\Guilherme\.claude\skills\impeccable` e na outra em
    `C:\Users\guica\.local\bin\.claude\skills\impeccable` (confirmado em
