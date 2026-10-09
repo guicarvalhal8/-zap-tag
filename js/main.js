@@ -1,5 +1,3 @@
-// initTouchAnimation vem de touch-animation.js (carregado antes deste arquivo).
-
 const WHATSAPP_NUMBER = '5562982233133';
 
 function initNavbarScroll() {
@@ -201,17 +199,34 @@ function initFinalCta() {
     observer.observe(block);
 }
 
-// Etiquetas em volta da demo do Hero (só aparecem a partir de 1200px): a do
-// caso que o celular acabou de abrir acende. "idle" apaga todas.
-function initHeroChips() {
-    const demo = document.querySelector('.hero__demo');
-    if (!demo) return;
-    const chips = demo.querySelectorAll('.hero__chip');
-    demo.addEventListener('touch-demo:open', (event) => {
-        chips.forEach((chip) => {
-            chip.classList.toggle('is-active', chip.dataset.case === event.detail.key);
-        });
-    });
+// Vídeo do Hero: com movimento reduzido fica parado no primeiro quadro (o
+// autoplay do HTML já começou, então é preciso pausar). Fora da tela ou com a
+// aba oculta ele pausa, pra não gastar bateria rodando um loop que ninguém vê.
+function initHeroVideo() {
+    const video = document.querySelector('.hero__video');
+    if (!video) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.removeAttribute('autoplay');
+        video.pause();
+        return;
+    }
+
+    let inView = true;
+    const sync = () => {
+        if (inView && !document.hidden) {
+            // play() devolve uma Promise que rejeita se o navegador barrar o
+            // autoplay (economia de energia, por exemplo): fica o poster.
+            video.play().catch(() => {});
+        } else {
+            video.pause();
+        }
+    };
+
+    new IntersectionObserver((entries) => {
+        inView = entries[0].isIntersecting;
+        sync();
+    }).observe(video);
+    document.addEventListener('visibilitychange', sync);
 }
 
 // Formatos: cada objeto entra quando chega na tela, UM POR VEZ. Se vários
@@ -284,8 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initNavbarMenu', initNavbarMenu);
     run('initHeroReveal', initHeroReveal);
     run('initWhatsappLinks', initWhatsappLinks);
-    run('initHeroChips', initHeroChips);
-    run('initTouchAnimation', () => initTouchAnimation(document.getElementById('hero-touch-demo')));
+    run('initHeroVideo', initHeroVideo);
     run('initCompare', initCompare);
     run('initUseCases', initUseCases);
     run('initFormats', initFormats);

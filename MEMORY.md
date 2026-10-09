@@ -896,6 +896,35 @@
     Chrome ficava `hidden`**, então fade/scale, troca com fade e
     auto-rotação **não foram vistos rodando**: o dono precisa conferir.
 
+- **2026-10-09 — Hero: a demo do celular virou vídeo** (pedido do dono;
+  vídeo pronto que ele trouxe). Arquivos em `assets/video/`:
+  `zaptag-hero.webm` (680 KB) e `zaptag-hero.mp4` (470 KB) em 1920×1080,
+  `zaptag-hero-720.mp4` (230 KB, 1280×720, só abaixo de 960px via
+  `<source media>`) e `zaptag-hero-poster.jpg`. Loop de 10s: adesivo,
+  celular entra aos 2s, selo "Negócio automatizado" aos 3s, as quatro
+  etiquetas (Google, cardápio, Wi-Fi, Pix) de 5 a 7s. Fundo do quadro =
+  `--color-bg`.
+  - **Saiu:** `js/touch-animation.js` inteiro, `.touch-demo*`, `.hero__demo`,
+    `.hero__chips`/`initHeroChips` e `.hero__glow` (o vídeo tem o próprio
+    brilho). A regra do `CLAUDE.md` de "SVG em vez de vídeo" foi superada
+    por esta decisão do dono.
+  - **Layout:** a partir de 960px o vídeo é fundo do Hero, encostado 24px
+    antes da margem do conteúdo, no maior tamanho em que a cena (x 800–1900
+    do quadro, começa em 41,67% da largura) fica depois do fim do texto com
+    32px de folga; teto pela altura do Hero (16:9); máscara apaga a esquerda
+    e as bordas de cima/baixo. Abaixo de 960px vem depois do texto, recortado
+    só na cena (x 770–1920, y 220–970) por escala + deslocamento, largura
+    máx. 640px. `--hero-text-w` (560/640px) é a largura do texto e entra na
+    conta.
+  - **JS:** `initHeroVideo` pausa com `prefers-reduced-motion` (fica no 1º
+    quadro), fora da tela e com a aba oculta.
+  - **Armadilha:** capturar quadros do webm por `currentTime` + `seeked`
+    devolve sempre o mesmo quadro (poucos quadros-chave); pra ver a linha do
+    tempo, capturar durante a reprodução.
+  - **Verificação:** medido em 390, 1024, 1366×657, 1440 e 1920: cena
+    sempre à direita do texto (folga ≥32px), celular cabe na 1ª tela em
+    390×844, console limpo, tags balanceadas, pausa testada por script.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do

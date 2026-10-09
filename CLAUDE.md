@@ -58,8 +58,9 @@ sem framework CSS e sem build step. Manter assim:
   (`wa.me/<numero>?text=<mensagem>`) usando `encodeURIComponent`, nunca à mão
   no HTML (acentuação quebra fácil se codificada manualmente).
 - Animações/demos de produto: preferir SVG leve + CSS/Web Animations API
-  (sem vídeo/Lottie pesado) enquanto não houver assets hospedados no
-  Supabase, como fizemos no Hero.
+  (sem Lottie pesado). Exceção decidida pelo dono em 2026-10-09: o Hero usa
+  um vídeo curto em `assets/video/` (webm + mp4, versão 720p no celular,
+  poster, pausa fora da tela e com movimento reduzido).
 - Respeitar `prefers-reduced-motion` em qualquer animação em loop.
 - Ao terminar uma seção/etapa: validar que as tags HTML fecham corretamente,
   abrir no navegador pra conferir visualmente, e só então commitar.

@@ -327,24 +327,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
        empurrava a próxima seção pra longe. */
     min-height: min(100svh, 760px);
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
     padding-top: var(--nav-height);
     overflow: hidden;
-}
-
-.hero__glow {
-    position: absolute;
-    top: -20%;
-    right: -10%;
-    width: 60%;
-    aspect-ratio: 1;
-    /* Derivado de --color-primary, não escrito à mão: este era um dos dois
-       únicos literais de cor do projeto, e trocar a cor da marca deixaria o
-       glow na cor antiga. Mesmo valor de antes (14%). */
-    background: radial-gradient(circle,
-        color-mix(in srgb, var(--color-primary) 14%, transparent) 0%,
-        transparent 70%);
-    pointer-events: none;
+    isolation: isolate;
+    /* Largura máxima do texto: o vídeo do fundo se encaixa à direita dela. */
+    --hero-text-w: 560px;
 }
 
 .hero__grid {
@@ -357,18 +346,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     padding-block: 48px;
 }
 
-@media (min-width: 960px) {
-    .hero__grid {
-        grid-template-columns: 3fr 2fr;
-        gap: 32px;
-    }
+@media (min-width: 1600px) {
+    .hero { --hero-text-w: 640px; }
 }
 
 .hero__content {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    max-width: 560px;
+    max-width: var(--hero-text-w);
 }
 
 .hero__eyebrow {
@@ -557,132 +543,70 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     text-decoration-color: var(--color-primary);
 }
 
-.hero__demo {
+/* Vídeo do Hero (quadro de 1920×1080, fundo na mesma cor de --color-bg).
+   A cena (adesivo, celular, o selo "Negócio automatizado" e as quatro
+   etiquetas) ocupa x 800–1900 e y 220–970 do quadro; o resto é fundo
+   vazio.
+
+   Abaixo de 960px: bloco depois do texto, recortado na cena com 30px de
+   folga dos lados (x 770–1920). O vídeo é ampliado (1920/1150) e deslocado
+   (770 e 220) pra que só esse retângulo apareça, sem as faixas vazias que o
+   quadro inteiro deixaria. */
+.hero__media {
     position: relative;
-    display: flex;
-    justify-content: center;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto 24px;
+    aspect-ratio: 1150 / 750;
+    overflow: hidden;
 }
 
-/* Campo de aproximação: anéis ciano centrados no adesivo (a tag é o último
-   item da .touch-demo, 56px de altura, colada no fundo). Sempre fraco;
-   acende no contato. Não é glow: é linha fina, e reage ao toque, como pede a
-   Flat-At-Rest Rule. */
-.touch-demo__field {
+.hero__video {
     position: absolute;
-    left: 50%;
-    bottom: 28px;
-    width: 600px;
-    height: 600px;
-    /* A regra global `svg { max-width: 100% }` espremia os anéis pra largura
-       da demo (240px). */
+    left: calc(-100% * 770 / 1150);
+    top: calc(-100% * 220 / 750);
+    width: calc(100% * 1920 / 1150);
     max-width: none;
-    transform: translate(-50%, 50%);
-    fill: none;
-    stroke: var(--color-secondary);
-    stroke-width: 1;
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: 0;
-    transition: opacity 500ms ease;
+    height: auto;
 }
 
-/* As ondas saem sozinhas do adesivo: cada anel nasce pequeno, cresce e se
-   apaga, e um novo sai a cada 1,5s. Os atrasos são POSITIVOS de propósito:
-   no carregamento os anéis entram um por um, e o campo se forma aos poucos
-   em vez de aparecer pronto. Pausam fora de vista e com a aba oculta
-   (.is-field-paused, via JS). */
-.touch-demo__field circle {
-    transform-box: view-box;
-    transform-origin: 300px 300px;
-    vector-effect: non-scaling-stroke;
-    opacity: 0;
-    animation: touch-field-wave 6s cubic-bezier(0.22, 1, 0.36, 1) infinite both;
-}
-
-.touch-demo__field circle:nth-child(2) { animation-delay: 1.5s; }
-.touch-demo__field circle:nth-child(3) { animation-delay: 3s; }
-.touch-demo__field circle:nth-child(4) { animation-delay: 4.5s; }
-
-.touch-demo.is-field-paused .touch-demo__field circle { animation-play-state: paused; }
-
-@keyframes touch-field-wave {
-    0%   { transform: scale(0.14); opacity: 0; }
-    12%  { opacity: 1; }
-    100% { transform: scale(1);    opacity: 0; }
-}
-
-/* No contato o campo inteiro acende: o adesivo "respondeu". */
-.touch-demo.is-tapped .touch-demo__field { opacity: 0.8; }
-
-.hero__chips { display: none; }
-
-@media (min-width: 1600px) {
-    .hero { --hero-demo-scale: 1.32; }
-    .hero__content { max-width: 640px; }
-}
-
-/* Em tela larga o Hero ficava com a demo pequena numa coluna estreita e
-   sobra dos dois lados. A partir de 1200px: colunas meio a meio, demo 1,2x
-   (o JS compensa a escala no arraste) e as etiquetas dos casos em volta. */
-@media (min-width: 1200px) {
-    .hero__grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 48px;
-    }
-
-    #hero-touch-demo {
-        transform: scale(var(--hero-demo-scale, 1.2));
-        transform-origin: 50% 60%;
-    }
-
-    .hero__chips {
-        display: block;
+/* A partir de 960px o vídeo vira o fundo do Hero. A borda direita dele fica
+   24px antes da margem do conteúdo (as etiquetas do vídeo já têm uns 20px de
+   respiro no quadro), alinhando com o botão da navbar. O tamanho é o maior em
+   que a cena ainda começa depois do fim do texto, com 32px de folga: a cena
+   começa a 41,67% da largura do vídeo, então ocupa os 58,33% da direita, e
+   largura = espaço livre / 0,5833. O teto é a altura do Hero (16:9). O lado
+   esquerdo do quadro é fundo vazio e some no fundo da página pela máscara. */
+@media (min-width: 960px) {
+    .hero__media {
         position: absolute;
         inset: 0;
-        pointer-events: none;
+        max-width: none;
+        margin: 0;
+        aspect-ratio: auto;
+        z-index: -1;
+        --hero-edge: calc(max(0px, (100% - 1600px) / 2) + clamp(24px, 5vw, 80px));
+        --hero-video-right: calc(var(--hero-edge) - 24px);
     }
 
-    .hero__chip {
-        position: absolute;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border: 1px solid var(--color-border);
-        border-radius: 999px;
-        background: var(--color-surface);
-        font-family: var(--font-body);
-        font-weight: 500;
-        font-size: 0.8rem;
-        color: var(--color-text-muted);
-        white-space: nowrap;
-        transition: color 300ms ease, border-color 300ms ease, transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    .hero__video {
+        left: auto;
+        right: var(--hero-video-right);
+        top: 50%;
+        width: min(
+            (100% - var(--hero-edge) - var(--hero-text-w) - 32px - var(--hero-video-right)) / 0.5833,
+            min(100svh, 760px) * 16 / 9
+        );
+        transform: translateY(-50%);
+        -webkit-mask-image:
+            linear-gradient(to right, transparent, #000 30%),
+            linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+        -webkit-mask-composite: source-in;
+        mask-image:
+            linear-gradient(to right, transparent, #000 30%),
+            linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+        mask-composite: intersect;
     }
-
-    .hero__chip svg {
-        width: 14px;
-        height: 14px;
-        flex-shrink: 0;
-    }
-
-    /* Ciano: é a resposta do sistema ao toque, não uma ação. */
-    .hero__chip.is-active {
-        color: var(--color-text);
-        border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
-        transform: translateY(-3px);
-    }
-
-    .hero__chip.is-active svg { color: var(--color-secondary); }
-
-    /* Em 1200px a coluna tem ~560px e o celular ampliado ocupa o meio: a
-       etiqueta de cima encostava nele com left: 0. */
-    .hero__chip--review   { top: 8%;  left: -4%; }
-    .hero__chip--cardapio { top: 36%; right: 0; }
-    .hero__chip--wifi     { top: 64%; left: 0; }
-}
-
-@media (max-width: 639px) {
-    .touch-demo__field { display: none; }
 }
 
 .hero__scroll-hint {
@@ -732,302 +656,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     transform: translateY(0);
 }
 
-/* ---- Animação de toque (demo do Hero) ---- */
-
-.touch-demo {
-    position: relative;
-    width: 240px;
-    height: 380px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 28px;
-}
-
-.touch-demo__phone {
-    position: relative;
-    width: 168px;
-    height: 300px;
-    border: 8px solid var(--color-surface);
-    outline: 1px solid var(--color-border);
-    border-radius: 32px;
-    background: var(--color-bg);
-    padding: 0;
-    color: inherit;
-    /* Repouso: mesmo valor de TOUCH_DEMO_REST em touch-animation.js. */
-    transform: translateY(-40px);
-    transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
-    z-index: 2;
-    cursor: grab;
-    /* Touch: rolagem vertical continua com o navegador; o gesto no celular
-       é um toque, não um arraste (ver touch-animation.js). */
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* A regra acima usa `outline` pro aro de 1px do aparelho, e com a mesma
-   especificidade ela vinha depois do :focus-visible global — o foco por
-   teclado ficava com esse 1px quase invisível (1,35:1). Aqui o anel da casa
-   volta, com folga maior por causa do raio de 32px. */
-.touch-demo__phone:focus-visible {
-    outline: 2px solid var(--color-secondary);
-    outline-offset: 6px;
-}
-
-/* Durante o arraste o celular segue o cursor sem atraso: a transition de
-   380ms faria ele "correr atrás" do mouse. Ela volta ao soltar, e é ela que
-   faz o celular voltar sozinho pro repouso. */
-.touch-demo.is-dragging .touch-demo__phone {
-    transition: none;
-    cursor: grabbing;
-}
-
-/* O celular chegou perto: a tag reage antes do contato, como um campo de
-   aproximação. Ciano = resposta do sistema, não ação. */
-.touch-demo__tag {
-    transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease;
-}
-
-.touch-demo.is-near .touch-demo__tag {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--color-secondary) 55%, transparent));
-}
-
-.touch-demo__hint {
-    margin: 18px 0 0;
-    text-align: center;
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-}
-
-/* Mouse arrasta; dedo toca. Cada um lê a instrução do próprio gesto. */
-.touch-demo__hint-tap { display: none; }
-
-@media (hover: none), (pointer: coarse) {
-    .touch-demo__hint-drag { display: none; }
-    .touch-demo__hint-tap { display: inline; }
-    .touch-demo__phone { cursor: pointer; }
-}
-
-.touch-demo__phone::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 36px;
-    height: 4px;
-    border-radius: 999px;
-    background: var(--color-border);
-}
-
-/* Contato: mesmo valor de TOUCH_DEMO_CONTACT. Sobram ~6px dos 28px de gap
-   até a tag — antes o celular parava a 28px e nunca parecia encostar. */
-.touch-demo.is-tapped .touch-demo__phone {
-    transform: translateY(22px);
-}
-
-.touch-demo__screen {
-    display: block;
-    position: absolute;
-    inset: 22px 10px 10px;
-    border-radius: 20px;
-    background: var(--color-surface);
-    overflow: hidden;
-}
-
-.touch-demo__panel {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 320ms ease;
-}
-
-.touch-demo__panel.is-active { opacity: 1; }
-
-.touch-demo__panel-icon {
-    width: 34px;
-    height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primary);
-}
-
-.touch-demo__panel-icon svg {
-    width: 100%;
-    height: 100%;
-}
-
-.touch-demo__panel-label {
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.75rem;
-    color: var(--color-text);
-}
-
-.touch-demo__panel-idle {
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    /* Piso de 12px do DESIGN.md pra Label — estava em 11,2px. */
-    font-size: 0.75rem;
-}
-
-.touch-demo__tag {
-    position: relative;
-    width: 56px;
-    height: 56px;
-    z-index: 1;
-}
-
-.touch-demo__tag svg {
-    width: 100%;
-    height: 100%;
-}
-
-.touch-demo__ripple {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    border: 2px solid var(--color-secondary);
-    transform: translate(-50%, 0) scale(0.3);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 3;
-}
-
-.touch-demo__success {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 220ms ease, transform 220ms ease;
-    z-index: 4;
-}
-
-.touch-demo.is-tapped .touch-demo__success {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.touch-demo__success svg {
-    width: 12px;
-    height: 12px;
-    stroke: var(--color-primary-text);
-}
-
-/* Abaixo de 640px a demo fica DEITADA: celular à esquerda, adesivo à
-   direita, ~180px de altura no total. Empilhada (celular em cima, tag
-   embaixo), mesmo encolhida, ela terminava 135,8px abaixo da dobra em
-   390×844, e o adesivo, o pulso e o check, que são o que se vende, ficavam
-   fora da primeira tela. Deitada, o celular vai até o adesivo na horizontal.
-   O repouso e o contato usam translateX com os mesmos valores de
-   TOUCH_DEMO_REST_ROW / TOUCH_DEMO_CONTACT_ROW em touch-animation.js, e os
-   dois lugares precisam continuar iguais. */
 @media (max-width: 639px) {
-    .touch-demo {
-        width: 204px;
-        height: 180px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 20px;
-    }
-
-    .touch-demo__phone {
-        width: 96px;
-        height: 170px;
-        border-width: 5px;
-        border-radius: 18px;
-        /* Repouso: mesmo valor de TOUCH_DEMO_REST_ROW. */
-        transform: translateX(-24px);
-    }
-
-    /* Contato: mesmo valor de TOUCH_DEMO_CONTACT_ROW. Sobram ~6px dos 20px
-       de gap até o adesivo. */
-    .touch-demo.is-tapped .touch-demo__phone {
-        transform: translateX(14px);
-    }
-
-    .touch-demo__phone::before {
-        top: 6px;
-        width: 22px;
-        height: 3px;
-    }
-
-    .touch-demo__screen {
-        inset: 13px 6px 6px;
-        border-radius: 12px;
-    }
-
-    .touch-demo__panel {
-        gap: 6px;
-        padding: 8px;
-    }
-
-    .touch-demo__panel-icon {
-        width: 22px;
-        height: 22px;
-    }
-
-    .touch-demo__panel-label {
-        /* Piso de 12px do DESIGN.md -- mesmo bug do .touch-demo__panel-idle
-           (já corrigido), reintroduzido no seletor irmão. */
-        font-size: 0.75rem;
-        line-height: 1.25;
-    }
-
-    .touch-demo__panel-idle { line-height: 1.25; }
-
-    .touch-demo__tag {
-        width: 44px;
-        height: 44px;
-    }
-
-    .touch-demo__ripple {
-        width: 44px;
-        height: 44px;
-    }
-
-    .touch-demo__success {
-        top: -5px;
-        right: -5px;
-        width: 18px;
-        height: 18px;
-    }
-
-    .touch-demo__success svg {
-        width: 10px;
-        height: 10px;
-    }
-
-    .touch-demo__hint { margin-top: 12px; }
-
-    /* Os 48px de padding e de gap do Hero eram o que ainda empurrava a demo
-       pra baixo da dobra no celular. */
     .hero__grid {
         gap: 28px;
         padding-block: 24px;
@@ -2590,14 +2219,6 @@ html.is-showcase-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { transition: none; }
-    .touch-demo__phone { transition: none; }
-    .hero__chip { transition: none; }
-    .touch-demo__field circle { animation: none; opacity: 0.5; }
-    .touch-demo__field circle:nth-child(1) { transform: scale(0.26); }
-    .touch-demo__field circle:nth-child(2) { transform: scale(0.49); }
-    .touch-demo__field circle:nth-child(3) { transform: scale(0.74); opacity: 0.35; }
-    .touch-demo__field circle:nth-child(4) { transform: scale(1); opacity: 0.2; }
-    .touch-demo__tag { transition: none; }
     .usecase-card { transition: none; }
     .usecase-card__cta svg { transition: none; }
     .usecases__expand-wrap { transition: none; }
