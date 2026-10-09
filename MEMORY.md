@@ -925,6 +925,28 @@
     sempre à direita do texto (folga ≥32px), celular cabe na 1ª tela em
     390×844, console limpo, tags balanceadas, pausa testada por script.
 
+- **2026-10-09 — "Como funciona": comparativo com cronômetro** (pedido do
+  dono, spec dele: "ComparativoCronometro"). As duas colunas de passos
+  ("2 contra 4") viraram dois cartões com relógio em tempo real: QR code no
+  salão corre até 14,2 s (etapas em 0 / 3,5 / 7,8 / 14,2 s), Zap Tag trava
+  em 1,2 s (0 / 1,2 s). Textos das etapas e selos ("Atrito alto • 4 etapas
+  manuais", "Sem atrito • 2 passos diretos") são do dono, só com vírgula
+  decimal. Título, slogan, CTA e os 3 diferenciais da seção continuam.
+  - **Marca preservada:** número em Unbounded (voz de números de destaque)
+    com `tabular-nums` — medido: "1,1" e "8,8" com a mesma largura —, em
+    vez da monospace da spec (seria uma 5ª fonte). Destaque do relógio
+    travado em ciano (resposta do sistema), nunca lime nem cor nova.
+  - **Régua comum** (0 a 14,2 s) nas duas colunas: a da Zap Tag para em 8%.
+  - **Celular empilhado** (a spec pede): isso reverte a decisão antiga de
+    "duas colunas em toda largura" do 2 contra 4.
+  - **Comportamento:** HTML nasce no estado final (sem JS / movimento
+    reduzido fica assim, botão escondido); `initCrono` arma, roda sozinho uma
+    vez com 50% dos cartões na tela e depois só pelo botão "Simular teste no
+    salão" → "Repetir comparação". `revealEverything` desarma se algo quebrar.
+  - **Pendente com o dono:** nota "Tempos ilustrativos de um teste típico no
+    salão." foi acrescentada por honestidade (não é medição) e "placa" na
+    etapa da Zap Tag destoa de "adesivo" no resto do site.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do

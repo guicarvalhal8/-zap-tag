@@ -730,25 +730,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     border-top: 1px solid var(--color-border);
 }
 
-/* Duas colunas em TODA largura, inclusive no celular. Empilhadas, a pessoa
-   via os 2 passos da Zap Tag, rolava ~600px e só então os 4 do QR — o
-   argumento "2 contra 4" nunca aparecia inteiro na tela. */
-.compare__columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-    gap: 12px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-@media (min-width: 1400px) {
-    .compare__columns { max-width: 1080px; }
-}
-
-@media (min-width: 760px) {
-    .compare__columns { gap: 56px; }
-}
+/* ---- Comparativo com cronômetro ---- */
 
 .compare__column-head {
     display: flex;
@@ -769,15 +751,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     flex-shrink: 0;
 }
 
-.compare__column--zaptag .compare__column-icon {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-
-.compare__column--qr .compare__column-icon {
-    color: var(--color-text-muted);
-}
-
 .compare__column-glyph {
     width: 20px;
     height: 20px;
@@ -793,130 +766,221 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text);
 }
 
-.compare__column--qr .compare__column-title { color: var(--color-text-muted); }
-.compare__column--zaptag .compare__column-title { color: var(--color-primary); }
+.crono {
+    max-width: 1080px;
+    margin: 0 auto;
+}
 
-.compare__steps {
-    counter-reset: compare-step;
+.crono__bar {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 44px;
+    margin-bottom: 12px;
+}
+
+/* Discreto de propósito: é um controle da demonstração, não uma ação de
+   conversão (essa é só o botão lime). Texto + ícone, sem caixa. */
+.crono__replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 4px;
+    background: none;
+    border: 0;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.crono__replay svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+    .crono__replay:hover { color: var(--color-text); }
+    .crono__replay:hover svg { transform: rotate(-60deg); }
+}
+
+.crono__replay:focus-visible { color: var(--color-text); }
+.crono__replay:active svg { transform: rotate(-180deg); }
+
+/* Celular: empilhado. A partir de 760px: lado a lado. */
+.crono__cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media (min-width: 760px) {
+    .crono__cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+}
+
+.crono__card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+}
+
+@media (min-width: 760px) {
+    .crono__card { padding: 28px; }
+}
+
+.crono__card .compare__column-head { margin-bottom: 18px; }
+
+.crono__card--zaptag .compare__column-icon {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.crono__card--qr .compare__column-icon { color: var(--color-text-muted); }
+.crono__card--qr .compare__column-title { color: var(--color-text-muted); }
+.crono__card--zaptag .compare__column-title { color: var(--color-primary); }
+
+/* O número é o protagonista: Unbounded (a voz dos números de destaque) com
+   algarismos tabulares, pra que "1,1" e "8,8" ocupem a mesma largura e o
+   relógio não trema enquanto corre. */
+.crono__time {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0;
+    font-family: var(--font-display-highlight);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-text);
+}
+
+.crono__num {
+    font-size: clamp(3.25rem, 7vw, 4.75rem);
+    letter-spacing: -0.03em;
+    transform-origin: left bottom;
+}
+
+.crono__unit {
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+    color: var(--color-text-muted);
+}
+
+.crono__card--qr .crono__num { color: var(--color-text-muted); }
+
+/* Travou: o relógio da Zap Tag para em ciano (resposta do sistema) e dá um
+   "clique" mecânico — sobe 6% e assenta, sem quicar. */
+.crono__card--zaptag.is-locked .crono__num {
+    color: var(--color-secondary);
+    animation: crono-lock 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.crono__card--qr.is-locked .crono__num { color: var(--color-text); }
+
+@keyframes crono-lock {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+
+/* A régua é a mesma nas duas colunas (0 a 14,2 s): a da Zap Tag para em
+   8% dela. A diferença vira distância física, não só número. */
+.crono__track {
+    position: relative;
+    height: 4px;
+    margin: 18px 0 22px;
+    background: var(--color-border);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.crono__fill {
+    position: absolute;
+    inset: 0;
+    background: var(--color-text-muted);
+    border-radius: inherit;
+    transform-origin: left center;
+    transform: scaleX(var(--crono-progress, 1));
+}
+
+.crono__card--zaptag .crono__fill { background: var(--color-secondary); }
+
+.crono__steps {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    flex: 1;
 }
 
-.compare__step {
-    counter-increment: compare-step;
-    position: relative;
-    padding: 13px 18px 13px 50px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
+.crono__step {
+    display: grid;
+    grid-template-columns: 4.2em 1fr;
+    gap: 12px;
+    align-items: baseline;
     font-family: var(--font-body);
-    font-weight: 400;
     font-size: 0.92rem;
+    line-height: 1.4;
+    color: var(--color-text);
+    transition:
+        opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.crono__at {
+    font-weight: 500;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.crono__card--zaptag .crono__at { color: var(--color-secondary); }
+
+.crono__badge {
+    align-self: flex-start;
+    margin: 24px 0 0;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    transition:
+        opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.crono__card--zaptag .crono__badge {
+    border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
     color: var(--color-text);
 }
 
-.compare__step::before {
-    content: counter(compare-step);
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 0.72rem;
+/* Estado "armado" (JS ligado, antes/durante a contagem): etapa e selo ainda
+   não alcançados ficam invisíveis mas ocupam o lugar — nada pula. */
+.crono.is-armed .crono__step:not(.is-shown),
+.crono.is-armed .crono__badge:not(.is-shown) {
+    opacity: 0;
+    transform: translateY(6px);
 }
 
-.compare__column--qr .compare__step {
+.crono__note {
+    margin: 16px 0 0;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
     color: var(--color-text-muted);
-}
-
-.compare__column--qr .compare__step::before {
-    background: var(--color-border);
-    color: var(--color-text-muted);
-}
-
-/* Passos da Zap Tag do mesmo tamanho dos do QR: a comparação só convence se
-   a diferença for de QUANTIDADE, não de volume de texto (com descrição, os 2
-   cards da Zap Tag somavam ~220px contra ~236px dos 4 do QR — empate). O
-   marcador do número vira a silhueta da tag; o QR continua com o círculo
-   neutro — a forma da marca só aparece do lado da marca. */
-.compare__column--zaptag .compare__step {
-    padding-left: 58px;
-    border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
-}
-
-.compare__column--zaptag .compare__step::before {
-    --mark-h: 22px;
-    width: 30px;
-    height: var(--mark-h);
-    justify-content: flex-start;
-    padding-left: 8px;
-    border-radius: 4px 0 0 4px;
-    clip-path: polygon(
-        0 0,
-        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 0,
-        100% 50%,
-        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 100%,
-        0 100%
-    );
-    background: var(--color-primary);
-    color: var(--color-primary-text);
-}
-
-/* Celular: as duas colunas dividem ~358px, então tudo encolhe junto. O
-   texto do QR quebra em 2 linhas e a coluna dele fica AINDA mais longa —
-   que é exatamente o argumento. */
-@media (max-width: 759px) {
-    .compare__column-head {
-        gap: 8px;
-        margin-bottom: 14px;
-    }
-
-    .compare__column-icon {
-        width: 32px;
-        height: 32px;
-    }
-
-    .compare__column-glyph {
-        width: 16px;
-        height: 16px;
-    }
-
-    .compare__column-title { font-size: 0.95rem; }
-
-    .compare__steps { gap: 8px; }
-
-    .compare__step {
-        padding: 11px 10px 11px 36px;
-        font-size: 0.82rem;
-        line-height: 1.35;
-    }
-
-    .compare__step::before {
-        left: 9px;
-        width: 20px;
-        height: 20px;
-        font-size: 0.66rem;
-    }
-
-    .compare__column--zaptag .compare__step { padding-left: 44px; }
-
-    .compare__column--zaptag .compare__step::before {
-        --mark-h: 20px;
-        width: 27px;
-        height: var(--mark-h);
-        padding-left: 7px;
-    }
 }
 
 .compare__slogan {
@@ -2223,6 +2287,10 @@ html.is-showcase-open { overflow: hidden; }
     .usecase-card__cta svg { transition: none; }
     .usecases__expand-wrap { transition: none; }
     .compare__slogan { transition: none; }
+    .crono__step,
+    .crono__badge,
+    .crono__replay svg { transition: none; }
+    .crono__card--zaptag.is-locked .crono__num { animation: none; }
     .usecases-toggle__chevron { transition: none; }
     .usecase-card__icon {
         animation: none !important;

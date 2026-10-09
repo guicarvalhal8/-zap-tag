@@ -85,19 +85,15 @@ function initWhatsappLinks() {
 }
 
 // Seção "Como funciona" (fundida com o antigo "Diferencial vs. QR code"):
-// a coluna Zap Tag entra rápido (90ms entre passos) e a coluna QR devagar
-// (180ms) — a diferença de ritmo mostra a diferença de espera antes mesmo
-// da pessoa ler o texto. Slogan de destaque entra depois, com scale-in
-// próprio (ver CSS), seguido pelos três diferenciais. Se a seção sair de
-// vista no meio, desfaz e refaz na próxima entrada; depois de uma passagem
-// completa, trava no estado final.
+// cabeçalho, slogan de destaque (scale-in próprio, ver CSS) e os três
+// diferenciais. O comparativo com cronômetro no meio é do initCrono. Se a
+// seção sair de vista no meio, desfaz e refaz na próxima entrada; depois de
+// uma passagem completa, trava no estado final.
 function initCompare() {
     const section = document.querySelector('.compare');
     if (!section) return;
 
     const headerItems = section.querySelectorAll('.section-header [data-reveal]');
-    const qrSteps = section.querySelectorAll('.compare__column--qr .compare__step');
-    const zaptagSteps = section.querySelectorAll('.compare__column--zaptag .compare__step');
     const slogan = section.querySelector('.compare__slogan');
     const cta = section.querySelector('.compare__cta');
     const facts = section.querySelector('.compare__facts');
@@ -113,18 +109,9 @@ function initCompare() {
         timers = [];
     };
 
-    const stagger = (items, delay) => {
-        items.forEach((item, i) => {
-            const id = setTimeout(() => item.classList.add('is-visible'), reducedMotion ? 0 : i * delay);
-            timers.push(id);
-        });
-    };
-
     const show = () => {
         clearTimers();
         headerItems.forEach((el) => el.classList.add('is-visible'));
-        stagger(qrSteps, 180);
-        stagger(zaptagSteps, 90);
         timers.push(setTimeout(() => slogan && slogan.classList.add('is-visible'), reducedMotion ? 0 : 550));
         // O botão entra junto com os facts, logo depois do slogan: é o
         // "e agora?" do argumento, não uma peça que compete com ele.
@@ -138,8 +125,6 @@ function initCompare() {
     const hide = () => {
         clearTimers();
         headerItems.forEach((el) => el.classList.remove('is-visible'));
-        qrSteps.forEach((el) => el.classList.remove('is-visible'));
-        zaptagSteps.forEach((el) => el.classList.remove('is-visible'));
         if (slogan) slogan.classList.remove('is-visible');
         if (cta) cta.classList.remove('is-visible');
         if (facts) facts.classList.remove('is-visible');
@@ -229,6 +214,73 @@ function initHeroVideo() {
     document.addEventListener('visibilitychange', sync);
 }
 
+// Comparativo com cronômetro: os dois relógios largam juntos, em tempo real.
+// Cada cartão para no próprio data-crono-end (Zap Tag 1,2 s, QR 14,2 s); as
+// etapas aparecem no segundo do data-at e o selo quando o relógio trava. A
+// régua das duas colunas é a mesma (0 até o maior fim), então a da Zap Tag
+// para em ~8%. Roda sozinho UMA vez, quando metade do bloco entra na tela;
+// depois só pelo botão. Com movimento reduzido fica o estado final do HTML.
+function initCrono() {
+    const root = document.querySelector('[data-crono]');
+    if (!root) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const cards = Array.from(root.querySelectorAll('[data-crono-card]')).map((card) => ({
+        el: card,
+        end: parseFloat(card.dataset.cronoEnd),
+        num: card.querySelector('[data-crono-num]'),
+        fill: card.querySelector('[data-crono-fill]'),
+        steps: Array.from(card.querySelectorAll('.crono__step')).map((li) => ({ li, at: parseFloat(li.dataset.at) })),
+        badge: card.querySelector('[data-crono-badge]'),
+    }));
+    const total = Math.max(...cards.map((c) => c.end));
+    const button = root.querySelector('[data-crono-replay]');
+    const label = root.querySelector('[data-crono-label]');
+    const format = (t) => t.toFixed(1).replace('.', ',');
+    let frame = 0;
+
+    const render = (t) => {
+        cards.forEach((c) => {
+            const shown = Math.min(t, c.end);
+            c.num.textContent = format(shown);
+            c.fill.style.setProperty('--crono-progress', (shown / total).toFixed(4));
+            c.steps.forEach((s) => s.li.classList.toggle('is-shown', t >= s.at));
+            const locked = t >= c.end;
+            c.badge.classList.toggle('is-shown', locked);
+            c.el.classList.toggle('is-locked', locked);
+        });
+    };
+
+    const run = () => {
+        cancelAnimationFrame(frame);
+        cards.forEach((c) => c.el.classList.remove('is-locked'));
+        const start = performance.now();
+        const tick = (now) => {
+            const t = Math.min((now - start) / 1000, total);
+            render(t);
+            if (t < total) {
+                frame = requestAnimationFrame(tick);
+            } else {
+                label.textContent = 'Repetir comparação';
+            }
+        };
+        frame = requestAnimationFrame(tick);
+    };
+
+    // Armado: zera relógios e esconde etapas (ocupando o lugar) até rodar.
+    root.classList.add('is-armed');
+    render(0);
+    button.hidden = false;
+    button.addEventListener('click', run);
+
+    const observer = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        run();
+    }, { threshold: 0.5 });
+    observer.observe(root.querySelector('.crono__cards'));
+}
+
 // Formatos: cada objeto entra quando chega na tela, UM POR VEZ. Se vários
 // cruzam o gatilho juntos (uma linha inteira da grade, ou quem chega pelo
 // link #formatos), eles vão pra uma fila e saem em ordem, a cada 240ms.
@@ -273,6 +325,8 @@ function revealEverything() {
     document
         .querySelectorAll('[data-reveal], .usecase-card, .compare__slogan, .format')
         .forEach((el) => el.classList.add('is-visible'));
+    // Cronômetro que quebrou no meio: volta ao estado final do HTML.
+    document.querySelectorAll('.crono').forEach((el) => el.classList.remove('is-armed'));
 }
 
 // Cada init roda ISOLADO, e isso não é paranoia genérica: o modo de falha
@@ -301,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initWhatsappLinks', initWhatsappLinks);
     run('initHeroVideo', initHeroVideo);
     run('initCompare', initCompare);
+    run('initCrono', initCrono);
     run('initUseCases', initUseCases);
     run('initFormats', initFormats);
     run('initShowcase', initShowcase);

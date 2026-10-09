@@ -235,41 +235,72 @@
                     <p class="section-lead" data-reveal>O cliente encosta o celular e abre sozinha a avaliação, o cardápio, o <span class="nowrap">Wi-Fi</span> ou o Pix. Sem baixar nada, sem digitar nada.</p>
                 </div>
 
-                <div class="compare__columns">
-                    <div class="compare__column compare__column--zaptag">
-                        <div class="compare__column-head">
-                            <span class="compare__column-icon">
-                                <svg class="compare__column-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <rect x="10" y="4" width="15" height="24" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-                                    <line x1="15" y1="23.5" x2="20" y2="23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                                    <path d="M14 19 L6 27 L10 27 L8 33 L16 24 L11 24 Z" fill="currentColor"/>
-                                </svg>
-                            </span>
-                            <h3 class="compare__column-title">Zap Tag</h3>
-                        </div>
-                        <ol class="compare__steps" role="list">
-                            <li class="compare__step" data-reveal>Encostar o celular</li>
-                            <li class="compare__step" data-reveal>A ação já dispara</li>
-                        </ol>
+                <!-- Comparativo com cronômetro: os dois relógios largam juntos.
+                     O da Zap Tag trava em 1,2 s; o do QR code segue até 14,2 s,
+                     em tempo real, revelando cada etapa no segundo em que ela
+                     acontece. O markup já nasce no ESTADO FINAL (tempos e
+                     etapas todos à mostra): sem JS ou com movimento reduzido,
+                     é isso que fica. O JS zera e anima. -->
+                <div class="crono" data-crono>
+                    <div class="crono__bar">
+                        <button type="button" class="crono__replay" data-crono-replay hidden>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 9 9 9"/></svg>
+                            <span data-crono-label>Simular teste no salão</span>
+                        </button>
                     </div>
 
-                    <div class="compare__column compare__column--qr">
-                        <div class="compare__column-head">
-                            <span class="compare__column-icon">
-                                <svg class="compare__column-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path d="M3 8h4l2-3h6l2 3h4v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/>
-                                    <circle cx="12" cy="13.5" r="3.5"/>
-                                </svg>
-                            </span>
-                            <h3 class="compare__column-title">QR code</h3>
-                        </div>
-                        <ol class="compare__steps" role="list">
-                            <li class="compare__step" data-reveal>Abrir a câmera</li>
-                            <li class="compare__step" data-reveal>Focar no código</li>
-                            <li class="compare__step" data-reveal>Esperar carregar o link</li>
-                            <li class="compare__step" data-reveal>Às vezes cair em anúncio</li>
-                        </ol>
+                    <p class="sr-only">Num teste no salão, o QR code levou cerca de 14,2 segundos em 4 etapas manuais. A Zap Tag levou 1,2 segundo em 2 passos.</p>
+
+                    <div class="crono__cards">
+                        <article class="crono__card crono__card--qr" data-crono-card data-crono-end="14.2">
+                            <div class="compare__column-head">
+                                <span class="compare__column-icon">
+                                    <svg class="compare__column-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <path d="M3 8h4l2-3h6l2 3h4v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/>
+                                        <circle cx="12" cy="13.5" r="3.5"/>
+                                    </svg>
+                                </span>
+                                <h3 class="compare__column-title">QR code no salão</h3>
+                            </div>
+
+                            <p class="crono__time" aria-hidden="true"><span class="crono__num" data-crono-num>14,2</span><span class="crono__unit">s</span></p>
+                            <div class="crono__track" aria-hidden="true"><span class="crono__fill" data-crono-fill></span></div>
+
+                            <ol class="crono__steps" role="list">
+                                <li class="crono__step" data-at="0"><span class="crono__at">0,0 s</span>Cliente procura o app da câmera ou leitor</li>
+                                <li class="crono__step" data-at="3.5"><span class="crono__at">3,5 s</span>Tentando focar no papel contra o reflexo da lâmpada</li>
+                                <li class="crono__step" data-at="7.8"><span class="crono__at">7,8 s</span>Esperando a rede 4G carregar o link encurtado</li>
+                                <li class="crono__step" data-at="14.2"><span class="crono__at">14,2 s</span>Página finalmente abre (se o cliente não desistir antes)</li>
+                            </ol>
+
+                            <p class="crono__badge" data-crono-badge>Atrito alto • 4 etapas manuais</p>
+                        </article>
+
+                        <article class="crono__card crono__card--zaptag" data-crono-card data-crono-end="1.2">
+                            <div class="compare__column-head">
+                                <span class="compare__column-icon">
+                                    <svg class="compare__column-glyph" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                        <rect x="10" y="4" width="15" height="24" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                                        <line x1="15" y1="23.5" x2="20" y2="23.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                        <path d="M14 19 L6 27 L10 27 L8 33 L16 24 L11 24 Z" fill="currentColor"/>
+                                    </svg>
+                                </span>
+                                <h3 class="compare__column-title">Zap Tag</h3>
+                            </div>
+
+                            <p class="crono__time" aria-hidden="true"><span class="crono__num" data-crono-num>1,2</span><span class="crono__unit">s</span></p>
+                            <div class="crono__track" aria-hidden="true"><span class="crono__fill" data-crono-fill></span></div>
+
+                            <ol class="crono__steps" role="list">
+                                <li class="crono__step" data-at="0"><span class="crono__at">0,0 s</span>Aproximou o celular da placa</li>
+                                <li class="crono__step" data-at="1.2"><span class="crono__at">1,2 s</span>Ação disparada diretamente na tela do aparelho</li>
+                            </ol>
+
+                            <p class="crono__badge" data-crono-badge>Sem atrito • 2 passos diretos</p>
+                        </article>
                     </div>
+
+                    <p class="crono__note">Tempos ilustrativos de um teste típico no salão.</p>
                 </div>
 
                 <p class="compare__slogan">Encostou, ativou.</p>
