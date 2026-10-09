@@ -947,6 +947,107 @@
     salão." foi acrescentada por honestidade (não é medição) e "placa" na
     etapa da Zap Tag destoa de "adesivo" no resto do site.
 
+- **2026-10-09 — Veredito do cronômetro** (crítica impeccable do trecho
+  "Encostou, ativou." + botão + diferenciais: 21/32; snapshot em
+  `.impeccable/critique/2026-10-09T14-20-27Z__index-html.md`). Problema
+  medido: o slogan acendia com os relógios em 0,1–0,2 s e a entrada terminava
+  antes de ele aparecer na tela. Decisões do dono (proposta A):
+  - Slogan, frase e botão (`.compare__verdict`, `initVerdict`) só entram
+    quando o QR trava em 14,2 s (`initCrono` dispara `crono:start` /
+    `crono:done` e grava `data-crono-state`). Uma linha ciano "fecha o
+    circuito" embaixo do slogan; no "Repetir comparação" só a linha recolhe.
+    Se o bloco entrar na tela sem o cronômetro ter largado, aparece na hora.
+  - **Slogan agora em branco** (`--color-text`), não lime: o lime fica só
+    no botão (One Action Rule). Tamanho e fonte iguais.
+  - Dos 3 diferenciais ficou só "Funciona em iPhone e Android que pagam por
+    aproximação" (texto igual), em 1rem, ANTES do botão. Os outros dois
+    (iluminação, link encurtado) saíram: o cronômetro já os mostra.
+  - **Risco conhecido:** no celular, quem chega ao veredito com o QR ainda
+    contando vê o espaço vazio por até ~13 s (o cartão do QR fica acima,
+    fora da tela).
+
+- **2026-10-09 — Casos de uso viraram "Serviços" (abas + painel)**
+  (crítica impeccable da seção: 18/28, snapshot
+  `.impeccable/critique/2026-10-09T14-31-53Z__index-html.md`). Histórico do
+  dia: 1º lista "Encostou, ___." com os 6 abertos (reprovada: "amontoado");
+  2º coluna de verbos + painel com troca automática (o dono pediu outra
+  coisa); 3º, a atual, desenhada pelo dono: **botões em cima, painel do
+  serviço escolhido embaixo** (escolheu o layout por prévia).
+  - **Escolha primeiro (pedido do dono, pra seção não ficar grande):** a
+    seção abre SÓ com "Toque num serviço pra ver como funciona." e 6 botões
+    grandes (`.svc__choice`, selo-tag + nome; 3×2 no desktop, 2×3 no
+    celular). Escolhido um, a escolha some e aparece só aquele painel, levado
+    pra baixo da navbar, com o foco no título. No fim do painel: "Quer ver
+    outro modelo?" com os outros 5 (`.svc__other`) e "Fechar e voltar às
+    opções". Seção fechada: 541px desktop / 751px celular.
+  - **Painel** (`.svc__panel`): nome + "Encostou, <verbo>." (linha ciano),
+    Hoje x Com a Zap Tag, 3 passos com marcador em forma de tag, Onde fica +
+    formatos (chips que levam a #formatos), botão primário "Quero esse" com
+    a mensagem de WhatsApp do serviço, e o **celular ilustrativo** com a tela
+    de cada serviço (desenho, linhas no lugar de texto, sem valores reais).
+    Celular à direita no desktop, em cima do texto no celular.
+  - **Animação a cada troca:** texto em cascata, celular sobe e assenta, a
+    tela acende item por item e uma onda ciano sai uma vez.
+  - Sem JS: escolha e "ver outro" escondidos, 6 painéis empilhados.
+    Movimento reduzido: sem animação.
+  - **Copy nova a confirmar com o dono:** "Toque num serviço pra ver como
+    funciona.", a divisão de cada texto em "Hoje" /
+    "Com a Zap Tag", os 3 passos de cada serviço, e o "Hoje" do Contato
+    ("Ditar telefone, endereço e redes sociais um por um.", não existia).
+    "Onde fica" e formatos saíram das "Ideias de uso" de Formatos. Verbos
+    (avaliou / viu o cardápio / conectou / pagou / marcou ponto / salvou o
+    contato) aprovados antes.
+  - **Saiu:** pílula "Um adesivo, vários usos" (só aqui), grade de cards,
+    tilt 3D, "Ver todas as opções", pop/glow do ícone. Cabeçalho à esquerda.
+  - **Corrigido:** título invisível ~400px no celular (observer próprio);
+    ícone do Pix "$" → conta/recibo; "Veja em 3D" foi para o fim de Formatos.
+  - **Ideia guardada pelo dono para depois:** "a planta do salão" — planta
+    baixa em traço fino com as 6 tags nos lugares físicos (mesa, balcão,
+    porta, parede) e um painel do caso ativo com pulso ciano.
+
+- **2026-10-09 — Formatos saiu (temporário) e entrou "Como contratar"**
+  (pedido do dono: está desenvolvendo modelos 3D novos que NÃO serão
+  adesivos; os formatos atuais vão mudar). Decisões dele:
+  - **Seção nova `.hire#como-contratar`**: a call personalizada é a
+    protagonista. Convite à esquerda (sticky no desktop): "Não sabe qual
+    escolher? A gente monta com você." + texto da call + botão primário "Quero
+    marcar a call" (WhatsApp: "Olá! Vi o site da Zap Tag e quero marcar uma
+    call pra ver os melhores serviços pro meu negócio.") + "Sem compromisso.".
+    À direita, 4 passos com marcador-tag e fio que vira ciano de cima pra
+    baixo (`initHire`): Você chama no WhatsApp / **A call** (bloco em
+    destaque, borda ciano) / Tudo por escrito / Chega pronto. Nada de prazo,
+    preço, instalação ou material. **Toda essa copy é nova, a confirmar.**
+  - **Formatos guardado**, não apagado: a seção inteira está dentro de
+    `<template id="formatos-guardado">` (inerte; `initFormats` e
+    `initShowcase` não ligam). Menu "Formatos" virou "Como contratar".
+    Pra voltar: tirar o `<template>`, devolver o link do menu e os chips de
+    formato nos painéis de serviço.
+  - **Vitrine 3D escondida** junto (o gatilho morava em Formatos). O
+    `<dialog>` e o js/showcase.js continuam no projeto.
+  - Painéis de serviço: saíram os chips de formato; ficou só "Onde fica".
+  - **Cache:** CSS e JS agora têm `?v=` no index.html (hoje `20261009b`).
+    Trocar a cada versão publicada: HTML novo com JS velho do cache quebrou a
+    seção de serviços no navegador do dono.
+
+- **2026-10-09 — Último bloco virou contato animado, sem botão** (pedido do
+  dono: CTA demais na página; o último convite agora é a call de "Como
+  contratar"). Saíram o "Comece com o primeiro adesivo.", o botão, a prévia
+  da mensagem do WhatsApp, os 3 passos e a faixa do Instagram
+  (`.trust-strip`). No lugar, `.closing` dentro de `.final-cta` (o glow de
+  fundo e o rodapé continuam): à esquerda a tag da logo em lime com 3 anéis
+  ciano; à direita "Ficou alguma dúvida? Chama a gente." (copy nova, a
+  confirmar) e 4 linhas de contato com ícone: WhatsApp (link, mesma
+  mensagem de antes), Horário "Todos os dias, das 7h às 23h", Instagram
+  (link) e "Anápolis e região" — todos fatos que já estavam na página.
+  - **Dinâmica (`initClosing`):** ao entrar, a tag afunda e solta 3 ondas, o
+    fio ciano desce e as linhas acendem uma a uma (ícone ciano + clique).
+    Depois, pulso a cada 5 s só com o bloco na tela. Movimento reduzido/sem
+    JS: tudo aceso e parado.
+  - **Armadilha:** a linha apagada (opacity) criava contexto de empilhamento
+    e o fio passava por cima do ícone → `.closing__item` com
+    `position: relative; z-index: 1`.
+  - Versão dos assets: `?v=20261009c`.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do

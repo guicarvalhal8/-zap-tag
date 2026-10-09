@@ -983,59 +983,91 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text-muted);
 }
 
-.compare__slogan {
-    margin: 56px 0 0;
+/* Veredito do cronômetro. Sem JS (ou com movimento reduzido) é só um bloco
+   centralizado e visível. Com JS nasce .is-armed (escondido, ocupando o
+   lugar) e .is-waiting (linha ciano recolhida); os dois saem quando o relógio
+   do QR trava. O slogan é branco: o lime fica só no botão, a única ação do
+   bloco (One Action Rule). */
+.compare__verdict {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 56px;
     text-align: center;
+}
+
+.compare__slogan {
+    margin: 0;
     font-family: var(--font-display-highlight);
     font-weight: 600;
     font-size: clamp(1.75rem, 4vw, 2.5rem);
-    color: var(--color-primary);
-    opacity: 0;
-    transform: scale(0.95);
-    /* Era cubic-bezier(0.34, 1.56, 0.64, 1) — y1 = 1,56, ou seja overshoot
-       elástico. Trocado pela ease-out-quint que este arquivo já usava na
-       linha 464: objeto real desacelera, não quica. Mesma duração, e agora a
-       página tem UM vocabulário de movimento em vez de dois. */
-    transition: opacity 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    line-height: 1.3;
+    color: var(--color-text);
+    transition:
+        opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+        filter 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.compare__slogan.is-visible {
-    opacity: 1;
-    transform: scale(1);
+.compare__slogan-text {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 12px;
+}
+
+/* "Fecha o circuito": a linha corre da esquerda pra direita quando o teste
+   termina. Ciano porque é a resposta do sistema ao fim do teste, não ação. */
+.compare__slogan-text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-secondary);
+    transform-origin: left center;
+    transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1) 260ms;
+}
+
+.compare__fact {
+    max-width: 40ch;
+    margin: 20px 0 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    text-wrap: balance;
+    transition:
+        opacity 400ms cubic-bezier(0.16, 1, 0.3, 1) 300ms,
+        transform 500ms cubic-bezier(0.16, 1, 0.3, 1) 300ms;
 }
 
 .compare__cta {
     display: flex;
     justify-content: center;
-    margin-top: 32px;
+    margin-top: 24px;
+    transition:
+        opacity 400ms cubic-bezier(0.16, 1, 0.3, 1) 420ms,
+        transform 500ms cubic-bezier(0.16, 1, 0.3, 1) 420ms;
 }
 
-.compare__facts {
-    list-style: none;
-    margin: 40px 0 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    text-align: center;
+.compare__verdict.is-armed .compare__slogan {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+    filter: blur(6px);
 }
 
-@media (min-width: 760px) {
-    .compare__facts {
-        flex-direction: row;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 28px;
-    }
+.compare__verdict.is-armed .compare__fact,
+.compare__verdict.is-armed .compare__cta {
+    opacity: 0;
+    transform: translateY(8px);
 }
 
-.compare__facts li {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    max-width: 32ch;
+.compare__verdict.is-waiting .compare__slogan-text::after {
+    transform: scaleX(0);
+    transition: none;
 }
 
 /* ---- Botão outline (usado no toggle de Casos de uso) ---- */
@@ -1072,90 +1104,689 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     border-top: 1px solid var(--color-border);
 }
 
-.usecases__grid {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+/* Cabeçalho alinhado à esquerda: a lista abaixo é editorial, e o bloco
+   centralizado era o molde que todas as seções repetiam. */
+.section-header--start {
+    align-items: flex-start;
+    text-align: left;
+    max-width: none;
+    margin: 0 0 48px;
 }
 
-@media (min-width: 860px) {
-    .usecases__grid {
+/* ---- Serviços (casos de uso): escolha primeiro, painel depois ----
+   Sem JS: a escolha e o "ver outro" ficam escondidos e os 6 painéis
+   aparecem um embaixo do outro. Com JS (.svc.is-interactive): a seção abre
+   só com os 6 botões; escolhido um, a escolha sai e só aquele painel
+   aparece (.is-open), montando em cascata (.is-shown). */
+
+.svc__chooser[hidden],
+.svc__more[hidden] { display: none; }
+
+.svc.is-open .svc__chooser { display: none; }
+
+.svc__ask {
+    margin: 0 0 20px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text-muted);
+}
+
+.svc__choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (min-width: 760px) {
+    .svc__choices {
         grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
+        gap: 16px;
     }
 }
 
-/* O <li> é só o item da lista; o card (e o alvo do toque) é o <a> dentro
-   dele. O flex aqui faz o link esticar na altura da linha do grid, pra que
-   os 3 cards de uma linha tenham a mesma altura e o "Quero esse" alinhe
-   no rodapé de todos. */
-.usecases__item {
+/* Botão grande com o selo em forma de tag: cada serviço é, literalmente,
+   um adesivo. A borda forte é o sinal de controle; no hover ela vira lime
+   porque escolher já é o primeiro passo da ação. */
+.svc__choice {
     display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 76px;
+    padding: 16px 18px 16px 16px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 16px;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1.05rem;
+    line-height: 1.2;
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.usecase-card {
-    flex: 1;
-    color: inherit;
-    text-decoration: none;
+.svc__choice .usecase-card__icon-wrap::before { background: var(--color-surface); }
+
+@media (hover: hover) {
+    .svc__choice:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+    }
+}
+
+.svc__choice:focus-visible { border-color: var(--color-primary); }
+.svc__choice:active { transform: scale(0.98); }
+
+@media (max-width: 759px) {
+    .svc__choice {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        min-height: 112px;
+        padding: 16px;
+        font-size: 1rem;
+    }
+}
+
+/* Volta à escolha (depois de "Fechar"): os botões sobem um a um. */
+@keyframes svc-choice-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+.svc.is-interactive .svc__chooser.is-shown .svc__choice {
+    animation: svc-choice-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.svc.is-interactive .svc__chooser.is-shown .svc__choice:nth-child(2) { animation-delay: 50ms; }
+.svc.is-interactive .svc__chooser.is-shown .svc__choice:nth-child(3) { animation-delay: 100ms; }
+.svc.is-interactive .svc__chooser.is-shown .svc__choice:nth-child(4) { animation-delay: 150ms; }
+.svc.is-interactive .svc__chooser.is-shown .svc__choice:nth-child(5) { animation-delay: 200ms; }
+.svc.is-interactive .svc__chooser.is-shown .svc__choice:nth-child(6) { animation-delay: 250ms; }
+
+/* "Quer ver outro modelo?" no fim do painel: os outros 5 serviços e a
+   saída de volta pra escolha. Ocupa a largura toda do painel. */
+.svc__more {
+    grid-column: 1 / -1;
+    order: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 28px;
+    border-top: 1px solid var(--color-border);
+}
+
+.svc__more-ask {
+    margin: 0;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--color-text);
+}
+
+.svc__others {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.svc__other {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+        border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.svc__other-icon {
+    display: flex;
+    width: 16px;
+    height: 16px;
+    color: var(--color-primary);
+}
+
+.svc__other-icon svg { width: 100%; height: 100%; }
+
+@media (hover: hover) {
+    .svc__other:hover { border-color: var(--color-primary); }
+}
+
+.svc__other:focus-visible { border-color: var(--color-primary); }
+.svc__other:active { transform: scale(0.97); }
+
+.svc__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.svc__close svg { width: 16px; height: 16px; }
+
+@media (hover: hover) {
+    .svc__close:hover { color: var(--color-text); }
+}
+
+.svc__close:focus-visible { color: var(--color-text); }
+
+/* ---- Painel ---- */
+
+.svc__panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 24px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 16px;
-    padding: 28px 24px;
+}
+
+.svc__panel + .svc__panel { margin-top: 20px; }
+
+.svc__panel:focus-visible { outline-offset: 4px; }
+
+.svc.is-interactive .svc__panel:not(.is-active) { display: none; }
+.svc.is-interactive .svc__panel + .svc__panel { margin-top: 0; }
+
+@media (min-width: 960px) {
+    .svc__panel {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        gap: 64px;
+        align-items: center;
+        padding: 44px 48px;
+    }
+}
+
+.svc__info {
     display: flex;
     flex-direction: column;
+    gap: 24px;
+}
+
+.svc__name {
+    display: flex;
+    align-items: center;
     gap: 12px;
-    transition: border-color 200ms ease, transform 200ms ease, opacity 500ms ease;
+    margin: 0;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
 }
 
-/* Era ciano (cor de INTERAÇÃO do sistema) e depois virou a borda forte
-   neutra, porque o card não era clicável e o lime da ação primária não se
-   gasta em decoração. Agora o card É a ação — abre o WhatsApp já dizendo
-   qual automação o lead quer — então o lime é o certo. O foco usa a mesma
-   borda como reforço; o indicador continua sendo o anel ciano global.
-   O hover fica atrás de `(hover: hover)`: no toque o :hover gruda depois do
-   tap, e o card continuaria aceso quando a pessoa voltasse do WhatsApp. */
-.usecase-card:focus-visible,
-.usecase-card:active {
-    border-color: var(--color-primary);
+.svc__name .usecase-card__icon-wrap::before { background: var(--color-surface); }
+
+.svc__verb {
+    margin: -8px 0 0;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-text);
+    text-wrap: balance;
 }
 
-/* O Chromium do Android pinta um retângulo azul translúcido sobre o link no
-   toque — fora da paleta e desenhado sem o border-radius do card. O
-   :active acima dá o retorno do toque com a cor da marca no lugar dele. */
-.usecase-card {
-    -webkit-tap-highlight-color: transparent;
+/* O título recebe o foco (por script) quando o serviço abre, pra leitor de
+   tela e teclado continuarem dali; não é um controle, então sem anel. */
+.svc__verb:focus { outline: none; }
+
+.svc__lead { color: var(--color-text-muted); }
+
+.svc__word {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 6px;
 }
 
-@media (hover: hover) {
-    .usecase-card:hover {
-        border-color: var(--color-primary);
-        transform: translateY(-3px);
-    }
-
-    .usecase-card:hover .usecase-card__cta svg {
-        transform: translateX(4px);
-    }
+.svc__word::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--color-secondary);
+    transform-origin: left center;
 }
 
-.usecase-card:focus-visible {
-    outline-offset: 4px;
+.svc__label {
+    margin: 0 0 6px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--color-text-muted);
+}
+
+.svc__text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text);
+}
+
+/* Hoje x com a Zap Tag: o "hoje" fica apagado, o "depois" ganha a borda
+   ciano — é a resposta do sistema ao problema. */
+.svc__compare {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+@media (min-width: 600px) {
+    .svc__compare { grid-template-columns: 1fr 1fr; }
+}
+
+.svc__case {
+    padding: 16px 18px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+}
+
+.svc__case--before .svc__text { color: var(--color-text-muted); }
+
+.svc__case--after {
+    border-color: var(--color-secondary);
+}
+
+.svc__case--after .svc__label { color: var(--color-secondary); }
+
+/* Passos com o marcador em forma de tag, o mesmo da coluna Zap Tag na
+   comparação: a forma da marca só aparece do lado da marca. */
+.svc__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+}
+
+.svc__step {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--color-text);
+}
+
+.svc__step-mark {
+    --mark-h: 22px;
+    display: inline-flex;
+    align-items: center;
+    width: 30px;
+    height: var(--mark-h);
+    padding-left: 8px;
+    border-radius: 4px 0 0 4px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 0,
+        100% 50%,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 100%,
+        0 100%
+    );
+}
+
+/* ---- Celular ilustrativo (o que o cliente vê) ----
+   Desenho, não print: as telas usam linhas no lugar de texto e nenhum valor
+   real. No celular da página ele vem antes do texto (order: -1). */
+.svc__device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    order: -1;
+}
+
+@media (min-width: 960px) {
+    .svc__device { order: 0; }
+}
+
+/* Onda ciano que sai do topo do celular quando o painel entra: o adesivo
+   "respondeu". Uma vez por troca, nunca em loop. */
+.svc__device::before {
+    content: '';
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    width: 220px;
+    height: 220px;
+    margin-left: -110px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* No celular da página o aparelho é mais baixo (só a parte de cima da tela
+   importa), pra não ocupar a primeira tela inteira antes do texto. */
+.svc__phone {
+    position: relative;
+    width: 180px;
+    aspect-ratio: 9 / 15;
+    padding: 12px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-strong);
+    border-radius: 32px;
+}
+
+@media (min-width: 960px) {
+    .svc__phone { width: 250px; aspect-ratio: 9 / 17; padding: 14px; border-radius: 38px; }
+}
+
+.svc__notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    width: 64px;
+    height: 16px;
+    margin-left: -32px;
+    border-radius: 999px;
+    background: var(--color-surface);
+}
+
+.svc__device-note {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.scr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    padding: 34px 10px 12px;
+    border-radius: 22px;
+    background: var(--color-surface);
+    font-family: var(--font-body);
+    color: var(--color-text);
+    overflow: hidden;
+}
+
+@media (min-width: 960px) {
+    .scr { padding: 44px 14px 16px; border-radius: 26px; gap: 12px; }
+    .scr__title { font-size: 1rem; }
+    .scr__btn { font-size: 0.72rem; }
+}
+
+.scr__big {
+    display: flex;
+    width: 52px;
+    height: 52px;
+    margin-top: 18px;
+    color: var(--color-primary);
+}
+
+.scr__big svg { width: 100%; height: 100%; }
+
+.scr__big--ring {
+    width: 76px;
+    height: 76px;
+    padding: 18px;
+    border: 2px solid var(--color-secondary);
+    border-radius: 50%;
+    color: var(--color-secondary);
+}
+
+.scr__title {
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.scr__title--left {
+    align-self: stretch;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.scr__sub {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+}
+
+.scr__stars {
+    display: flex;
+    gap: 4px;
+    color: var(--color-border-strong);
+}
+
+.scr__stars svg { width: 20px; height: 20px; }
+.scr__stars svg:first-child { color: var(--color-primary); }
+
+.scr__btn {
+    margin-top: auto;
+    align-self: stretch;
+    padding: 9px 12px;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    font-size: 0.66rem;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.scr__label {
+    align-self: stretch;
+    margin-top: 4px;
+    font-size: 0.66rem;
+    color: var(--color-text-muted);
+}
+
+.scr__line {
+    display: block;
+    align-self: stretch;
+    height: 8px;
+    border-radius: 4px;
+    background: var(--color-border);
+}
+
+.scr__line--short { align-self: flex-start; width: 60%; }
+
+.scr__line--fill {
+    background: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+}
+
+.scr__field {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    min-height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+.scr__field .scr__line { flex: 1; align-self: center; }
+
+.scr__field--value { gap: 6px; font-weight: 500; }
+
+.scr__dots { letter-spacing: 0.12em; color: var(--color-text-muted); }
+
+.scr__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 5px 10px;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 55%, transparent);
+    border-radius: 999px;
+    font-size: 0.68rem;
+    color: var(--color-secondary);
+}
+
+.scr__pill svg { width: 12px; height: 12px; }
+
+.scr__stamps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 7px;
+    margin-top: 6px;
+}
+
+.scr__stamp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 50%;
+    color: var(--color-primary);
+}
+
+.scr__stamp svg { width: 13px; height: 13px; }
+
+.scr__stamp.is-on {
+    border-color: transparent;
+    background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
+
+.scr__stamp--new {
+    border-color: transparent;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+}
+
+.scr__avatar {
+    width: 60px;
+    height: 60px;
+    margin-top: 10px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+.scr__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: stretch;
+}
+
+.scr__row .scr__line { flex: 1; }
+
+.scr__dot {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 50%;
+}
+
+/* ---- Troca de serviço (JS liga .is-shown a cada escolha) ----
+   O texto monta em cascata, o celular sobe e assenta, a tela dele acende
+   item por item e a onda ciano sai uma vez. Curvas de desaceleração física,
+   sem quique. */
+@keyframes svc-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes svc-phone {
+    from { opacity: 0; transform: translateY(28px) rotate(-4deg); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes svc-wave {
+    0%   { opacity: 0.7; transform: scale(0.5); }
+    100% { opacity: 0;   transform: scale(1.5); }
+}
+
+@keyframes svc-underline {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+.svc.is-interactive .svc__panel.is-shown .svc__info > * {
+    animation: svc-rise 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.svc.is-interactive .svc__panel.is-shown .svc__info > :nth-child(2) { animation-delay: 50ms; }
+.svc.is-interactive .svc__panel.is-shown .svc__info > :nth-child(3) { animation-delay: 110ms; }
+.svc.is-interactive .svc__panel.is-shown .svc__info > :nth-child(4) { animation-delay: 170ms; }
+.svc.is-interactive .svc__panel.is-shown .svc__info > :nth-child(5) { animation-delay: 230ms; }
+.svc.is-interactive .svc__panel.is-shown .svc__info > :nth-child(6) { animation-delay: 290ms; }
+
+.svc.is-interactive .svc__panel.is-shown .svc__word::after {
+    animation: svc-underline 480ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both;
+}
+
+.svc.is-interactive .svc__panel.is-shown .svc__phone {
+    animation: svc-phone 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.svc.is-interactive .svc__panel.is-shown .scr > * {
+    animation: svc-rise 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(1) { animation-delay: 300ms; }
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(2) { animation-delay: 350ms; }
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(3) { animation-delay: 400ms; }
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(4) { animation-delay: 450ms; }
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(5) { animation-delay: 500ms; }
+.svc.is-interactive .svc__panel.is-shown .scr > :nth-child(n+6) { animation-delay: 550ms; }
+
+.svc.is-interactive .svc__panel.is-shown .svc__device::before {
+    animation: svc-wave 1100ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
 }
 
 /* O ícone de cada automação mora dentro de uma tag — cada caso de uso é,
    literalmente, um adesivo. Tinta lime a 12% (derivada do token, não um hex
-   novo), com o furo da logo no canto superior esquerdo. O clip-path também
-   recorta o glow do ::after, então a entrada vira "a tag acende". */
+   novo), com o furo da logo no canto superior esquerdo. */
 .usecase-card__icon-wrap {
-    --tag-h: 46px;
+    --tag-h: 40px;
     position: relative;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     width: calc(var(--tag-h) * 1.1667);
     height: var(--tag-h);
-    padding-left: 12px;
+    padding-left: 10px;
     border-radius: 6px 0 0 6px;
     background: color-mix(in srgb, var(--color-primary) 12%, transparent);
     clip-path: polygon(
@@ -1170,32 +1801,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .usecase-card__icon-wrap::before {
     content: '';
     position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 6px;
-    height: 6px;
+    top: 5px;
+    left: 5px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: var(--color-surface);
-}
-
-.usecase-card__icon-wrap::after {
-    content: '';
-    position: absolute;
-    inset: -12px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--color-primary) 0%, transparent 70%);
-    opacity: 0;
-    pointer-events: none;
+    background: var(--color-bg);
 }
 
 .usecase-card__icon {
     position: relative;
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     color: var(--color-primary);
-    transform: scale(0.4) rotate(-8deg);
-    opacity: 0;
 }
 
 .usecase-card__icon svg {
@@ -1203,128 +1822,184 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     height: 100%;
 }
 
-.usecase-card.is-visible .usecase-card__icon {
-    /* Mesma troca da .compare__slogan: ease-out-quint em vez de overshoot
-       elástico. O keyframe `usecase-icon-pop` ainda tem um pico próprio de
-       `scale(1.15)` a 60% — isso é overshoot AUTORADO no keyframe, não na
-       curva, e o detector não sinaliza. Fica, porque era o efeito pedido. */
-    animation: usecase-icon-pop 550ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+/* Entrada da seção (só com JS): a escolha sobe quando a seção chega. */
+.svc__chooser {
+    transition:
+        opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.usecase-card.is-visible .usecase-card__icon-wrap::after {
-    animation: usecase-icon-glow 700ms ease-out 150ms both;
+.usecases.is-armed:not(.is-in) .svc__chooser {
+    opacity: 0;
+    transform: translateY(16px);
 }
 
-@keyframes usecase-icon-pop {
-    0%   { transform: scale(0.4) rotate(-8deg); opacity: 0; }
-    60%  { transform: scale(1.15) rotate(3deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+.usecases__note {
+    margin: 24px 0 0;
 }
 
-@keyframes usecase-icon-glow {
-    0%   { opacity: 0; transform: scale(0.6); }
-    40%  { opacity: 0.55; transform: scale(1.3); }
-    100% { opacity: 0; transform: scale(1.8); }
+/* ---- Como contratar (no lugar de Formatos, temporário) ----
+   Convite à esquerda, os 4 passos à direita ligados por um fio que vira
+   ciano de cima pra baixo quando a seção entra — o "circuito" da contratação
+   fechando. A call (passo 2) é o bloco em destaque. */
+
+.hire {
+    padding-block: 96px;
+    border-top: 1px solid var(--color-border);
 }
 
-.usecase-card__title {
-    font-family: var(--font-display-alt);
-    font-weight: 500;
-    font-size: 1.05rem;
-    line-height: 1.25;
-    color: var(--color-text);
+.hire__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+}
+
+@media (min-width: 960px) {
+    .hire__inner {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+        gap: 80px;
+        align-items: start;
+    }
+
+    /* O convite acompanha a leitura dos passos. */
+    .hire__pitch {
+        position: sticky;
+        top: calc(var(--nav-height) + 40px);
+    }
+}
+
+.hire__pitch {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.hire__title { max-width: 16ch; }
+
+.hire__lead {
     margin: 0;
-}
-
-.usecase-card__desc {
+    max-width: 46ch;
     font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 0.9rem;
+    font-size: 1.05rem;
+    line-height: 1.55;
     color: var(--color-text-muted);
-    margin: 0;
 }
 
-/* Sem este rótulo o card só se anunciava como link pelo hover — que não
-   existe no celular, onde está a maior parte do tráfego vindo de WhatsApp.
-   `margin-top: auto` empurra pro rodapé, alinhando entre cards de alturas
-   diferentes na mesma linha. */
-.usecase-card__cta {
-    margin-top: auto;
-    padding-top: 8px;
+.hire__steps {
+    --hire-mark-x: 17px;
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* O fio entre os marcadores: cinza parado, e por cima a versão ciano que
+   cresce de cima pra baixo quando a seção entra (.is-in). */
+.hire__steps::before,
+.hire__steps::after {
+    content: '';
+    position: absolute;
+    left: var(--hire-mark-x);
+    top: 34px;
+    bottom: 34px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 999px;
+    background: var(--color-border);
+}
+
+.hire__steps::after {
+    background: var(--color-secondary);
+    transform-origin: top center;
+}
+
+.hire__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    padding: 18px 0;
+    transition:
+        opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Marcador em forma de tag, o mesmo dos passos da Zap Tag no comparativo e
+   nos serviços: a forma da marca marca o caminho da marca. */
+.hire__mark {
+    --mark-h: 28px;
+    position: relative;
+    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-family: var(--font-body);
+    width: 38px;
+    height: var(--mark-h);
+    margin-top: 2px;
+    padding-left: 10px;
+    border-radius: 5px 0 0 5px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    font-family: var(--font-display);
     font-weight: 500;
-    font-size: 0.9rem;
-    color: var(--color-primary);
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 0,
+        100% 50%,
+        calc(100% - var(--mark-h) * var(--tag-tip-ratio)) 100%,
+        0 100%
+    );
 }
 
-.usecase-card__cta svg {
-    width: 16px;
-    height: 16px;
-    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+.hire__step-title {
+    margin: 0 0 6px;
+    font-family: var(--font-display-alt);
+    font-weight: 500;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    color: var(--color-text);
 }
 
-.usecase-card:focus-visible .usecase-card__cta svg {
-    transform: translateX(4px);
+.hire__step-text {
+    margin: 0;
+    max-width: 52ch;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
 }
 
-/* Cards do grid principal (reveal por scroll) e do grid expansível
-   (reveal ao abrir) partem do mesmo estado oculto. */
-.usecase-card {
+/* A call em destaque: o bloco ganha superfície e a borda ciano (é o
+   momento em que a Zap Tag responde ao negócio da pessoa). */
+.hire__step--call .hire__body {
+    padding: 20px 22px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-secondary);
+    border-radius: 16px;
+}
+
+.hire__step--call .hire__mark { margin-top: 20px; }
+
+.hire__step--call .hire__step-title { font-size: 1.4rem; }
+
+.hire__step--call .hire__step-text { color: var(--color-text); }
+
+/* Entrada (só com JS): os passos sobem em sequência e o fio ciano corre
+   junto. Sem JS ou com movimento reduzido, tudo já está no lugar e o fio
+   fica inteiro. */
+.hire__steps.is-armed .hire__step:not(.is-visible) {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 500ms ease, transform 500ms ease, border-color 200ms ease;
+    transform: translateY(14px);
 }
 
-.usecase-card.is-visible {
-    opacity: 1;
-    transform: translateY(0);
+.hire__steps.is-armed::after {
+    transform: scaleY(0);
+    transition: transform 1400ms cubic-bezier(0.16, 1, 0.3, 1) 150ms;
 }
 
-.usecases__toggle-row {
-    display: flex;
-    justify-content: center;
-    margin-top: 32px;
-}
-
-.usecases-toggle__chevron {
-    width: 16px;
-    height: 16px;
-    transition: transform 200ms ease;
-}
-
-.usecases-toggle.is-expanded .usecases-toggle__chevron {
-    transform: rotate(180deg);
-}
-
-/* Mesmo `visibility` do `.navbar__mobile`, e pelo mesmo motivo: o truque de
-   `0fr → 1fr` colapsa a altura sem remover nada da árvore de acessibilidade.
-   Sem isto, o leitor de tela anunciava os 3 casos de uso escondidos (com os
-   <h3> aparecendo na navegação por headings) enquanto o botão que os controla
-   dizia `aria-expanded="false"` — o que o ARIA declarava e o que a árvore
-   entregava se contradiziam. */
-.usecases__expand-wrap {
-    display: grid;
-    grid-template-rows: 0fr;
-    visibility: hidden;
-    transition: grid-template-rows 450ms ease, visibility 450ms ease;
-}
-
-.usecases__expand-wrap.is-open {
-    grid-template-rows: 1fr;
-    visibility: visible;
-}
-
-.usecases__expand-inner {
-    overflow: hidden;
-    min-height: 0;
-}
-
-.usecases__expand-inner .usecases__grid {
-    margin-top: 24px;
-}
+.hire__steps.is-armed.is-in::after { transform: scaleY(1); }
 
 /* ---- Formatos (desenhos dos protótipos, em escala entre si) ---- */
 
@@ -1584,75 +2259,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     color: var(--color-text-muted);
 }
 
-/* ---- Seção "CTA final" + footer ---- */
-
-.trust-strip {
-    border-top: 1px solid var(--color-border);
-}
-
-.trust-strip__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding-block: 40px;
-    text-align: center;
-}
-
-@media (min-width: 640px) {
-    .trust-strip__inner {
-        flex-direction: row;
-        gap: 20px;
-    }
-}
-
-.trust-strip__instagram {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    transition: color 180ms ease;
-    /* Mesmo alvo de toque de 44px do .site-footer__link — padrão idêntico,
-       só nasceu depois (bloco 2) e ficou de fora daquela passada. */
-    min-height: 44px;
-}
-
-.trust-strip__instagram:hover,
-.trust-strip__instagram:focus-visible {
-    color: var(--color-primary);
-}
-
-.trust-strip__instagram svg {
-    width: 17px;
-    height: 17px;
-    flex-shrink: 0;
-}
-
-.trust-strip__divider {
-    display: none;
-}
-
-@media (min-width: 640px) {
-    .trust-strip__divider {
-        display: block;
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--color-border-strong);
-    }
-}
-
-.trust-strip__area {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    margin: 0;
-}
+/* ---- Fechamento (contato) + footer ---- */
 
 .final-cta {
     position: relative;
@@ -1684,276 +2291,229 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     height: 100%;
 }
 
-/* Celular: uma coluna, o convite em cima e "o que acontece depois" embaixo.
-   A partir de 960px: duas colunas, convite à esquerda. */
-.final-cta__inner {
+/* ---- Fechamento: bloco de contato (sem botão) ----
+   A tag da marca "encosta" e solta ondas ciano; o sinal desce pelo fio e
+   cada linha de contato acende em sequência (.is-lit). Depois, um pulso a
+   cada ~5 s só enquanto o bloco está na tela (.is-live). Sem JS ou com
+   movimento reduzido: tudo parado e legível, sem ondas. */
+
+.closing {
     position: relative;
     z-index: 1;
     display: grid;
-    gap: 56px;
-    max-width: 1200px;
-    margin: 0 auto;
+    grid-template-columns: 1fr;
+    gap: 36px;
     padding-bottom: 96px;
 }
 
-.final-cta__pitch {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 20px;
-}
-
-@media (min-width: 960px) {
-    .final-cta__inner {
-        grid-template-columns: 1fr 1fr;
+@media (min-width: 860px) {
+    .closing {
+        grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
         align-items: center;
         gap: 72px;
     }
+}
 
-    .final-cta__pitch {
-        align-items: flex-start;
-        text-align: left;
+.closing__beacon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 132px;
+    aspect-ratio: 1;
+}
+
+@media (min-width: 860px) {
+    .closing__beacon {
+        width: min(100%, 280px);
+        justify-self: center;
     }
 }
 
-.final-cta__next {
-    width: 100%;
-    max-width: 460px;
-    justify-self: center;
+.closing__tag {
+    position: relative;
+    z-index: 1;
+    width: 64%;
+    color: var(--color-primary);
 }
 
-.final-cta__next-title {
-    margin: 0 0 16px;
-    font-family: var(--font-display-alt);
-    font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.25;
-    color: var(--color-text-muted);
+.closing__ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-secondary);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
 }
 
-/* Prévia de conversa: superfície neutra do sistema, não o verde do
-   WhatsApp (seria uma terceira cor de destaque). */
-.wa-preview {
+/* A primeira encostada: a tag afunda e volta, três ondas saem juntas. */
+@keyframes closing-tap {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+}
+
+@keyframes closing-wave {
+    0%   { opacity: 0.75; transform: scale(0.5); }
+    100% { opacity: 0;    transform: scale(1.5); }
+}
+
+/* Em repouso: uma onda curta no início de cada ciclo e o resto em silêncio. */
+@keyframes closing-pulse {
+    0%   { opacity: 0.55; transform: scale(0.5); }
+    28%  { opacity: 0;    transform: scale(1.5); }
+    100% { opacity: 0;    transform: scale(1.5); }
+}
+
+@keyframes closing-tag-pulse {
+    0%   { transform: scale(1); }
+    4%   { transform: scale(0.95); }
+    12%  { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+.closing.is-on .closing__tag {
+    animation: closing-tap 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.closing.is-on .closing__ring {
+    animation: closing-wave 1500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.closing.is-on .closing__ring:nth-child(2) { animation-delay: 220ms; }
+.closing.is-on .closing__ring:nth-child(3) { animation-delay: 440ms; }
+
+.closing.is-live .closing__tag {
+    animation: closing-tag-pulse 5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.closing.is-live .closing__ring {
+    animation: closing-pulse 5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.closing.is-live .closing__ring:nth-child(2) { animation-delay: 200ms; }
+.closing.is-live .closing__ring:nth-child(3) { animation-delay: 400ms; }
+
+.closing__title {
     margin: 0;
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
-    background: var(--color-surface);
-    overflow: hidden;
+    max-width: 18ch;
 }
 
-.wa-preview__bar {
+/* A lista com o fio: cinza parado e, por cima, o ciano que desce quando o
+   sinal sai da tag. O fio passa pelo centro dos ícones. */
+.closing__list {
+    --closing-icon: 40px;
+    position: relative;
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+}
+
+.closing__list::before,
+.closing__list::after {
+    content: '';
+    position: absolute;
+    left: calc(var(--closing-icon) / 2);
+    top: 32px;
+    bottom: 32px;
+    width: 2px;
+    margin-left: -1px;
+    border-radius: 999px;
+    background: var(--color-border);
+}
+
+.closing__list::after {
+    background: var(--color-secondary);
+    transform-origin: top center;
+}
+
+/* Cada linha acima do fio (o ícone tem fundo e cobre o fio). Sem isto, a
+   opacidade da linha apagada criava um contexto de empilhamento e o fio
+   passava por cima do ícone. */
+.closing__item {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: var(--closing-icon) 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+    transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.closing__icon {
+    position: relative;
+    z-index: 1;
+    grid-row: 1 / 3;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-.wa-preview__avatar {
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    justify-content: center;
+    width: var(--closing-icon);
+    height: var(--closing-icon);
     background: var(--color-bg);
-    color: var(--color-text);
-    flex-shrink: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 50%;
+    color: var(--color-text-muted);
+    transition:
+        border-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.wa-preview__avatar svg {
+.closing__icon svg {
     width: 18px;
     height: 18px;
 }
 
-.wa-preview__who {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.3;
-}
-
-.wa-preview__name {
+.closing__label {
     font-family: var(--font-body);
     font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--color-text);
-}
-
-.wa-preview__status {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--color-text-muted);
 }
 
-.wa-preview__chat {
-    display: flex;
-    justify-content: flex-end;
-    padding: 24px 16px 20px;
-    background: var(--color-bg);
-}
-
-.wa-preview__bubble {
-    margin: 0;
-    max-width: 85%;
-    padding: 10px 12px 8px;
-    border: 1px solid var(--color-border-strong);
-    /* Escala do DESIGN.md: lg (16px) com a "ponta" do balão em sm (8px). */
-    border-radius: 16px 16px 8px 16px;
-    background: var(--color-surface);
+.closing__value {
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.45;
-    color: var(--color-text);
-}
-
-.wa-preview__meta {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 4px;
-    margin-top: 2px;
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-}
-
-.wa-preview__ticks {
-    width: 16px;
-    height: 12px;
-    color: var(--color-secondary);
-}
-
-/* Linha do tempo: marcador neutro que acende em ciano (resposta do sistema)
-   quando o passo entra. Nunca lime: a ação desta seção é só o botão. */
-.final-cta__steps {
-    list-style: none;
-    margin: 24px 0 0;
-    padding: 0;
-    counter-reset: final-step;
-}
-
-.final-cta__step {
-    position: relative;
-    padding: 0 0 18px 44px;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    line-height: 1.45;
-    color: var(--color-text-muted);
-    counter-increment: final-step;
-}
-
-.final-cta__step:last-child { padding-bottom: 0; }
-
-.final-cta__step::before {
-    content: counter(final-step);
-    position: absolute;
-    left: 0;
-    top: -2px;
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    border: 1.5px solid var(--color-secondary);
-    font-size: 0.75rem;
     font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-text);
-    background: var(--color-bg);
-    transition: border-color 400ms ease, color 400ms ease;
-}
-
-/* Fio entre os marcadores. */
-.final-cta__step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 12.5px;
-    top: 26px;
-    bottom: 2px;
-    width: 1px;
-    background: var(--color-border-strong);
-}
-
-.final-cta__step-title {
-    font-weight: 500;
+    font-size: 1.1rem;
     color: var(--color-text);
 }
 
-/* ---- CTA final: entrada ----
-   Só com JS e sem reduced-motion (initFinalCta põe .final-cta--animate).
-   Quando o bloco entra: a mensagem "chega" na conversa e os passos acendem
-   um depois do outro. */
-.final-cta--animate .wa-preview__bubble {
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-    transform-origin: 100% 100%;
-    transition: opacity 450ms ease 350ms, transform 600ms cubic-bezier(0.22, 1, 0.36, 1) 350ms;
+.closing__link {
+    width: fit-content;
+    text-decoration: underline;
+    text-decoration-color: var(--color-text-muted);
+    text-underline-offset: 4px;
+    transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1), text-decoration-color 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.final-cta--animate .final-cta__step {
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 450ms ease, transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+@media (hover: hover) {
+    .closing__link:hover {
+        color: var(--color-primary);
+        text-decoration-color: var(--color-primary);
+    }
 }
 
-.final-cta--animate .final-cta__step::before {
-    border-color: var(--color-border-strong);
-    color: var(--color-text-muted);
+.closing__link:focus-visible {
+    color: var(--color-primary);
+    text-decoration-color: var(--color-primary);
 }
 
-.final-cta--animate .final-cta__step:nth-child(1) { transition-delay: 850ms; }
-.final-cta--animate .final-cta__step:nth-child(2) { transition-delay: 1100ms; }
-.final-cta--animate .final-cta__step:nth-child(3) { transition-delay: 1350ms; }
-.final-cta--animate .final-cta__step:nth-child(1)::before { transition-delay: 850ms; }
-.final-cta--animate .final-cta__step:nth-child(2)::before { transition-delay: 1100ms; }
-.final-cta--animate .final-cta__step:nth-child(3)::before { transition-delay: 1350ms; }
+/* Armado (JS): linhas apagadas e fio recolhido até o sinal chegar. Acesa,
+   a linha ganha o ícone ciano — o sistema respondendo — e um "clique". */
+.closing.is-armed .closing__item:not(.is-lit) { opacity: 0.35; }
 
-.final-cta--animate .is-visible .wa-preview__bubble,
-.final-cta--animate .is-visible .final-cta__step {
-    opacity: 1;
-    transform: none;
+.closing.is-armed .closing__list::after {
+    transform: scaleY(0);
+    transition: transform 1300ms cubic-bezier(0.16, 1, 0.3, 1) 300ms;
 }
 
-.final-cta--animate .is-visible .final-cta__step::before {
+.closing.is-armed.is-on .closing__list::after { transform: scaleY(1); }
+
+.closing__item.is-lit .closing__icon {
     border-color: var(--color-secondary);
-    color: var(--color-text);
-}
-
-.final-cta__title {
-    font-family: var(--font-display-alt);
-    font-weight: 500;
-    text-wrap: balance;
-    font-size: clamp(2rem, 4.2vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--color-text);
-    margin: 0;
-}
-
-.final-cta__trust {
-    font-family: var(--font-body);
-    font-weight: 400;
-    /* Era 13px em cinza — o texto mais fraco do bloco, bem no momento de
-       maior ansiedade da página (decidir mandar mensagem sem saber o
-       preço). Sobe pra --color-text e um tamanho que compete de verdade
-       com o resto do bloco. */
-    font-size: 1.05rem;
-    color: var(--color-text);
-    margin: 0;
-}
-
-.final-cta__number {
-    margin: -4px 0 0;
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-}
-
-.final-cta__number .nowrap {
-    color: var(--color-text);
-    font-weight: 500;
-    font-variant-numeric: tabular-nums;
-    user-select: all;
+    color: var(--color-secondary);
+    animation: closing-tap 420ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .site-footer {
@@ -2053,14 +2613,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     margin: 0;
 }
 
-/* ---- Vitrine 3D (modal aberto a partir de "Casos de uso") ----
+/* ---- Vitrine 3D (modal aberto a partir de "Formatos") ----
    Complemento opcional, não CTA: o gatilho é um link discreto em texto
    cinza, nunca o lime preenchido dos botões de conversão (One Action Rule). */
 
 .showcase-trigger-row {
     display: flex;
     justify-content: center;
-    margin: 8px 0 0;
+    margin: 12px 0 0;
 }
 
 .showcase-trigger {
@@ -2283,21 +2843,26 @@ html.is-showcase-open { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
     [data-reveal] { transition: none; }
-    .usecase-card { transition: none; }
-    .usecase-card__cta svg { transition: none; }
-    .usecases__expand-wrap { transition: none; }
-    .compare__slogan { transition: none; }
+    .svc__choice,
+    .svc__other,
+    .svc__close,
+    .svc__chooser,
+    .hire__step,
+    .hire__steps::after,
+    .closing__item,
+    .closing__icon { transition: none !important; }
+    .svc__chooser *,
+    .svc__panel *,
+    .svc__panel *::before,
+    .svc__panel *::after { animation: none !important; }
+    .compare__slogan,
+    .compare__slogan-text::after,
+    .compare__fact,
+    .compare__cta { transition: none; }
     .crono__step,
     .crono__badge,
     .crono__replay svg { transition: none; }
     .crono__card--zaptag.is-locked .crono__num { animation: none; }
-    .usecases-toggle__chevron { transition: none; }
-    .usecase-card__icon {
-        animation: none !important;
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
-    .usecase-card__icon-wrap::after { animation: none !important; }
     /* Única animação `infinite` do CSS e a única que ficava fora deste
        bloco — o resto da folha já para por completo, essa sozinha continuava
        piscando pra sempre. */

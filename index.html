@@ -58,7 +58,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&family=Bricolage+Grotesque:wght@500&family=Manrope:wght@400;500&family=Unbounded:wght@600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/global.css">
+    <!-- ?v=: muda a cada versão publicada pra o navegador não misturar HTML
+         novo com CSS/JS antigos do cache (já aconteceu: o JS velho quebrava e a
+         rede de segurança abria os 6 serviços de uma vez). -->
+    <link rel="stylesheet" href="css/global.css?v=20261009c">
 
     <!-- Rede de proteção: a página tem 19 nós que nascem em `opacity: 0` e só
          o JS os revela — incluindo o H1, o bloco de botões do Hero e o CTA
@@ -68,9 +71,7 @@
          Isto não conserta a colisão — conserta o impacto dela. -->
     <noscript>
         <style>
-            [data-reveal],
-            .usecase-card,
-            .compare__slogan {
+            [data-reveal] {
                 opacity: 1 !important;
                 transform: none !important;
             }
@@ -113,7 +114,7 @@
             <nav class="navbar__nav" aria-label="Navegação principal">
                 <a href="#como-funciona" class="nav-link">Como funciona</a>
                 <a href="#casos-de-uso" class="nav-link">Casos de uso</a>
-                <a href="#formatos" class="nav-link">Formatos</a>
+                <a href="#como-contratar" class="nav-link">Como contratar</a>
                 <a
                     class="btn-primary btn-primary--compact"
                     href="https://wa.me/5562982233133"
@@ -146,7 +147,7 @@
             <div class="navbar__mobile-inner">
                 <a href="#como-funciona" class="navbar__mobile-link">Como funciona</a>
                 <a href="#casos-de-uso" class="navbar__mobile-link">Casos de uso</a>
-                <a href="#formatos" class="navbar__mobile-link">Formatos</a>
+                <a href="#como-contratar" class="navbar__mobile-link">Como contratar</a>
                 <a
                     class="btn-primary"
                     href="https://wa.me/5562982233133"
@@ -303,211 +304,671 @@
                     <p class="crono__note">Tempos ilustrativos de um teste típico no salão.</p>
                 </div>
 
-                <p class="compare__slogan">Encostou, ativou.</p>
+                <!-- O veredito do cronômetro: slogan, a frase de segurança e o
+                     botão só entram quando o relógio do QR trava em 14,2 s
+                     (evento crono:done). A linha ciano embaixo do slogan
+                     "fecha o circuito" nesse instante. Os outros dois
+                     diferenciais (iluminação, link encurtado) saíram: o
+                     cronômetro já mostra os dois em letra grande. -->
+                <div class="compare__verdict" data-verdict>
+                    <p class="compare__slogan"><span class="compare__slogan-text">Encostou, ativou.</span></p>
 
-                <!-- A seção que ganha o argumento não tinha onde clicar: no
-                     celular eram 1.784px de rolagem sem nenhum botão entre o
-                     Hero e o primeiro card de casos de uso. Mesmo componente,
-                     mesmo canal, com mensagem própria. -->
-                <div class="compare__cta" data-reveal>
-                    <a
-                        class="btn-primary"
-                        href="https://wa.me/5562982233133"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-wa-message="Olá! Vi a comparação com o QR code no site da Zap Tag e quero entender como funciona pro meu negócio."
-                    >
-                        <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
-                        Falar no WhatsApp
-                        <span class="sr-only">(abre o WhatsApp)</span>
-                        <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
-                    </a>
+                    <p class="compare__fact">Funciona em iPhone e Android que pagam por aproximação</p>
+
+                    <!-- A seção que ganha o argumento não tinha onde clicar: no
+                         celular eram 1.784px de rolagem sem nenhum botão entre o
+                         Hero e o primeiro card de casos de uso. Mesmo componente,
+                         mesmo canal, com mensagem própria. -->
+                    <div class="compare__cta">
+                        <a
+                            class="btn-primary"
+                            href="https://wa.me/5562982233133"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            data-wa-message="Olá! Vi a comparação com o QR code no site da Zap Tag e quero entender como funciona pro meu negócio."
+                        >
+                            <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                            Falar no WhatsApp
+                            <span class="sr-only">(abre o WhatsApp)</span>
+                            <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                        </a>
+                    </div>
                 </div>
-
-                <ul class="compare__facts" role="list" data-reveal>
-                    <li>Funciona em iPhone e Android que pagam por aproximação</li>
-                    <li>Não depende de boa iluminação ou foco de câmera</li>
-                    <li>Não depende de link encurtado com anúncio no meio</li>
-                </ul>
             </div>
         </section>
 
         <section class="usecases" id="casos-de-uso">
             <div class="container">
-                <div class="section-header">
-                    <span class="section-eyebrow" data-reveal>
-                        <span class="section-eyebrow-dot"></span>
-                        Um adesivo, vários usos
-                    </span>
+                <div class="section-header section-header--start">
                     <h2 class="section-title" data-reveal>Escolha o que seu negócio precisa.</h2>
                 </div>
 
-                <!-- Os 6 casos de uso vivem NO MARKUP, não num array de JS.
-                     Antes eles eram gerados por innerHTML a partir do
-                     USECASES_LIST, o que significa que sem JS eles não
-                     existiam no DOM — a seção de maior intenção de compra da
-                     página sumia inteira. Pra adicionar um 7º caso, copie um
-                     bloco "li.usecases__item" e cole no grid expansível
-                     abaixo — trocando o data-wa-message e os dois ids
-                     (uc-title-N / uc-cta-N) que o aria-labelledby aponta.
-                     Cada card é um link de WhatsApp que já diz qual
-                     automação o lead quer: é a seção de maior intenção de
-                     compra, e antes ela não levava a lugar nenhum.
-                     O JS agora só liga comportamento (reveal, tilt, expand,
-                     ?text= do link) no que já está aqui. -->
-                <ul class="usecases__grid" id="usecases-primary" role="list">
-                    <li class="usecases__item">
-                        <a
-                            class="usecase-card"
-                            href="https://wa.me/5562982233133"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de avaliação no Google."
-                            aria-labelledby="uc-title-1 uc-cta-1"
-                        >
-                            <span class="usecase-card__icon-wrap">
-                                <span class="usecase-card__icon">
-                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg>
-                                </span>
-                            </span>
-                            <h3 class="usecase-card__title" id="uc-title-1">Avaliação Google</h3>
-                            <p class="usecase-card__desc">O cliente termina de comer, encosta o celular na mesa e a tela de avaliação já abre pronta pra 5 estrelas — sem precisar procurar o nome do estabelecimento.</p>
-                            <span class="usecase-card__cta" id="uc-cta-1">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
-                        </a>
-                    </li>
-                    <li class="usecases__item">
-                        <a
-                            class="usecase-card"
-                            href="https://wa.me/5562982233133"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cardápio digital."
-                            aria-labelledby="uc-title-2 uc-cta-2"
-                        >
-                            <span class="usecase-card__icon-wrap">
-                                <span class="usecase-card__icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
-                                </span>
-                            </span>
-                            <h3 class="usecase-card__title" id="uc-title-2">Cardápio digital</h3>
-                            <p class="usecase-card__desc">Mudou o preço ou tirou um prato do menu? Atualiza uma vez só e todo mundo que encostar no adesivo já vê a versão certa — nada de reimprimir cardápio.</p>
-                            <span class="usecase-card__cta" id="uc-cta-2">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
-                        </a>
-                    </li>
-                    <li class="usecases__item">
-                        <a
-                            class="usecase-card"
-                            href="https://wa.me/5562982233133"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de Wi-Fi automático."
-                            aria-labelledby="uc-title-3 uc-cta-3"
-                        >
-                            <span class="usecase-card__icon-wrap">
-                                <span class="usecase-card__icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg>
-                                </span>
-                            </span>
-                            <h3 class="usecase-card__title" id="uc-title-3">Wi-Fi automático</h3>
-                            <p class="usecase-card__desc">Chega de gritar a senha do Wi-Fi pro salão inteiro. O cliente encosta o celular e conecta direto, sem digitar nada.</p>
-                            <span class="usecase-card__cta" id="uc-cta-3">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
-                        </a>
-                    </li>
-                </ul>
+                <!-- Serviços: a seção começa SÓ com a escolha (6 botões). A
+                     pessoa escolhe e aparece apenas aquele serviço: a tela
+                     ilustrativa do que o cliente vê, hoje x com a Zap Tag, os
+                     3 passos, onde o adesivo fica, e o botão de WhatsApp com a
+                     mensagem daquele serviço. No fim do painel, "Quer ver
+                     outro modelo?" com os outros 5 e a opção de fechar e
+                     voltar à escolha. Assim a seção só cresce pra quem quer.
+                     Sem JS a escolha e o "ver outro" ficam escondidos e os 6
+                     painéis aparecem um embaixo do outro.
+                     Pra um 7º serviço: copiar um .svc__choice e um
+                     .svc__panel, trocando os ids (svc-choice-N, svc-panel-N,
+                     svc-title-N) e incluir o botão dele nos "ver outro". -->
+                <div class="svc" data-svc>
+                    <div class="svc__chooser" hidden>
+                        <p class="svc__ask">Toque num serviço pra ver como funciona.</p>
+                        <div class="svc__choices">
+                        <button type="button" class="svc__choice" id="svc-choice-1" aria-expanded="false" aria-controls="svc-panel-1">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span></span>
+                            Avaliação Google
+                        </button>
+                        <button type="button" class="svc__choice" id="svc-choice-2" aria-expanded="false" aria-controls="svc-panel-2">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span></span>
+                            Cardápio digital
+                        </button>
+                        <button type="button" class="svc__choice" id="svc-choice-3" aria-expanded="false" aria-controls="svc-panel-3">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span></span>
+                            Wi-Fi automático
+                        </button>
+                        <button type="button" class="svc__choice" id="svc-choice-4" aria-expanded="false" aria-controls="svc-panel-4">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span></span>
+                            Pix
+                        </button>
+                        <button type="button" class="svc__choice" id="svc-choice-5" aria-expanded="false" aria-controls="svc-panel-5">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span></span>
+                            Fidelidade
+                        </button>
+                        <button type="button" class="svc__choice" id="svc-choice-6" aria-expanded="false" aria-controls="svc-panel-6">
+                            <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span></span>
+                            Ficha de contato
+                        </button>
+                        </div>
+                    </div>
 
-                <div class="usecases__toggle-row">
-                    <button
-                        type="button"
-                        class="btn-outline usecases-toggle"
-                        id="usecases-toggle"
-                        aria-expanded="false"
-                        aria-controls="usecases-expand-wrap"
-                    >
-                        <span class="usecases-toggle__label">Ver todas as opções</span>
-                        <svg class="usecases-toggle__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
-                    </button>
-                </div>
+                    <article class="svc__panel" id="svc-panel-1" aria-labelledby="svc-title-1">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span></span>
+                                Avaliação Google
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-1" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">avaliou.</span></h3>
 
-                <div class="usecases__expand-wrap" id="usecases-expand-wrap">
-                    <div class="usecases__expand-inner">
-                        <ul class="usecases__grid" id="usecases-expand" role="list">
-                            <li class="usecases__item">
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">O cliente precisa procurar o nome do estabelecimento pra conseguir avaliar.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">Encosta o celular na mesa e a tela de avaliação já abre pronta pra 5 estrelas.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>A avaliação abre</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>Toca nas estrelas e envia</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">Na mesa, junto com a bebida ou na porta.</p>
+                            </div>
+
+                            <div class="svc__cta">
                                 <a
-                                    class="usecase-card"
+                                    class="btn-primary"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de avaliação no Google."
+                                >
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Avaliação Google (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--review">
+                                    <span class="scr__big"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                        <span class="scr__title">Avalie a gente!</span>
+                                        <span class="scr__sub">Toque em uma estrela</span>
+                                        <span class="scr__stars"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                        <span class="scr__btn">Enviar avaliação</span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="2">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+                                    Cardápio digital
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="3">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                    Wi-Fi automático
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="4">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span>
+                                    Pix
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="5">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span>
+                                    Fidelidade
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="6">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span>
+                                    Ficha de contato
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
+                    <article class="svc__panel" id="svc-panel-2" aria-labelledby="svc-title-2">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span></span>
+                                Cardápio digital
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-2" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">viu o cardápio.</span></h3>
+
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">Mudou o preço ou tirou um prato do menu? Hora de reimprimir o cardápio.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">Atualiza uma vez só e todo mundo que encostar no adesivo já vê a versão certa.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>O cardápio abre</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>Já na versão mais nova</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">Na mesa, no cardápio de papel ou na porta.</p>
+                            </div>
+
+                            <div class="svc__cta">
+                                <a
+                                    class="btn-primary"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cardápio digital."
+                                >
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Cardápio digital (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--menu">
+                                    <span class="scr__title scr__title--left">Cardápio</span>
+                                        <span class="scr__label">Entradas</span>
+                                        <span class="scr__line"></span><span class="scr__line scr__line--short"></span>
+                                        <span class="scr__label">Pratos</span>
+                                        <span class="scr__line"></span><span class="scr__line"></span><span class="scr__line scr__line--short"></span>
+                                        <span class="scr__label">Bebidas</span>
+                                        <span class="scr__line scr__line--short"></span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="1">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                    Avaliação Google
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="3">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                    Wi-Fi automático
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="4">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span>
+                                    Pix
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="5">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span>
+                                    Fidelidade
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="6">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span>
+                                    Ficha de contato
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
+                    <article class="svc__panel" id="svc-panel-3" aria-labelledby="svc-title-3">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span></span>
+                                Wi-Fi automático
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-3" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">conectou.</span></h3>
+
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">Alguém da equipe gritando a senha do Wi-Fi pro salão inteiro.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">O cliente encosta o celular e conecta direto, sem digitar nada.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>A rede aparece</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>Conectado, sem senha</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">Na parede perto da entrada ou no balcão.</p>
+                            </div>
+
+                            <div class="svc__cta">
+                                <a
+                                    class="btn-primary"
+                                    href="https://wa.me/5562982233133"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de Wi-Fi automático."
+                                >
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Wi-Fi automático (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--wifi">
+                                    <span class="scr__big scr__big--ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                        <span class="scr__title">Conectado</span>
+                                        <span class="scr__sub">Wi-Fi do salão</span>
+                                        <span class="scr__pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg>Sem digitar senha</span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="1">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                    Avaliação Google
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="2">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+                                    Cardápio digital
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="4">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span>
+                                    Pix
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="5">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span>
+                                    Fidelidade
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="6">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span>
+                                    Ficha de contato
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
+                    <article class="svc__panel" id="svc-panel-4" aria-labelledby="svc-title-4">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span></span>
+                                Pix
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-4" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">pagou.</span></h3>
+
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">Chave digitada errado e confusão de valor na hora de pagar.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">A chave e o valor já vêm preenchidos — o cliente só confirma o pagamento.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>O Pix abre preenchido</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>Confirma o pagamento</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">No caixa.</p>
+                            </div>
+
+                            <div class="svc__cta">
+                                <a
+                                    class="btn-primary"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de cobrança via Pix."
-                                    aria-labelledby="uc-title-4 uc-cta-4"
                                 >
-                                    <span class="usecase-card__icon-wrap">
-                                        <span class="usecase-card__icon">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="2.5" x2="12" y2="21.5"/><path d="M16.5 6.8c0-1.8-2-3.3-4.5-3.3S7.5 4.9 7.5 6.6c0 1.7 1.7 2.4 4.5 3.1s4.5 1.6 4.5 3.3-2 3.3-4.5 3.3-4.5-1.3-4.5-3.1"/></svg>
-                                        </span>
-                                    </span>
-                                    <h3 class="usecase-card__title" id="uc-title-4">Pix</h3>
-                                    <p class="usecase-card__desc">A chave e o valor já vêm preenchidos na hora — o cliente só confirma o pagamento, sem erro de digitação nem confusão de valor.</p>
-                                    <span class="usecase-card__cta" id="uc-cta-4">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Pix (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                                 </a>
-                            </li>
-                            <li class="usecases__item">
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--pix">
+                                    <span class="scr__title scr__title--left">Pagamento via Pix</span>
+                                        <span class="scr__label">Chave</span>
+                                        <span class="scr__field"><span class="scr__line scr__line--fill"></span></span>
+                                        <span class="scr__label">Valor</span>
+                                        <span class="scr__field scr__field--value">R$ <span class="scr__dots">••••</span></span>
+                                        <span class="scr__btn">Confirmar pagamento</span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="1">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                    Avaliação Google
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="2">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+                                    Cardápio digital
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="3">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                    Wi-Fi automático
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="5">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span>
+                                    Fidelidade
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="6">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span>
+                                    Ficha de contato
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
+                    <article class="svc__panel" id="svc-panel-5" aria-labelledby="svc-title-5">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span></span>
+                                Fidelidade
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-5" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">marcou ponto.</span></h3>
+
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">Cartão de papel que o cliente perde e carimbo feito à mão.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">Cada encostada do cliente já conta como uma visita no seu programa de fidelidade.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>O cartão fidelidade abre</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>A visita é marcada</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">Na carteira do cliente.</p>
+                            </div>
+
+                            <div class="svc__cta">
                                 <a
-                                    class="usecase-card"
+                                    class="btn-primary"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de fidelidade."
-                                    aria-labelledby="uc-title-5 uc-cta-5"
                                 >
-                                    <span class="usecase-card__icon-wrap">
-                                        <span class="usecase-card__icon">
-                                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg>
-                                        </span>
-                                    </span>
-                                    <h3 class="usecase-card__title" id="uc-title-5">Fidelidade</h3>
-                                    <p class="usecase-card__desc">Cada encostada do cliente já conta como uma visita no seu programa de fidelidade — sem cartão de papel pra perder, sem carimbo manual.</p>
-                                    <span class="usecase-card__cta" id="uc-cta-5">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Fidelidade (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                                 </a>
-                            </li>
-                            <li class="usecases__item">
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--loyalty">
+                                    <span class="scr__title">Cartão fidelidade</span>
+                                        <span class="scr__sub">Visitas</span>
+                                        <span class="scr__stamps"><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp is-on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span><span class="scr__stamp"></span><span class="scr__stamp"></span><span class="scr__stamp"></span><span class="scr__stamp scr__stamp--new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg></span></span>
+                                        <span class="scr__pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 7"/></svg>+1 visita</span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="1">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                    Avaliação Google
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="2">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+                                    Cardápio digital
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="3">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                    Wi-Fi automático
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="4">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span>
+                                    Pix
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="6">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span>
+                                    Ficha de contato
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
+                    <article class="svc__panel" id="svc-panel-6" aria-labelledby="svc-title-6">
+                        <div class="svc__info">
+                            <p class="svc__name">
+                                <span class="usecase-card__icon-wrap" aria-hidden="true"><span class="usecase-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg></span></span>
+                                Ficha de contato
+                            </p>
+                            <h3 class="svc__verb" id="svc-title-6" tabindex="-1"><span class="svc__lead">Encostou,</span> <span class="svc__word">salvou o contato.</span></h3>
+
+                            <div class="svc__compare">
+                                <div class="svc__case svc__case--before">
+                                    <p class="svc__label">Hoje</p>
+                                    <p class="svc__text">Ditar telefone, endereço e redes sociais um por um.</p>
+                                </div>
+                                <div class="svc__case svc__case--after">
+                                    <p class="svc__label">Com a Zap Tag</p>
+                                    <p class="svc__text">O contato do negócio — telefone, endereço, redes sociais — já cai direto na agenda do cliente.</p>
+                                </div>
+                            </div>
+
+                            <ol class="svc__steps" role="list"><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">1</span>Encosta o celular</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">2</span>O contato aparece</li><li class="svc__step"><span class="svc__step-mark" aria-hidden="true">3</span>Salva na agenda</li></ol>
+
+                            <div class="svc__where">
+                                <p class="svc__label">Onde fica</p>
+                                <p class="svc__text">Na carteira do cliente.</p>
+                            </div>
+
+                            <div class="svc__cta">
                                 <a
-                                    class="usecase-card"
+                                    class="btn-primary"
                                     href="https://wa.me/5562982233133"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     data-wa-message="Olá! Vi o site da Zap Tag e quero o adesivo de ficha de contato."
-                                    aria-labelledby="uc-title-6 uc-cta-6"
                                 >
-                                    <span class="usecase-card__icon-wrap">
-                                        <span class="usecase-card__icon">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10.5" r="2"/><line x1="5.5" y1="16" x2="11.5" y2="16"/><line x1="14" y1="9" x2="18" y2="9"/><line x1="14" y1="12.5" x2="18" y2="12.5"/></svg>
-                                        </span>
-                                    </span>
-                                    <h3 class="usecase-card__title" id="uc-title-6">Ficha de contato</h3>
-                                    <p class="usecase-card__desc">Seu cliente encosta o celular e o contato do negócio — telefone, endereço, redes sociais — já cai direto na agenda dele.</p>
-                                    <span class="usecase-card__cta" id="uc-cta-6">Quero esse<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg></span>
+                                    <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                                    Quero esse
+                                    <span class="sr-only">: Ficha de contato (abre o WhatsApp)</span>
+                                    <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
                                 </a>
-                            </li>
-                        </ul>
-                    </div>
+                            </div>
+                        </div>
+
+                        <div class="svc__device" aria-hidden="true">
+                            <div class="svc__phone">
+                                <span class="svc__notch"></span>
+                                <div class="scr scr--contact">
+                                    <span class="scr__avatar"></span>
+                                        <span class="scr__title">Seu negócio</span>
+                                        <span class="scr__row"><span class="scr__dot"></span><span class="scr__line"></span></span>
+                                        <span class="scr__row"><span class="scr__dot"></span><span class="scr__line"></span></span>
+                                        <span class="scr__row"><span class="scr__dot"></span><span class="scr__line scr__line--short"></span></span>
+                                        <span class="scr__btn">Salvar contato</span>
+                                </div>
+                            </div>
+                            <p class="svc__device-note">Tela ilustrativa</p>
+                        </div>
+                        <div class="svc__more" hidden>
+                            <p class="svc__more-ask">Quer ver outro modelo?</p>
+                            <div class="svc__others">
+                                <button type="button" class="svc__other" data-svc-open="1">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></svg></span>
+                                    Avaliação Google
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="2">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg></span>
+                                    Cardápio digital
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="3">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5a11 11 0 0 1 14 0"/><path d="M1.5 9a16 16 0 0 1 21 0"/><path d="M8.5 16a6 6 0 0 1 7 0"/><circle cx="12" cy="19.5" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                                    Wi-Fi automático
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="4">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-2-1.4-2 1.4-2-1.4-2 1.4-2-1.4L6 21Z"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg></span>
+                                    Pix
+                                </button>
+                                <button type="button" class="svc__other" data-svc-open="5">
+                                    <span class="svc__other-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><defs><path id="uc-star" d="M12 2 L14.9 8.6 L22 9.3 L16.5 14.1 L18.2 21 L12 17.3 L5.8 21 L7.5 14.1 L2 9.3 L9.1 8.6 Z"/></defs><use href="#uc-star" transform="translate(-1 -1) scale(0.6)" opacity="0.5"/><use href="#uc-star" transform="translate(5 5) scale(0.75)"/></svg></span>
+                                    Fidelidade
+                                </button>
+                            </div>
+                            <button type="button" class="svc__close" data-svc-close>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                                Fechar e voltar às opções
+                            </button>
+                        </div>
+                    </article>
                 </div>
 
-                <p class="trust-note trust-note--center">Sem compromisso em nenhum dos casos acima.</p>
-
-                <!-- Vitrine 3D: complemento opcional, não é CTA. Nasce com
-                     `hidden` e só o initShowcase() mostra, porque sem JS o
-                     botão não teria o que abrir. -->
-                <p class="showcase-trigger-row">
-                    <button type="button" class="link-secondary showcase-trigger" id="showcase-open" aria-haspopup="dialog" aria-controls="showcase" hidden>
-                        Prefere uma peça rígida, com a tag dentro do plástico? Veja em 3D
-                        <svg class="showcase-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                    </button>
-                </p>
+                <p class="trust-note usecases__note">Sem compromisso em nenhum dos casos acima.</p>
             </div>
         </section>
 
+        <!-- Como contratar: substitui Formatos TEMPORARIAMENTE (09/10), enquanto
+             o dono desenvolve os modelos 3D novos, que não serão adesivos. A
+             call personalizada é a protagonista: é o que este bloco oferece e
+             o CTA final não (lá os passos são o que acontece depois do clique).
+             Nada aqui promete prazo, preço, instalação ou material. -->
+        <section class="hire" id="como-contratar">
+            <div class="container hire__inner">
+                <div class="hire__pitch" data-reveal>
+                    <h2 class="section-title hire__title">Não sabe qual escolher? A&nbsp;gente monta com você.</h2>
+                    <p class="hire__lead">Numa call rápida, a gente entende o seu negócio e mostra quais serviços fazem mais sentido pra ele, personalizado pro seu dia a dia.</p>
+                    <a
+                        class="btn-primary"
+                        href="https://wa.me/5562982233133"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-wa-message="Olá! Vi o site da Zap Tag e quero marcar uma call pra ver os melhores serviços pro meu negócio."
+                    >
+                        <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
+                        Quero marcar a call
+                        <span class="sr-only">(abre o WhatsApp)</span>
+                        <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
+                    </a>
+                    <p class="trust-note">Sem compromisso.</p>
+                </div>
+
+                <ol class="hire__steps" role="list" data-hire>
+                    <li class="hire__step">
+                        <span class="hire__mark" aria-hidden="true">1</span>
+                        <div class="hire__body">
+                            <h3 class="hire__step-title">Você chama no WhatsApp</h3>
+                            <p class="hire__step-text">Conta que tipo de negócio você tem.</p>
+                        </div>
+                    </li>
+                    <li class="hire__step hire__step--call">
+                        <span class="hire__mark" aria-hidden="true">2</span>
+                        <div class="hire__body">
+                            <h3 class="hire__step-title">A call</h3>
+                            <p class="hire__step-text">A gente passa os serviços que mais fazem sentido pro seu negócio: avaliação, cardápio, <span class="nowrap">Wi-Fi</span>, Pix, fidelidade ou contato, na combinação certa pra você.</p>
+                        </div>
+                    </li>
+                    <li class="hire__step">
+                        <span class="hire__mark" aria-hidden="true">3</span>
+                        <div class="hire__body">
+                            <h3 class="hire__step-title">Tudo por escrito</h3>
+                            <p class="hire__step-text">Combinamos o que vai ser feito antes de começar.</p>
+                        </div>
+                    </li>
+                    <li class="hire__step">
+                        <span class="hire__mark" aria-hidden="true">4</span>
+                        <div class="hire__body">
+                            <h3 class="hire__step-title">Chega pronto</h3>
+                            <p class="hire__step-text">A Zap Tag grava e configura tudo pro serviço escolhido. É só usar.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- FORMATOS GUARDADO (09/10): fora da página enquanto os modelos 3D
+             novos não ficam prontos. Dentro de <template> o conteúdo é inerte
+             (não renderiza, não entra na acessibilidade, o JS não acha), então
+             initFormats() e initShowcase() simplesmente não ligam. Pra voltar:
+             tirar este <template> em volta, devolver o link "Formatos" no menu
+             e os chips de formato nos painéis de serviço (ver git log). -->
+        <template id="formatos-guardado">
         <!-- Formatos: a página vendia um objeto físico e nunca mostrava o
              objeto. São DESENHOS dos protótipos do dono (22/09), não fotos:
              nenhum cliente, nenhuma instalação real, nada que seja prova
@@ -611,28 +1072,19 @@
                 </ul>
 
                 <p class="trust-note trust-note--center">Desenhos ilustrativos, em escala entre si. O suporte acrílico ainda não tem medida definida.</p>
+                <!-- Vitrine 3D: complemento opcional, não é CTA. Mora em
+                     Formatos porque peça rígida é assunto de formato. Nasce
+                     com `hidden` e só o initShowcase() mostra, porque sem JS o
+                     botão não teria o que abrir. -->
+                <p class="showcase-trigger-row">
+                    <button type="button" class="link-secondary showcase-trigger" id="showcase-open" aria-haspopup="dialog" aria-controls="showcase" hidden>
+                        Prefere uma peça rígida, com a tag dentro do plástico? Veja em 3D
+                        <svg class="showcase-trigger__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </button>
+                </p>
             </div>
         </section>
-
-        <section class="trust-strip" aria-label="Presença da Zap Tag">
-            <div class="container trust-strip__inner">
-                <a
-                    class="trust-strip__instagram"
-                    href="https://instagram.com/zap_tag_"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="3" y="3" width="18" height="18" rx="5"/>
-                        <circle cx="12" cy="12" r="4"/>
-                        <circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"/>
-                    </svg>
-                    @zap_tag_
-                </a>
-                <span class="trust-strip__divider" aria-hidden="true"></span>
-                <p class="trust-strip__area">Atendemos Anápolis e região</p>
-            </div>
-        </section>
+        </template>
 
         <section class="final-cta">
             <div class="final-cta__glow" aria-hidden="true">
@@ -646,63 +1098,59 @@
                 </svg>
             </div>
 
-            <!-- Duas colunas no computador: à esquerda o convite, à direita o que
-                 acontece depois do clique. O parágrafo antigo ("conversa rápida,
-                 combina por escrito, só depois a produção") virou os 3 passos,
-                 com o mesmo conteúdo confirmado pelo dono; o texto total quase
-                 não cresceu. A prévia mostra SÓ a mensagem que o botão já deixa
-                 escrita. Nenhuma resposta da empresa é simulada, pra não
-                 fabricar conversa. -->
-            <div class="container final-cta__inner" data-reveal>
-                <div class="final-cta__pitch">
-                    <h2 class="final-cta__title">Comece com o primeiro adesivo.</h2>
-                    <p class="final-cta__trust">Sem compromisso: você decide depois de saber o valor.</p>
-                    <a
-                        class="btn-primary"
-                        id="final-cta-button"
-                        href="https://wa.me/5562982233133"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
-                    >
-                        <svg class="btn-primary__icon" aria-hidden="true" focusable="false"><use href="#icon-whatsapp"/></svg>
-                        Falar no WhatsApp
-                        <span class="sr-only">(abre o WhatsApp)</span>
-                        <svg class="btn-primary__external" aria-hidden="true" focusable="false"><use href="#icon-external"/></svg>
-                    </a>
-                    <!-- O número por escrito é o mesmo canal (WhatsApp), não um
-                         segundo: se o wa.me falhar (desktop sem WhatsApp Web
-                         aberto, bloqueio de pop-up), a pessoa ainda tem como
-                         chegar. Texto puro de propósito, fácil de selecionar e
-                         copiar. -->
-                    <p class="final-cta__number">ou salve o número: <span class="nowrap">(62) 98223-3133</span></p>
+            <!-- Fechamento SEM botão (09/10, pedido do dono: já há convites
+                 demais na página; o último é a call de "Como contratar"). É um
+                 bloco de contato: a tag da marca "encosta" e solta ondas ciano,
+                 o sinal desce pelo fio e cada linha de contato acende em
+                 sequência. Depois, um pulso de tempos em tempos, só enquanto o
+                 bloco está na tela. Os fatos são os que já estavam na página:
+                 número, horário (7h às 23h), Instagram e Anápolis e região. -->
+            <div class="container closing" data-closing>
+                <div class="closing__beacon" aria-hidden="true">
+                    <span class="closing__ring"></span>
+                    <span class="closing__ring"></span>
+                    <span class="closing__ring"></span>
+                    <svg class="closing__tag" viewBox="10 15 80 70" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <mask id="zt-cutout-closing">
+                            <rect x="0" y="0" width="100" height="100" fill="white"/>
+                            <circle cx="30" cy="28" r="6" fill="black"/>
+                            <path d="M58 20 L38 54 L50 54 L42 80 L66 45 L53 45 Z" fill="black"/>
+                        </mask>
+                        <path d="M15 20 L62 20 L85 50 L62 80 L15 80 Z" fill="currentColor" mask="url(#zt-cutout-closing)"/>
+                    </svg>
                 </div>
 
-                <div class="final-cta__next">
-                    <h3 class="final-cta__next-title">O que acontece depois do clique</h3>
+                <div class="closing__body">
+                    <h2 class="section-title closing__title">Ficou alguma dúvida? Chama a&nbsp;gente.</h2>
 
-                    <figure class="wa-preview">
-                        <div class="wa-preview__bar">
-                            <span class="wa-preview__avatar" aria-hidden="true"><svg focusable="false"><use href="#icon-whatsapp"/></svg></span>
-                            <span class="wa-preview__who">
-                                <span class="wa-preview__name">Zap Tag</span>
-                                <span class="wa-preview__status">atende todos os dias, das 7h às 23h</span>
-                            </span>
-                        </div>
-                        <div class="wa-preview__chat">
-                            <!-- Preenchido pelo JS com o data-wa-message do botão
-                                 #final-cta-button; o texto aqui é o mesmo, pra quem
-                                 está sem JS. -->
-                            <p class="wa-preview__bubble"><span class="wa-preview__text">Olá! Vi o site da Zap Tag e quero começar.</span><span class="wa-preview__meta">sua mensagem <svg class="wa-preview__ticks" viewBox="0 0 18 12" aria-hidden="true" focusable="false"><path d="M1 6.5 4.5 10 11 2.5M7.5 10 14 2.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></p>
-                        </div>
-                        <figcaption class="sr-only">A mensagem que o botão já deixa escrita pra você enviar.</figcaption>
-                    </figure>
-
-                    <ol class="final-cta__steps" role="list">
-                        <li class="final-cta__step"><span class="final-cta__step-title">Você chama no WhatsApp</span> com a mensagem já escrita.</li>
-                        <li class="final-cta__step"><span class="final-cta__step-title">A gente entende o seu negócio</span> e combina tudo por escrito.</li>
-                        <li class="final-cta__step"><span class="final-cta__step-title">A produção do seu adesivo começa.</span> Atendemos Anápolis e região.</li>
-                    </ol>
+                    <ul class="closing__list" role="list">
+                        <li class="closing__item">
+                            <span class="closing__icon"><svg focusable="false" aria-hidden="true"><use href="#icon-whatsapp"/></svg></span>
+                            <span class="closing__label">WhatsApp</span>
+                            <a
+                                class="closing__value closing__link"
+                                href="https://wa.me/5562982233133"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-wa-message="Olá! Vi o site da Zap Tag e quero começar."
+                            ><span class="nowrap">(62) 98223-3133</span><span class="sr-only"> (abre o WhatsApp)</span></a>
+                        </li>
+                        <li class="closing__item">
+                            <span class="closing__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg></span>
+                            <span class="closing__label">Horário</span>
+                            <span class="closing__value">Todos os dias, das 7h às 23h</span>
+                        </li>
+                        <li class="closing__item">
+                            <span class="closing__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.6" fill="currentColor" stroke="none"/></svg></span>
+                            <span class="closing__label">Instagram</span>
+                            <a class="closing__value closing__link" href="https://instagram.com/zap_tag_" target="_blank" rel="noopener noreferrer">@zap_tag_</a>
+                        </li>
+                        <li class="closing__item">
+                            <span class="closing__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+                            <span class="closing__label">Atendimento</span>
+                            <span class="closing__value">Anápolis e região</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
@@ -807,8 +1255,8 @@
         </div>
     </dialog>
 
-    <script src="js/usecases.js"></script>
-    <script src="js/showcase.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/usecases.js?v=20261009c"></script>
+    <script src="js/showcase.js?v=20261009c"></script>
+    <script src="js/main.js?v=20261009c"></script>
 </body>
 </html>

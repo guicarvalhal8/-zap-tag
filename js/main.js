@@ -85,49 +85,27 @@ function initWhatsappLinks() {
 }
 
 // Seção "Como funciona" (fundida com o antigo "Diferencial vs. QR code"):
-// cabeçalho, slogan de destaque (scale-in próprio, ver CSS) e os três
-// diferenciais. O comparativo com cronômetro no meio é do initCrono. Se a
-// seção sair de vista no meio, desfaz e refaz na próxima entrada; depois de
-// uma passagem completa, trava no estado final.
+// aqui só o cabeçalho. O cronômetro é do initCrono e o veredito embaixo dele
+// (slogan, frase e botão) é do initVerdict. Se a seção sair de vista no meio,
+// desfaz e refaz na próxima entrada; depois de uma passagem, trava.
 function initCompare() {
     const section = document.querySelector('.compare');
     if (!section) return;
 
     const headerItems = section.querySelectorAll('.section-header [data-reveal]');
-    const slogan = section.querySelector('.compare__slogan');
-    const cta = section.querySelector('.compare__cta');
-    const facts = section.querySelector('.compare__facts');
-
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let timers = [];
-    // A trava: os facts (720ms) são o último evento
-    // agendado por show(), então marcam o fim de uma passagem completa.
+    let timer = 0;
     let observer = null;
 
-    const clearTimers = () => {
-        timers.forEach((id) => clearTimeout(id));
-        timers = [];
-    };
-
     const show = () => {
-        clearTimers();
+        clearTimeout(timer);
         headerItems.forEach((el) => el.classList.add('is-visible'));
-        timers.push(setTimeout(() => slogan && slogan.classList.add('is-visible'), reducedMotion ? 0 : 550));
-        // O botão entra junto com os facts, logo depois do slogan: é o
-        // "e agora?" do argumento, não uma peça que compete com ele.
-        timers.push(setTimeout(() => {
-            if (cta) cta.classList.add('is-visible');
-            if (facts) facts.classList.add('is-visible');
-            if (observer) observer.disconnect();
-        }, reducedMotion ? 0 : 720));
+        timer = setTimeout(() => observer && observer.disconnect(), 720);
     };
 
     const hide = () => {
-        clearTimers();
+        clearTimeout(timer);
         headerItems.forEach((el) => el.classList.remove('is-visible'));
-        if (slogan) slogan.classList.remove('is-visible');
-        if (cta) cta.classList.remove('is-visible');
-        if (facts) facts.classList.remove('is-visible');
     };
 
     if (reducedMotion) {
@@ -148,40 +126,65 @@ function initCompare() {
     observer.observe(section);
 }
 
-// CTA final: bloco único, fade + slide-up ao entrar no viewport, sem
-// stagger (não é uma lista de itens). Some de novo ao sair da tela.
-function initFinalCta() {
-    const section = document.querySelector('.final-cta');
+// Como contratar: o convite sobe, os 4 passos entram em sequência e o fio
+// ciano entre os marcadores corre de cima pra baixo. Uma vez só. Com
+// movimento reduzido fica o estado final do HTML (fio inteiro).
+function initHire() {
+    const section = document.querySelector('.hire');
     if (!section) return;
-    const block = section.querySelector('[data-reveal]');
-    if (!block) return;
+    const pitch = section.querySelector('.hire__pitch');
+    const steps = section.querySelector('[data-hire]');
+    const items = steps.querySelectorAll('.hire__step');
 
-    // A prévia da conversa mostra a MESMA mensagem que o botão envia: lê do
-    // data-wa-message, pra as duas nunca ficarem diferentes.
-    const button = document.getElementById('final-cta-button');
-    const bubbleText = section.querySelector('.wa-preview__text');
-    if (button && bubbleText && button.dataset.waMessage) {
-        bubbleText.textContent = button.dataset.waMessage;
-    }
-
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reducedMotion) {
-        block.classList.add('is-visible');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        pitch.classList.add('is-visible');
         return;
     }
-    section.classList.add('final-cta--animate');
 
-    // Sem stagger aqui — a própria entrada em viewport já é "a sequência
-    // completa", então trava e desliga o observer na primeira vez que aparece.
+    steps.classList.add('is-armed');
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                block.classList.add('is-visible');
-                observer.disconnect();
-            }
-        });
-    }, { threshold: 0.3 });
-    observer.observe(block);
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        pitch.classList.add('is-visible');
+        steps.classList.add('is-in');
+        items.forEach((item, i) => setTimeout(() => item.classList.add('is-visible'), 150 + i * 160));
+    }, { rootMargin: '0px 0px -20% 0px' });
+    observer.observe(section);
+}
+
+// Fechamento (contato): na primeira vez que o bloco entra na tela, a tag
+// "encosta" e solta três ondas (.is-on), o fio ciano desce e as linhas de
+// contato acendem uma a uma (.is-lit). Depois disso, enquanto o bloco estiver
+// visível, a tag pulsa a cada ~5 s (.is-live); fora da tela o pulso para.
+// Com movimento reduzido fica o HTML como está: tudo legível, sem ondas.
+function initClosing() {
+    const closing = document.querySelector('[data-closing]');
+    if (!closing) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const items = closing.querySelectorAll('.closing__item');
+    let started = false;
+    let settled = false;
+    let inView = false;
+
+    closing.classList.add('is-armed');
+    const observer = new IntersectionObserver((entries) => {
+        inView = entries[0].isIntersecting;
+        if (inView && !started) {
+            started = true;
+            closing.classList.add('is-on');
+            items.forEach((item, i) => setTimeout(() => item.classList.add('is-lit'), 450 + i * 280));
+            // O pulso de repouso só começa depois da primeira sequência.
+            setTimeout(() => {
+                settled = true;
+                closing.classList.remove('is-on');
+                closing.classList.toggle('is-live', inView);
+            }, 2600);
+            return;
+        }
+        if (settled) closing.classList.toggle('is-live', inView);
+    }, { threshold: 0.35 });
+    observer.observe(closing);
 }
 
 // Vídeo do Hero: com movimento reduzido fica parado no primeiro quadro (o
@@ -254,6 +257,8 @@ function initCrono() {
     const run = () => {
         cancelAnimationFrame(frame);
         cards.forEach((c) => c.el.classList.remove('is-locked'));
+        root.dataset.cronoState = 'running';
+        root.dispatchEvent(new CustomEvent('crono:start', { bubbles: true }));
         const start = performance.now();
         const tick = (now) => {
             const t = Math.min((now - start) / 1000, total);
@@ -262,6 +267,8 @@ function initCrono() {
                 frame = requestAnimationFrame(tick);
             } else {
                 label.textContent = 'Repetir comparação';
+                root.dataset.cronoState = 'done';
+                root.dispatchEvent(new CustomEvent('crono:done', { bubbles: true }));
             }
         };
         frame = requestAnimationFrame(tick);
@@ -279,6 +286,36 @@ function initCrono() {
         run();
     }, { threshold: 0.5 });
     observer.observe(root.querySelector('.crono__cards'));
+}
+
+// Veredito do cronômetro: slogan, frase e botão esperam o relógio do QR
+// travar (crono:done) e entram juntos, com a linha ciano "fechando o
+// circuito" embaixo do slogan. No "Repetir comparação" só a linha recolhe e
+// volta no fim. Se o bloco entrar na tela sem o cronômetro ter largado (quem
+// chegou por baixo, ou sem cronômetro na página), aparece na hora: ninguém
+// fica olhando um buraco. Com movimento reduzido fica o HTML como está.
+function initVerdict() {
+    const verdict = document.querySelector('[data-verdict]');
+    if (!verdict) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const crono = document.querySelector('[data-crono]');
+
+    const reveal = () => verdict.classList.remove('is-armed', 'is-waiting');
+
+    verdict.classList.add('is-armed', 'is-waiting');
+    if (!crono) { reveal(); return; }
+
+    crono.addEventListener('crono:start', () => {
+        if (!verdict.classList.contains('is-armed')) verdict.classList.add('is-waiting');
+    });
+    crono.addEventListener('crono:done', reveal);
+
+    const observer = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        if (!crono.dataset.cronoState) reveal();
+    }, { threshold: 0.6 });
+    observer.observe(verdict);
 }
 
 // Formatos: cada objeto entra quando chega na tela, UM POR VEZ. Se vários
@@ -323,10 +360,13 @@ function initFormats() {
 // quando algum init falha — a página perde a animação, não o conteúdo.
 function revealEverything() {
     document
-        .querySelectorAll('[data-reveal], .usecase-card, .compare__slogan, .format')
+        .querySelectorAll('[data-reveal], .format')
         .forEach((el) => el.classList.add('is-visible'));
     // Cronômetro que quebrou no meio: volta ao estado final do HTML.
     document.querySelectorAll('.crono').forEach((el) => el.classList.remove('is-armed'));
+    document.querySelectorAll('.usecases').forEach((el) => el.classList.remove('is-armed'));
+    document.querySelectorAll('.hire__steps, .closing').forEach((el) => el.classList.remove('is-armed'));
+    document.querySelectorAll('[data-verdict]').forEach((el) => el.classList.remove('is-armed', 'is-waiting'));
 }
 
 // Cada init roda ISOLADO, e isso não é paranoia genérica: o modo de falha
@@ -355,9 +395,11 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initWhatsappLinks', initWhatsappLinks);
     run('initHeroVideo', initHeroVideo);
     run('initCompare', initCompare);
+    run('initVerdict', initVerdict);
     run('initCrono', initCrono);
     run('initUseCases', initUseCases);
     run('initFormats', initFormats);
     run('initShowcase', initShowcase);
-    run('initFinalCta', initFinalCta);
+    run('initHire', initHire);
+    run('initClosing', initClosing);
 });
