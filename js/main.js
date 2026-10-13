@@ -242,6 +242,20 @@ function initCrono() {
     const format = (t) => t.toFixed(1).replace('.', ',');
     let frame = 0;
 
+    // Micro-vibração no celular quando o relógio da Zap Tag trava em 1,2 s:
+    // um toque físico curto, como a validação de uma aproximação. Só em tela
+    // de toque, só se o aparelho vibra (o Safari do iPhone não tem a API) e só
+    // depois que a pessoa já tocou na página — antes disso o navegador bloqueia
+    // a chamada e avisa no console. Movimento reduzido já saiu lá em cima.
+    const fastest = Math.min(...cards.map((c) => c.end));
+    const canBuzz = typeof navigator.vibrate === 'function'
+        && window.matchMedia('(pointer: coarse)').matches;
+    const buzz = () => {
+        if (!canBuzz) return;
+        if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+        navigator.vibrate(35);
+    };
+
     const render = (t) => {
         cards.forEach((c) => {
             const shown = Math.min(t, c.end);
@@ -249,6 +263,7 @@ function initCrono() {
             c.fill.style.setProperty('--crono-progress', (shown / total).toFixed(4));
             c.steps.forEach((s) => s.li.classList.toggle('is-shown', t >= s.at));
             const locked = t >= c.end;
+            if (locked && c.end === fastest && !c.el.classList.contains('is-locked')) buzz();
             c.badge.classList.toggle('is-shown', locked);
             c.el.classList.toggle('is-locked', locked);
         });
@@ -398,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     run('initVerdict', initVerdict);
     run('initCrono', initCrono);
     run('initUseCases', initUseCases);
+    run('initSvcVideo', initSvcVideo);
     run('initFormats', initFormats);
     run('initShowcase', initShowcase);
     run('initHire', initHire);

@@ -1048,6 +1048,52 @@
     `position: relative; z-index: 1`.
   - Versão dos assets: `?v=20261009c`.
 
+- **2026-10-09 — Micro-vibração no cronômetro** (ideia do dono): quando o
+  relógio da Zap Tag trava em 1,2 s, `navigator.vibrate(35)` uma vez. Só em
+  tela de toque (`pointer: coarse`), só se a API existe (Safari do iPhone não
+  tem → nada acontece) e só depois de a pessoa já ter tocado na página
+  (`navigator.userActivation.hasBeenActive`; sem isso o Chrome bloqueia e
+  avisa no console). Movimento reduzido: o cronômetro nem anima, não vibra.
+  Testado com vibrate simulado: celular vibra 1x no "1,2"; computador e
+  rolagem sem toque, nunca. **Armadilha de teste:** `page.evaluate` do
+  Playwright conta como gesto do usuário; pra simular "só rolou", usar
+  `mouse.wheel`. Assets `?v=20261009d`.
+
+- **2026-10-13 — Vídeo e "A peça" na seção Serviços** (plano
+  `PLANO-video-e-pecas-no-site.md` que o dono trouxe, com o pacote
+  `zaptag-produto-real.zip`; nenhum dos dois está no repo). Decisões do dono:
+  - **Termo:** a peça é uma **placa** que contém o adesivo dentro. A copy
+    existente ("adesivo") não mudou; só os elementos novos dizem
+    "peça"/"placa". Alinhar o resto quando ele decidir.
+  - **Vídeo** (`assets/video/zaptag-servicos*`, 8,9 s, sem áudio): dentro de
+    `[data-svc]`, `.svc__stage` envolve `.svc__chooser` + `figure.svc__video`.
+    A partir de 1100px: vídeo à esquerda (1,2fr), escolha à direita com os
+    botões em 2×3. Abaixo disso: escolha primeiro, vídeo embaixo. Aberto um
+    serviço, o palco inteiro some (`.svc.is-open .svc__stage`). Sem
+    `autoplay` no HTML: `initSvcVideo` (usecases.js, registrado depois de
+    `initUseCases`) toca só com ≥35% visível, aba visível e sem `is-open`;
+    movimento reduzido fica no poster. Sem JS: vídeo parado no poster + os 6
+    painéis. Seção fechada agora: 740px desktop / 1003px celular (390).
+  - **A peça** (`figure.svc__piece`): **o dono pediu os renders das 4
+    placas** (Avaliação, Cardápio, Pix, Fidelidade) em vez da foto do
+    protótipo, que ele achou antiga. Ficam em `assets/pecas/<serviço>/`
+    (800/1600/2400 webp + jpg 1600×893), quadro 16:9 com `object-fit:
+    cover`, largura máx. 560px, abaixo do texto e do celular. Selos neutros:
+    Avaliação "Protótipo real" (silhueta `#fmt-mark`), os outros "Conceito"
+    (`.svc__seal--concept`). Wi-Fi e Contato não têm peça.
+    **Contra o plano, por decisão do dono:** os renders de Cardápio e Pix têm
+    QR code ("Aponte a câmera ou aproxime o celular") e o de Fidelidade tem
+    "NFC" no ícone. Trocar pelos renders novos quando saírem (prompts em
+    `regerar-placas/PROMPTS.md` do pacote), mantendo os mesmos nomes.
+  - **Copy nova a confirmar:** "Exemplo: placa de avaliações. Ilustração.",
+    "Protótipo real", "Conceito", "A peça: placa rígida, com a tag dentro
+    do plástico. Imagem ilustrativa.", "Imagem ilustrativa. Peça em
+    desenvolvimento."
+  - Pendente do plano: trocar o selo preto com raio da placa no vídeo pela
+    silhueta oficial (exige renderizar o vídeo de novo, fora do repo).
+  - Verificado: 0px de overflow em 1440/390/320, console limpo, detector
+    `[]`, tags balanceadas, teclado igual a antes. Assets `?v=20261013b`.
+
 ## Próximo passo sugerido
 
 As 6 seções do fluxo estão prontas e no ar. O plano original do

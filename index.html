@@ -61,7 +61,7 @@
     <!-- ?v=: muda a cada versão publicada pra o navegador não misturar HTML
          novo com CSS/JS antigos do cache (já aconteceu: o JS velho quebrava e a
          rede de segurança abria os 6 serviços de uma vez). -->
-    <link rel="stylesheet" href="css/global.css?v=20261009c">
+    <link rel="stylesheet" href="css/global.css?v=20261013b">
 
     <!-- Rede de proteção: a página tem 19 nós que nascem em `opacity: 0` e só
          o JS os revela — incluindo o H1, o bloco de botões do Hero e o CTA
@@ -354,8 +354,12 @@
                      painéis aparecem um embaixo do outro.
                      Pra um 7º serviço: copiar um .svc__choice e um
                      .svc__panel, trocando os ids (svc-choice-N, svc-panel-N,
-                     svc-title-N) e incluir o botão dele nos "ver outro". -->
+                     svc-title-N) e incluir o botão dele nos "ver outro".
+                     Ao lado da escolha (à esquerda a partir de 1100px;
+                     embaixo no celular), o vídeo da placa de avaliações. Some
+                     junto com a escolha quando um serviço abre, e pausa. -->
                 <div class="svc" data-svc>
+                    <div class="svc__stage">
                     <div class="svc__chooser" hidden>
                         <p class="svc__ask">Toque num serviço pra ver como funciona.</p>
                         <div class="svc__choices">
@@ -384,6 +388,21 @@
                             Ficha de contato
                         </button>
                         </div>
+                    </div>
+
+                    <!-- Vídeo (assets/video/zaptag-servicos*): quem toca é o
+                         initSvcVideo, só com o bloco na tela e a escolha
+                         aberta. Decorativo: a legenda diz o que ele mostra.
+                         Café, pessoa e loja do vídeo são fictícios. -->
+                    <figure class="svc__video">
+                        <video class="svc__video-media" muted loop playsinline preload="metadata"
+                               poster="assets/video/zaptag-servicos-poster.jpg" aria-hidden="true">
+                            <source src="assets/video/zaptag-servicos-720.mp4" type="video/mp4" media="(max-width: 959px)">
+                            <source src="assets/video/zaptag-servicos.webm" type="video/webm">
+                            <source src="assets/video/zaptag-servicos.mp4" type="video/mp4">
+                        </video>
+                        <figcaption class="svc__video-note">Exemplo: placa de avaliações. Ilustração.</figcaption>
+                    </figure>
                     </div>
 
                     <article class="svc__panel" id="svc-panel-1" aria-labelledby="svc-title-1">
@@ -441,6 +460,26 @@
                             </div>
                             <p class="svc__device-note">Tela ilustrativa</p>
                         </div>
+
+                        <!-- A peça física (assets/pecas/<serviço>/, renders 16:9).
+                             Avaliação é a única placa já impressa; as outras
+                             levam o selo "Conceito". Wi-Fi e Contato ainda
+                             não têm peça. -->
+                        <figure class="svc__piece">
+                            <div class="svc__piece-frame">
+                                <picture>
+                                    <source type="image/webp"
+                                            srcset="assets/pecas/avaliacao/avaliacao-800.webp 800w, assets/pecas/avaliacao/avaliacao.webp 1600w, assets/pecas/avaliacao/avaliacao-2400.webp 2400w"
+                                            sizes="(min-width: 640px) 560px, calc(100vw - 96px)">
+                                    <img src="assets/pecas/avaliacao/avaliacao.jpg" width="1600" height="893" loading="lazy" decoding="async"
+                                         alt="Placa de avaliação da Zap Tag sobre um balcão: AVALIE-NOS, o G do Google, cinco estrelas e o círculo onde se encosta o celular.">
+                                </picture>
+                            </div>
+                            <figcaption class="svc__piece-caption">
+                                <span class="svc__seal"><svg aria-hidden="true" focusable="false"><use href="#fmt-mark"/></svg>Protótipo real</span>
+                                A peça: placa rígida, com a tag dentro do plástico. Imagem ilustrativa.
+                            </figcaption>
+                        </figure>
                         <div class="svc__more" hidden>
                             <p class="svc__more-ask">Quer ver outro modelo?</p>
                             <div class="svc__others">
@@ -528,6 +567,21 @@
                             </div>
                             <p class="svc__device-note">Tela ilustrativa</p>
                         </div>
+                        <figure class="svc__piece">
+                            <div class="svc__piece-frame">
+                                <picture>
+                                    <source type="image/webp"
+                                            srcset="assets/pecas/cardapio/cardapio-800.webp 800w, assets/pecas/cardapio/cardapio.webp 1600w, assets/pecas/cardapio/cardapio-2400.webp 2400w"
+                                            sizes="(min-width: 640px) 560px, calc(100vw - 96px)">
+                                    <img src="assets/pecas/cardapio/cardapio.jpg" width="1600" height="893" loading="lazy" decoding="async"
+                                         alt="Placa de cardápio digital da Zap Tag sobre uma mesa de restaurante, com o círculo onde se encosta o celular.">
+                                </picture>
+                            </div>
+                            <figcaption class="svc__piece-caption">
+                                <span class="svc__seal svc__seal--concept">Conceito</span>
+                                Imagem ilustrativa. Peça em desenvolvimento.
+                            </figcaption>
+                        </figure>
                         <div class="svc__more" hidden>
                             <p class="svc__more-ask">Quer ver outro modelo?</p>
                             <div class="svc__others">
@@ -698,6 +752,21 @@
                             </div>
                             <p class="svc__device-note">Tela ilustrativa</p>
                         </div>
+                        <figure class="svc__piece">
+                            <div class="svc__piece-frame">
+                                <picture>
+                                    <source type="image/webp"
+                                            srcset="assets/pecas/pix/pix-800.webp 800w, assets/pecas/pix/pix.webp 1600w, assets/pecas/pix/pix-2400.webp 2400w"
+                                            sizes="(min-width: 640px) 560px, calc(100vw - 96px)">
+                                    <img src="assets/pecas/pix/pix.jpg" width="1600" height="893" loading="lazy" decoding="async"
+                                         alt="Placa de pagamento com Pix da Zap Tag sobre um balcão, com o círculo onde se encosta o celular.">
+                                </picture>
+                            </div>
+                            <figcaption class="svc__piece-caption">
+                                <span class="svc__seal svc__seal--concept">Conceito</span>
+                                Imagem ilustrativa. Peça em desenvolvimento.
+                            </figcaption>
+                        </figure>
                         <div class="svc__more" hidden>
                             <p class="svc__more-ask">Quer ver outro modelo?</p>
                             <div class="svc__others">
@@ -782,6 +851,21 @@
                             </div>
                             <p class="svc__device-note">Tela ilustrativa</p>
                         </div>
+                        <figure class="svc__piece">
+                            <div class="svc__piece-frame">
+                                <picture>
+                                    <source type="image/webp"
+                                            srcset="assets/pecas/fidelidade/fidelidade-800.webp 800w, assets/pecas/fidelidade/fidelidade.webp 1600w, assets/pecas/fidelidade/fidelidade-2400.webp 2400w"
+                                            sizes="(min-width: 640px) 560px, calc(100vw - 96px)">
+                                    <img src="assets/pecas/fidelidade/fidelidade.jpg" width="1600" height="893" loading="lazy" decoding="async"
+                                         alt="Placa de clube fidelidade da Zap Tag sobre um balcão: estrela e o círculo onde se encosta o celular.">
+                                </picture>
+                            </div>
+                            <figcaption class="svc__piece-caption">
+                                <span class="svc__seal svc__seal--concept">Conceito</span>
+                                Imagem ilustrativa. Peça em desenvolvimento.
+                            </figcaption>
+                        </figure>
                         <div class="svc__more" hidden>
                             <p class="svc__more-ask">Quer ver outro modelo?</p>
                             <div class="svc__others">
@@ -1255,8 +1339,8 @@
         </div>
     </dialog>
 
-    <script src="js/usecases.js?v=20261009c"></script>
-    <script src="js/showcase.js?v=20261009c"></script>
-    <script src="js/main.js?v=20261009c"></script>
+    <script src="js/usecases.js?v=20261013b"></script>
+    <script src="js/showcase.js?v=20261013b"></script>
+    <script src="js/main.js?v=20261013b"></script>
 </body>
 </html>

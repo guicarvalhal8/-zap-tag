@@ -102,3 +102,34 @@ function initUseCases() {
     }, { rootMargin: '0px 0px -15% 0px' });
     chooserObserver.observe(chooser);
 }
+
+// Vídeo ao lado da escolha (mesma lógica do initHeroVideo em main.js): toca
+// só com pelo menos 35% dele na tela, com a aba visível e com a escolha
+// aberta. Quando um serviço abre (.svc.is-open) o vídeo some e pausa; ao
+// fechar, volta. Com movimento reduzido fica no poster.
+function initSvcVideo() {
+    const svc = document.querySelector('.usecases [data-svc]');
+    const video = svc ? svc.querySelector('.svc__video-media') : null;
+    if (!video) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.pause();
+        return;
+    }
+
+    let svcVideoInView = false;
+    const sync = () => {
+        if (svcVideoInView && !document.hidden && !svc.classList.contains('is-open')) {
+            // play() rejeita se o navegador barrar (economia de energia): fica o poster.
+            video.play().catch(() => {});
+        } else {
+            video.pause();
+        }
+    };
+
+    new IntersectionObserver((entries) => {
+        svcVideoInView = entries[0].isIntersecting;
+        sync();
+    }, { threshold: 0.35 }).observe(video);
+    new MutationObserver(sync).observe(svc, { attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('visibilitychange', sync);
+}

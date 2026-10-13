@@ -1124,6 +1124,57 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .svc.is-open .svc__chooser { display: none; }
 
+/* Escolha + vídeo. No celular a escolha vem primeiro (a ação antes da
+   demonstração) e o vídeo logo abaixo; a partir de 1100px, vídeo à
+   esquerda e escolha à direita, com os botões em 2×3. Aberto um serviço,
+   o palco inteiro sai (o vídeo pausa no initSvcVideo). */
+.svc__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.svc.is-open .svc__stage { display: none; }
+
+@media (min-width: 1100px) {
+    .svc__stage {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        gap: 48px;
+        align-items: center;
+    }
+
+    .svc__video { order: -1; }
+
+    .svc__stage .svc__choices { grid-template-columns: 1fr 1fr; }
+}
+
+.svc__video {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+}
+
+/* Borda decorativa e nenhuma sombra: plano em repouso, como os painéis. */
+.svc__video-media {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+}
+
+.svc__video-note {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
 .svc__ask {
     margin: 0 0 20px;
     font-family: var(--font-body);
@@ -1329,6 +1380,73 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     display: flex;
     flex-direction: column;
     gap: 24px;
+}
+
+/* ---- A peça (o objeto físico do serviço) ----
+   Linha inteira abaixo do texto e do celular, antes do "ver outro".
+   Quadro 16:9 em tom de fundo (o painel já é --color-surface, então o
+   quadro afunda um nível) e a imagem inteira dentro, sem cortar: a foto
+   real é vertical, os renders futuros são 16:9. */
+.svc__piece {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.svc__piece-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+}
+
+/* Absoluta: o quadro manda na proporção, nunca a imagem. */
+.svc__piece-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.svc__piece-caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+}
+
+/* Selo neutro (sem lime: não é ação). "Protótipo real" leva a silhueta
+   da tag; "Conceito" (peça ainda não impressa) fica sem ícone e apagado. */
+.svc__seal {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.svc__seal--concept { color: var(--color-text-muted); }
+
+.svc__seal svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
 }
 
 .svc__name {
@@ -1771,6 +1889,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .svc.is-interactive .svc__panel.is-shown .scr > :nth-child(5) { animation-delay: 500ms; }
 .svc.is-interactive .svc__panel.is-shown .scr > :nth-child(n+6) { animation-delay: 550ms; }
 
+.svc.is-interactive .svc__panel.is-shown .svc__piece {
+    animation: svc-rise 560ms cubic-bezier(0.16, 1, 0.3, 1) 420ms both;
+}
+
 .svc.is-interactive .svc__panel.is-shown .svc__device::before {
     animation: svc-wave 1100ms cubic-bezier(0.16, 1, 0.3, 1) 380ms both;
 }
@@ -1822,14 +1944,19 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
     height: 100%;
 }
 
-/* Entrada da seção (só com JS): a escolha sobe quando a seção chega. */
-.svc__chooser {
+/* Entrada da seção (só com JS): a escolha e o vídeo sobem quando a seção
+   chega, o vídeo um tico depois. */
+.svc__chooser,
+.svc__video {
     transition:
         opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
         transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.usecases.is-armed:not(.is-in) .svc__chooser {
+.svc__video { transition-delay: 120ms; }
+
+.usecases.is-armed:not(.is-in) .svc__chooser,
+.usecases.is-armed:not(.is-in) .svc__video {
     opacity: 0;
     transform: translateY(16px);
 }
@@ -2847,6 +2974,7 @@ html.is-showcase-open { overflow: hidden; }
     .svc__other,
     .svc__close,
     .svc__chooser,
+    .svc__video,
     .hire__step,
     .hire__steps::after,
     .closing__item,
